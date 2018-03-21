@@ -20,10 +20,12 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
+import cn.rongcloud.im.server.BaseAction;
 import cn.rongcloud.im.server.network.GetPicThread;
 import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.response.GetTokenResponse;
@@ -227,8 +229,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             switch (requestCode) {
                 case LOGIN:
                     LoginResponse loginResponse = (LoginResponse) result;
-                    if (loginResponse.getCode() == 200) {
-                        loginToken = loginResponse.getResult().getToken();
+                    if (loginResponse.getResult() == 0) {
+                        loginToken = loginResponse.getRongToken();
                         if (!TextUtils.isEmpty(loginToken)) {
                             RongIM.connect(loginToken, new RongIMClient.ConnectCallback() {
                                 @Override
@@ -253,10 +255,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 }
                             });
                         }
-                    } else if (loginResponse.getCode() == 100) {
+                    } else if (loginResponse.getResult() == 6) {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, R.string.phone_or_psw_error);
-                    } else if (loginResponse.getCode() == 1000) {
+                    } else if (loginResponse.getResult() == 1000) {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, R.string.phone_or_psw_error);
                     }
@@ -363,7 +365,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     // 获取验证码图片
     private void getValidateImg() {
-        String path = "http://192.168.1.88:8003/Api/Auth/ValidateCode?id=" + phoneString.trim();
+        if (TextUtils.isEmpty(mPhoneEdit.getText().toString())) {
+            NToast.shortToast(mContext, R.string.phone_number_is_null);
+            mPhoneEdit.setShakeAnimation();
+            return;
+        }
+        String path = BaseAction.DOMAIN +  "/Api/Auth/ValidateCode?id=" + mPhoneEdit.getText().toString();
         //创建一个线程对象
         GetPicThread gpt = new GetPicThread(path, handler);
         Thread t = new Thread(gpt);

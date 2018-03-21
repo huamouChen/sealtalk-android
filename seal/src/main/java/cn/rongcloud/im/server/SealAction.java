@@ -100,20 +100,6 @@ public class SealAction extends BaseAction {
     }
 
 
-    /*
-    * 获取验证码，返回的是一张图片
-    * */
-    public InputStream getValidateCode(String id) throws HttpException {
-        String url = getURL("Api/Auth/ValidateCode");
-        String result = httpManager.get(mContext, url, CONTENT_TYPE, new RequestParams("id", "111"));
-        InputStream inputStream = null;
-        if (!TextUtils.isEmpty(result)) {
-            inputStream  = new ByteArrayInputStream(result.getBytes());
-        }
-        return inputStream;
-    }
-
-
     /**
      * 检查手机是否被注册
      *
@@ -237,7 +223,6 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public LoginResponse login(String name, String password, String time, boolean rememberme, String validatecode) throws HttpException {
-//        String uri = getURL("user/login");
         String uri = getURL("api/Log/Login");
         String json = JsonMananger.beanToJson(new LoginRequest(name, password, time, rememberme, validatecode));
         StringEntity entity = null;
