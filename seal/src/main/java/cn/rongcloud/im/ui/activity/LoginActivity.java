@@ -3,12 +3,12 @@ package cn.rongcloud.im.ui.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
+import android.os.Message;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -18,14 +18,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
+import cn.rongcloud.im.server.network.GetPicThread;
 import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.response.GetTokenResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByIdResponse;
 import cn.rongcloud.im.server.response.LoginResponse;
-import cn.rongcloud.im.server.utils.AMUtils;
 import cn.rongcloud.im.server.utils.CommonUtils;
 import cn.rongcloud.im.server.utils.NLog;
 import cn.rongcloud.im.server.utils.NToast;
@@ -48,13 +51,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private static final int SYNC_USER_INFO = 9;
 
     private ImageView mImg_Background;
-    private ClearWriteEditText mPhoneEdit, mPasswordEdit;
+    private ClearWriteEditText mPhoneEdit, mPasswordEdit, mValidateCodeEdit;
     private String phoneString;
     private String passwordString;
+    private String validateCodeString;
     private String connectResultId;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private String loginToken;
+    private ImageView mValidCodeImg;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0x0001) {
+                Bitmap bm = (Bitmap) msg.obj;
+                mValidCodeImg.setImageBitmap(bm);
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +80,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         sp = getSharedPreferences("config", MODE_PRIVATE);
         editor = sp.edit();
         initView();
+
+        // 获取验证码，验证码一分钟失效
+        getValidateImg();
     }
 
     private void initView() {
         mPhoneEdit = (ClearWriteEditText) findViewById(R.id.de_login_phone);
         mPasswordEdit = (ClearWriteEditText) findViewById(R.id.de_login_password);
+        mValidateCodeEdit = (ClearWriteEditText) findViewById(R.id.de_login_validcode);
+        mValidCodeImg = (ImageView) findViewById(R.id.login_validcode_img);
+
         Button mConfirm = (Button) findViewById(R.id.de_login_sign);
+        Button mGetValiaCode = (Button) findViewById(R.id.btn_valid_code);
         TextView mRegister = (TextView) findViewById(R.id.de_login_register);
         TextView forgetPassword = (TextView) findViewById(R.id.de_login_forgot);
         forgetPassword.setOnClickListener(this);
         mConfirm.setOnClickListener(this);
         mRegister.setOnClickListener(this);
+        mGetValiaCode.setOnClickListener(this);
         mImg_Background = (ImageView) findViewById(R.id.de_img_backgroud);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -83,24 +107,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 mImg_Background.startAnimation(animation);
             }
         }, 200);
-        mPhoneEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 11) {
-                    AMUtils.onInactive(mContext, mPhoneEdit);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
         String oldPhone = sp.getString(SealConst.SEALTALK_LOGING_PHONE, "");
         String oldPassword = sp.getString(SealConst.SEALTALK_LOGING_PASSWORD, "");
@@ -132,18 +138,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.de_login_sign:
                 phoneString = mPhoneEdit.getText().toString().trim();
                 passwordString = mPasswordEdit.getText().toString().trim();
+                validateCodeString = mValidateCodeEdit.getText().toString().trim();
 
                 if (TextUtils.isEmpty(phoneString)) {
                     NToast.shortToast(mContext, R.string.phone_number_is_null);
                     mPhoneEdit.setShakeAnimation();
                     return;
                 }
-
-//                if (!AMUtils.isMobile(phoneString)) {
-//                    NToast.shortToast(mContext, R.string.Illegal_phone_number);
-//                    mPhoneEdit.setShakeAnimation();
-//                    return;
-//                }
 
                 if (TextUtils.isEmpty(passwordString)) {
                     NToast.shortToast(mContext, R.string.password_is_null);
@@ -155,6 +156,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     mPasswordEdit.setShakeAnimation();
                     return;
                 }
+
+                if (TextUtils.isEmpty(validateCodeString)) {
+                    NToast.shortToast(mContext, R.string.validate_code_is_null);
+                    mValidateCodeEdit.setShakeAnimation();
+                    return;
+                }
+
                 LoadDialog.show(mContext);
                 editor.putBoolean("exit", false);
                 editor.commit();
@@ -166,6 +174,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.de_login_forgot:
                 startActivityForResult(new Intent(this, ForgetPasswordActivity.class), 2);
+                break;
+            case R.id.btn_valid_code:
+                getValidateImg();
                 break;
         }
     }
@@ -192,7 +203,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 editor.putString(SealConst.SEALTALK_LOGIN_NAME, nickname);
                 editor.commit();
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -202,7 +212,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case LOGIN:
-                return action.login("86", phoneString, passwordString);
+                return action.login(phoneString, passwordString, getCurrentTime(), false, validateCodeString);
             case GET_TOKEN:
                 return action.getToken();
             case SYNC_USER_INFO:
@@ -342,5 +352,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         NToast.shortToast(mContext, R.string.login_success);
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
+    }
+
+    // 获取系统的当前时间
+    private String getCurrentTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        return simpleDateFormat.format(date);
+    }
+
+    // 获取验证码图片
+    private void getValidateImg() {
+        String path = "http://192.168.1.88:8003/Api/Auth/ValidateCode?id=" + phoneString.trim();
+        //创建一个线程对象
+        GetPicThread gpt = new GetPicThread(path, handler);
+        Thread t = new Thread(gpt);
+        t.start();
     }
 }

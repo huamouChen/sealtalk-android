@@ -18,6 +18,9 @@ public class LoginResponse {
      * token : B0DA/kKanJviD5xxUzhwsEFIJad0/86YwGxBwz1417WFQi/Vr2OJay26s5IFDffGZaUYRMAkvN0ikvOcTl7RN9JilKZlosfQ
      */
 
+
+
+
     private ResultEntity result;
 
     public void setCode(int code) {

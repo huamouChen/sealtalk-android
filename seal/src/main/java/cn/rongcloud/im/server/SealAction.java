@@ -7,10 +7,13 @@ import android.util.Log;
 
 import org.apache.http.entity.StringEntity;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import cn.rongcloud.im.server.network.http.HttpException;
+import cn.rongcloud.im.server.network.http.RequestParams;
 import cn.rongcloud.im.server.request.AddGroupMemberRequest;
 import cn.rongcloud.im.server.request.AddToBlackListRequest;
 import cn.rongcloud.im.server.request.AgreeFriendsRequest;
@@ -34,6 +37,7 @@ import cn.rongcloud.im.server.request.SetGroupNameRequest;
 import cn.rongcloud.im.server.request.SetGroupPortraitRequest;
 import cn.rongcloud.im.server.request.SetNameRequest;
 import cn.rongcloud.im.server.request.SetPortraitRequest;
+import cn.rongcloud.im.server.request.ValidateCodeRequest;
 import cn.rongcloud.im.server.request.VerifyCodeRequest;
 import cn.rongcloud.im.server.response.AddGroupMemberResponse;
 import cn.rongcloud.im.server.response.AddToBlackListResponse;
@@ -82,6 +86,7 @@ import cn.rongcloud.im.server.utils.json.JsonMananger;
  */
 @SuppressWarnings("deprecation")
 public class SealAction extends BaseAction {
+//    private final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private final String CONTENT_TYPE = "application/json";
     private final String ENCODING = "utf-8";
 
@@ -92,6 +97,20 @@ public class SealAction extends BaseAction {
      */
     public SealAction(Context context) {
         super(context);
+    }
+
+
+    /*
+    * 获取验证码，返回的是一张图片
+    * */
+    public InputStream getValidateCode(String id) throws HttpException {
+        String url = getURL("Api/Auth/ValidateCode");
+        String result = httpManager.get(mContext, url, CONTENT_TYPE, new RequestParams("id", "111"));
+        InputStream inputStream = null;
+        if (!TextUtils.isEmpty(result)) {
+            inputStream  = new ByteArrayInputStream(result.getBytes());
+        }
+        return inputStream;
     }
 
 
@@ -210,14 +229,17 @@ public class SealAction extends BaseAction {
     /**
      * 登录: 登录成功后，会设置 Cookie，后续接口调用需要登录的权限都依赖于 Cookie。
      *
-     * @param region   国家码
-     * @param phone    手机号
-     * @param password 密码
+     * @param name          用户名
+     * @param password      密码
+     * @param time
+     * @param rememberme
+     * @param validatecode
      * @throws HttpException
      */
-    public LoginResponse login(String region, String phone, String password) throws HttpException {
-        String uri = getURL("user/login");
-        String json = JsonMananger.beanToJson(new LoginRequest(region, phone, password));
+    public LoginResponse login(String name, String password, String time, boolean rememberme, String validatecode) throws HttpException {
+//        String uri = getURL("user/login");
+        String uri = getURL("api/Log/Login");
+        String json = JsonMananger.beanToJson(new LoginRequest(name, password, time, rememberme, validatecode));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);

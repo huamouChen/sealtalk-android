@@ -554,6 +554,12 @@ public class SyncHttpClient {
         return sendRequest(httpClient, httpContext, request, null, context);
     }
 
+    public String get(Context context, String url,String contentType, RequestParams params) throws HttpException {
+        HttpUriRequest request = new HttpGet(getUrlWithQueryString(isUrlEncodingEnabled, url, params));
+        return sendRequest(httpClient, httpContext, request, contentType, context);
+//        return sendRequest(httpClient, httpContext, addEntityToRequestBase(new HttpPost(url), entity), contentType, context);
+    }
+
     //
     // HTTP POST Requests
     //

@@ -84,6 +84,7 @@
     <string name="phone_number_is_null">手机号不能为空</string>
     <string name="Illegal_phone_number">非法手机号</string>
     <string name="password_is_null">密码不能为空</string>
+    <string name="validate_code_is_null">验证码不能为空</string>
     <string name="password_cannot_contain_spaces">密码不能包含空格</string>
     <string name="phone_number_available">手机号可用</string>
     <string name="phone_number_has_been_registered">手机号已被注册</string>
@@ -95,8 +96,10 @@
     <string name="forgot_password">找回密码</string>
     <string name="new_user">新用户</string>
     <string name="Login">登录</string>
+    <string name="Refresh">重新获取</string>
     <string name="phone_number">用户名</string>
     <string name="password">密码</string>
+    <string name="validcode">验证码</string>
     <string name="nickname">昵称</string>
     <string name="code">短信验证码</string>
     <string name="send_code">发送验证码</string>

@@ -14,7 +14,10 @@ import cn.rongcloud.im.server.utils.json.JsonMananger;
  */
 public class BaseAction {
 
-    private static final String DOMAIN = "http://api.sealtalk.im";
+//    private static final String DOMAIN = "http://api.sealtalk.im";
+    private static final String DOMAIN = "http://192.168.1.88:8003";
+
+
     protected Context mContext;
     protected SyncHttpClient httpManager;
 

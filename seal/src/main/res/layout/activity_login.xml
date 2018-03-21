@@ -44,7 +44,7 @@
             android:layout_marginTop="72dip"
             android:orientation="vertical">
 
-
+            <!--用户名-->
             <RelativeLayout
                 android:id="@+id/liner1"
                 android:layout_width="match_parent"
@@ -62,7 +62,6 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/phone_number"
-                    android:inputType="phone"
                     android:maxLines="1"
                     android:maxLength="11"
                     android:textColor="#FFFFFF"
@@ -80,6 +79,7 @@
 
             </RelativeLayout>
 
+            <!--密码-->
             <RelativeLayout
                 android:id="@+id/liner2"
                 android:layout_width="match_parent"
@@ -114,6 +114,68 @@
                 </FrameLayout>
             </RelativeLayout>
 
+            <!--验证码输入框-->
+            <RelativeLayout
+                android:id="@+id/liner3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:layout_marginTop="37dip"
+                android:orientation="horizontal">
+
+
+                <cn.rongcloud.im.server.widget.ClearWriteEditText
+                    android:id="@+id/de_login_validcode"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rc_ed_public_service_search_selector"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/validcode"
+                    android:maxLines="1"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
+
+                <FrameLayout
+                    android:id="@+id/fr_validcode_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/de_login_validcode"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone">
+
+                </FrameLayout>
+            </RelativeLayout>
+
+            <!--验证码图片-->
+            <RelativeLayout
+                android:id="@+id/liner4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:orientation="horizontal">
+
+                <!--验证码图片-->
+                <ImageView
+                    android:id="@+id/login_validcode_img"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp" />
+
+                <Button
+                    android:id="@+id/btn_valid_code"
+                    android:textSize="16sp"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="30dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/login_validcode_img"
+                    android:background="@drawable/rs_select_btn_blue"
+                    android:text="@string/Refresh"
+                    android:textColor="#FFFFFF" />
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/de_login_sign"
@@ -126,8 +188,6 @@
                 android:background="@drawable/rs_select_btn_blue"
                 android:text="@string/Login"
                 android:textColor="#FFFFFF" />
-
-
 
         </LinearLayout>
 
