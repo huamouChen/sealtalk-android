@@ -95,7 +95,7 @@
     <string name="forgot_password">找回密码</string>
     <string name="new_user">新用户</string>
     <string name="Login">登录</string>
-    <string name="phone_number">手机号</string>
+    <string name="phone_number">用户名</string>
     <string name="password">密码</string>
     <string name="nickname">昵称</string>
     <string name="code">短信验证码</string>

@@ -110,6 +110,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             mPasswordEdit.setText(oldPassword);
         }
 
+        // 其他设备登录，被踢下线
         if (getIntent().getBooleanExtra("kickedByOtherClient", false)) {
             final AlertDialog dlg = new AlertDialog.Builder(LoginActivity.this).create();
             dlg.show();

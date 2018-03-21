@@ -172,6 +172,7 @@
         android:layout_centerHorizontal="true"
         android:padding="15dp"
         android:textColor="#484848"
+        android:visibility="gone"
         />
 
 

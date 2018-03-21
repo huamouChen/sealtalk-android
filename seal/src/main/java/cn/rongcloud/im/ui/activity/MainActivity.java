@@ -122,7 +122,7 @@ public class MainActivity extends FragmentActivity implements
 
         mFragment.add(conversationList);
         mFragment.add(new ContactsFragment());
-        mFragment.add(new DiscoverFragment());
+//        mFragment.add(new DiscoverFragment());
         mFragment.add(new MineFragment());
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -136,7 +136,7 @@ public class MainActivity extends FragmentActivity implements
             }
         };
         mViewPager.setAdapter(fragmentPagerAdapter);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(mFragment.size());
         mViewPager.setOnPageChangeListener(this);
         initData();
     }
@@ -221,11 +221,11 @@ public class MainActivity extends FragmentActivity implements
                 mTextContact.setTextColor(Color.parseColor("#0099ff"));
                 mImageContact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_contacts_hover));
                 break;
+//            case 2:
+//                mTextFind.setTextColor(Color.parseColor("#0099ff"));
+//                mImageFind.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_found_hover));
+//                break;
             case 2:
-                mTextFind.setTextColor(Color.parseColor("#0099ff"));
-                mImageFind.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_found_hover));
-                break;
-            case 3:
                 mTextMe.setTextColor(Color.parseColor("#0099ff"));
                 mImageMe.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_me_hover));
                 break;
@@ -266,11 +266,11 @@ public class MainActivity extends FragmentActivity implements
             case R.id.seal_contact_list:
                 mViewPager.setCurrentItem(1, false);
                 break;
-            case R.id.seal_find:
-                mViewPager.setCurrentItem(2, false);
-                break;
+//            case R.id.seal_find:
+//                mViewPager.setCurrentItem(2, false);
+//                break;
             case R.id.seal_me:
-                mViewPager.setCurrentItem(3, false);
+                mViewPager.setCurrentItem(2, false);
                 mMineRed.setVisibility(View.GONE);
                 break;
             case R.id.seal_more:

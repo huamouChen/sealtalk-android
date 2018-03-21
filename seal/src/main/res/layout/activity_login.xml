@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--背景图片-->
     <FrameLayout
         android:id="@+id/de_frm_backgroud"
         android:layout_width="match_parent"
@@ -19,18 +20,22 @@
 
     </FrameLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
 
+        <!--icon-->
         <ImageView
             android:id="@+id/de_login_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="91dip"
-            android:src="@drawable/seal_logo" />
+            android:src="@drawable/seal_logo"
+            android:visibility="gone"/>
 
 
         <LinearLayout
@@ -125,8 +130,12 @@
 
 
         </LinearLayout>
+
+
     </LinearLayout>
 
+
+    <!--找回密码-->
     <TextView
         android:id="@+id/de_login_forgot"
         android:textSize="14sp"
@@ -135,19 +144,22 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:layout_alignParentBottom="true"
-        android:text="@string/forgot_password" />
+        android:text="@string/forgot_password"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Powered by RongCloud"
+        android:text="Powered by Rong"
         android:textSize="12sp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:padding="15dp"
         android:textColor="#484848"
+        android:visibility="gone"
         />
 
+    <!--新用户-->
     <TextView
         android:id="@+id/de_login_register"
         android:textSize="14sp"
@@ -157,6 +169,7 @@
         android:padding="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="@string/new_user" />
+        android:text="@string/new_user"
+        android:visibility="gone"/>
 
 </RelativeLayout>

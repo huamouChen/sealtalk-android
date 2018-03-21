@@ -124,7 +124,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="3dp">
+            android:padding="3dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="60dp"
@@ -140,7 +141,7 @@
                     android:background="#ffffff"
                     android:focusable="false"
                     android:scaleType="centerInside" />
-                <!--android:src="@drawable/tab_find"-->
+                android:src="@drawable/tab_find"
 
                 <TextView
                     android:id="@+id/tab_text_find"
@@ -156,6 +157,7 @@
 
             </RelativeLayout>
         </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/seal_me"
