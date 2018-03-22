@@ -28,6 +28,7 @@ import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.server.BaseAction;
 import cn.rongcloud.im.server.network.GetPicThread;
 import cn.rongcloud.im.server.network.http.HttpException;
+import cn.rongcloud.im.server.response.GetRongTokenResponse;
 import cn.rongcloud.im.server.response.GetTokenResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByIdResponse;
 import cn.rongcloud.im.server.response.LoginResponse;
@@ -50,6 +51,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private final static String TAG = "LoginActivity";
     private static final int LOGIN = 5;
     private static final int GET_TOKEN = 6;
+    private static final int GET_RONG_TOKEN = 600;
     private static final int SYNC_USER_INFO = 9;
 
     private ImageView mImg_Background;
@@ -219,6 +221,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return action.getToken();
             case SYNC_USER_INFO:
                 return action.getUserInfoById(connectResultId);
+            case GET_RONG_TOKEN:
+                return action.getRongToken(phoneString);
+
         }
         return null;
     }
@@ -232,37 +237,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     final LoginResponse loginResponse = (LoginResponse) result;
                     if (loginResponse.getResult() == 0) {
                         loginToken = loginResponse.getToken();
-                        rong_token = loginResponse.getRongToken();
-                        if (!TextUtils.isEmpty(rong_token)) {
-                            RongIM.connect(rong_token, new RongIMClient.ConnectCallback() {
-                                @Override
-                                public void onTokenIncorrect() {
-                                    NLog.e("connect", "onTokenIncorrect");
-                                    reGetToken();
-                                }
-
-                                @Override
-                                public void onSuccess(String s) {
-                                    connectResultId = s;
-                                    NLog.e("connect", "onSuccess userid:" + s);
-                                    editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
-                                    editor.commit();
-                                    SealUserInfoManager.getInstance().openDB();
-                                    editor.putString(SealConst.SEALTALK_LOGIN_NAME, loginResponse.getUserName());
-                                    editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
-                                    editor.commit();
-                                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(loginResponse.getUserName(), loginResponse.getUserName(), Uri.parse("")));
-//                                    request(SYNC_USER_INFO, true);
-                                    goToMain();
-                                }
-
-                                @Override
-                                public void onError(RongIMClient.ErrorCode errorCode) {
-                                    NLog.e("connect", "onError errorcode:" + errorCode.getValue());
-                                }
-                            });
-                        }
-                    } else  {
+                        // 登录成功，获取融云 token
+                        request(GET_RONG_TOKEN);
+                    } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, loginResponse.getError());
                     }
@@ -315,6 +292,42 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         }
                     }
                     break;
+
+                case GET_RONG_TOKEN:
+                    final GetRongTokenResponse rongTokenResponse = (GetRongTokenResponse) result;
+                    rong_token = rongTokenResponse.getValue().getRongToken();
+                    // 连接 融云 服务器
+                    if (!TextUtils.isEmpty(rong_token)) {
+                        RongIM.connect(rong_token, new RongIMClient.ConnectCallback() {
+                            @Override
+                            public void onTokenIncorrect() {
+                                NLog.e("connect", "onTokenIncorrect");
+                                request(GET_RONG_TOKEN);
+                            }
+
+                            @Override
+                            public void onSuccess(String s) {
+                                connectResultId = s;
+                                NLog.e("connect", "onSuccess userid:" + s);
+                                editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
+                                editor.commit();
+                                SealUserInfoManager.getInstance().openDB();
+                                editor.putString(SealConst.SEALTALK_LOGIN_NAME, rongTokenResponse.getValue().getUserName());
+                                editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
+                                editor.commit();
+                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
+//                                    request(SYNC_USER_INFO, true);
+                                goToMain();
+                            }
+
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                NLog.e("connect", "onError errorcode:" + errorCode.getValue());
+                            }
+                        });
+                    }
+
+                    break;
             }
         }
     }
@@ -340,6 +353,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 NToast.shortToast(mContext, R.string.sync_userinfo_api_fail);
                 break;
             case GET_TOKEN:
+                LoadDialog.dismiss(mContext);
+                NToast.shortToast(mContext, R.string.get_token_api_fail);
+                break;
+            case GET_RONG_TOKEN:
                 LoadDialog.dismiss(mContext);
                 NToast.shortToast(mContext, R.string.get_token_api_fail);
                 break;
@@ -377,7 +394,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             mPhoneEdit.setShakeAnimation();
             return;
         }
-        String path = BaseAction.DOMAIN +  "/Api/Auth/ValidateCode?id=" + mPhoneEdit.getText().toString();
+        String path = BaseAction.DOMAIN + "/Api/Auth/ValidateCode?id=" + mPhoneEdit.getText().toString();
         //创建一个线程对象
         GetPicThread gpt = new GetPicThread(path, handler);
         Thread t = new Thread(gpt);

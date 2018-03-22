@@ -84,7 +84,8 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         String cachePortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         String cachePhone = sp.getString(SealConst.SEALTALK_LOGING_PHONE, "");
         if (!TextUtils.isEmpty(cachePhone)) {
-            mPhone.setText("+86 " + cachePhone);
+//            mPhone.setText("+86 " + cachePhone);
+            mPhone.setText(cachePhone);
         }
         if (!TextUtils.isEmpty(cacheName)) {
             mName.setText(cacheName);

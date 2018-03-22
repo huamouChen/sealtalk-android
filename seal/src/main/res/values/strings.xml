@@ -96,7 +96,7 @@
     <string name="forgot_password">找回密码</string>
     <string name="new_user">新用户</string>
     <string name="Login">登录</string>
-    <string name="Refresh">重新获取</string>
+    <string name="Refresh">获取验证码</string>
     <string name="phone_number">用户名</string>
     <string name="password">密码</string>
     <string name="validcode">验证码</string>

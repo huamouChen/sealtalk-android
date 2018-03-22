@@ -7,13 +7,15 @@
     android:orientation="vertical">
 
 
+    <!--密码修改-->
     <RelativeLayout
         android:id="@+id/ac_set_change_pswd"
         android:layout_width="match_parent"
         android:layout_height="45.5dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/btn_list_item_bg"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +28,6 @@
 
 
     </RelativeLayout>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,12 +41,14 @@
             android:background="#dfdfdd" />
     </LinearLayout>
 
+    <!--隐私 即黑名单-->
     <RelativeLayout
         android:id="@+id/ac_set_privacy"
         android:layout_width="match_parent"
         android:layout_height="45.5dp"
         android:background="@drawable/btn_list_item_bg"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"

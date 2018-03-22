@@ -7,7 +7,7 @@ package cn.rongcloud.im.db;
 public class Groups extends UserInfoBean {
     private String displayName;
     private String role;
-    private String bulletin;
+    private String bulletin;   // 公告
     private String timestamp;
     private String nameSpelling;
 

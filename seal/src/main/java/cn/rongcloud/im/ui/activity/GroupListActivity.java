@@ -25,6 +25,7 @@ import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Groups;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
+import cn.rongcloud.im.server.pinyin.Group;
 import cn.rongcloud.im.server.utils.RongGenerate;
 import cn.rongcloud.im.server.widget.SelectableRoundedImageView;
 import io.rong.imageloader.core.ImageLoader;
@@ -53,6 +54,8 @@ public class GroupListActivity extends BaseActivity {
         mSearch = (EditText) findViewById(R.id.group_search);
         mTextView = (TextView)findViewById(R.id.foot_group_size);
         initData();
+
+        // 注册广播来更新 群聊的信息
         BroadcastManager.getInstance(mContext).addAction(SealConst.GROUP_LIST_UPDATE, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -62,49 +65,100 @@ public class GroupListActivity extends BaseActivity {
     }
 
     private void initData() {
-        SealUserInfoManager.getInstance().getGroups(new SealUserInfoManager.ResultCallback<List<Groups>>() {
-            @Override
-            public void onSuccess(List<Groups> groupsList) {
-                mList = groupsList;
-                if (mList != null && mList.size() > 0) {
-                    adapter = new GroupAdapter(mContext, mList);
-                    mGroupListView.setAdapter(adapter);
-                    mNoGroups.setVisibility(View.GONE);
-                    mTextView.setVisibility(View.VISIBLE);
-                    mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
-                    mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Groups bean = (Groups) adapter.getItem(position);
-                            RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
-                        }
-                    });
-                    mSearch.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // 暂时写死群组的信息
+        List<Groups> list = new ArrayList<>();
+        Groups groups1 = new Groups("g123", "地球最强战队", "http://huamouchen.info/bmw.jpg");
+        Groups groups2 = new Groups("g456", "吹牛逼打酱油", "http://huamouchen.info/bmw.jpg");
+        list.add(groups1); list.add(groups2);
 
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            filterData(s.toString());
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                        }
-                    });
-                } else {
-                    mNoGroups.setVisibility(View.VISIBLE);
+        mList = list;
+        if (mList != null && mList.size() > 0) {
+            adapter = new GroupAdapter(mContext, mList);
+            mGroupListView.setAdapter(adapter);
+            mNoGroups.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
+            mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Groups bean = (Groups) adapter.getItem(position);
+                    RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
                 }
+            });
+
+            mSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    filterData(s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        } else {
+            mNoGroups.setVisibility(View.VISIBLE);
+        }
+
+
+//        // 从网络获取 群聊列表
+//        SealUserInfoManager.getInstance().getGroups(new SealUserInfoManager.ResultCallback<List<Groups>>() {
+//            @Override
+//            public void onSuccess(List<Groups> groupsList) {
+//
+//                // 暂时写死群组的信息
+//                List<Groups> list = new ArrayList<>();
+//                Groups groups1 = new Groups("g123", "地球最强战队", "http://huamouchen.info/bmw.jpg");
+//                Groups groups2 = new Groups("g456", "吹牛逼打酱油", "http://huamouchen.info/bmw.jpg");
+//                list.add(groups1); list.add(groups2);
+//                groupsList = list;
+//
+//                mList = groupsList;
+//                if (mList != null && mList.size() > 0) {
+//                    adapter = new GroupAdapter(mContext, mList);
+//                    mGroupListView.setAdapter(adapter);
+//                    mNoGroups.setVisibility(View.GONE);
+//                    mTextView.setVisibility(View.VISIBLE);
+//                    mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
+//                    mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                            Groups bean = (Groups) adapter.getItem(position);
+//                            RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
+//                        }
+//                    });
+//
+//                    mSearch.addTextChangedListener(new TextWatcher() {
+//                        @Override
+//                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                            filterData(s.toString());
+//                        }
+//
+//                        @Override
+//                        public void afterTextChanged(Editable s) {
+//                        }
+//                    });
+//                } else {
+//                    mNoGroups.setVisibility(View.VISIBLE);
+//                }
             }
 
-            @Override
-            public void onError(String errString) {
-
-            }
-        });
-    }
+//            @Override
+//            public void onError(String errString) {
+//
+//            }
+//        });
+//    }
 
     private void filterData(String s) {
         List<Groups> filterDataList = new ArrayList<>();

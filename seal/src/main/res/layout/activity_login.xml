@@ -114,6 +114,36 @@
                 </FrameLayout>
             </RelativeLayout>
 
+            <!--验证码图片-->
+            <RelativeLayout
+                android:id="@+id/liner4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:layout_marginTop="17dip"
+                android:orientation="horizontal">
+
+                <!--验证码图片-->
+                <ImageView
+                    android:id="@+id/login_validcode_img"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp" />
+
+                <Button
+                    android:id="@+id/btn_valid_code"
+                    android:textSize="16sp"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="30dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/login_validcode_img"
+                    android:background="@drawable/rs_select_btn_blue"
+                    android:text="@string/Refresh"
+                    android:textColor="#FFFFFF" />
+
+            </RelativeLayout>
+
             <!--验证码输入框-->
             <RelativeLayout
                 android:id="@+id/liner3"
@@ -121,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dip"
                 android:layout_marginRight="30dip"
-                android:layout_marginTop="37dip"
+                android:layout_marginTop="17dip"
                 android:orientation="horizontal">
 
 
@@ -148,34 +178,7 @@
                 </FrameLayout>
             </RelativeLayout>
 
-            <!--验证码图片-->
-            <RelativeLayout
-                android:id="@+id/liner4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dip"
-                android:layout_marginRight="30dip"
-                android:orientation="horizontal">
 
-                <!--验证码图片-->
-                <ImageView
-                    android:id="@+id/login_validcode_img"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp" />
-
-                <Button
-                    android:id="@+id/btn_valid_code"
-                    android:textSize="16sp"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="30dip"
-                    android:layout_alignParentRight="true"
-                    android:layout_toRightOf="@+id/login_validcode_img"
-                    android:background="@drawable/rs_select_btn_blue"
-                    android:text="@string/Refresh"
-                    android:textColor="#FFFFFF" />
-
-            </RelativeLayout>
 
             <Button
                 android:id="@+id/de_login_sign"
@@ -207,6 +210,7 @@
         android:text="@string/forgot_password"
         android:visibility="gone"/>
 
+    <!--power by -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

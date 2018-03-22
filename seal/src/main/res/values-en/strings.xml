@@ -27,7 +27,7 @@
     <string name="forgot_password">Forgot pswd</string>
     <string name="new_user">Sign up</string>
     <string name="Login">Login</string>
-    <string name="Refresh">Reacquire</string>
+    <string name="Refresh">Get ValidateCode</string>
     <string name="phone_number">UserName</string>
     <string name="password">Password</string>
     <string name="validcode">ValidateCode</string>

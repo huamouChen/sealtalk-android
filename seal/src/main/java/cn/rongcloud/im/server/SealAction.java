@@ -55,6 +55,7 @@ import cn.rongcloud.im.server.response.GetFriendInfoByIDResponse;
 import cn.rongcloud.im.server.response.GetGroupInfoResponse;
 import cn.rongcloud.im.server.response.GetGroupMemberResponse;
 import cn.rongcloud.im.server.response.GetGroupResponse;
+import cn.rongcloud.im.server.response.GetRongTokenResponse;
 import cn.rongcloud.im.server.response.GetTokenResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByIdResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByPhoneResponse;
@@ -247,13 +248,29 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public GetTokenResponse getToken() throws HttpException {
-        String url = getURL("user/get_token");
+    public GetRongTokenResponse getToken() throws HttpException {
+        String url = getURL("/api/Rong/Token");
         String result = httpManager.get(url);
-        GetTokenResponse response = null;
+        GetRongTokenResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("GetTokenResponse", result);
-            response = jsonToBean(result, GetTokenResponse.class);
+            response = jsonToBean(result, GetRongTokenResponse.class);
+        }
+        return response;
+    }
+
+    /**
+     * 获取 融云 token 前置条件需要登录
+     *
+     * @throws HttpException
+     */
+    public GetRongTokenResponse getRongToken(String userName) throws HttpException {
+        String url = getURL("/api/Rong/Token");
+        String result = httpManager.get(mContext, url, new RequestParams("userName", userName));
+        GetRongTokenResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetTokenResponse", result);
+            response = jsonToBean(result, GetRongTokenResponse.class);
         }
         return response;
     }
