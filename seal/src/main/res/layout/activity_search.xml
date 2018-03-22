@@ -24,7 +24,6 @@
             android:drawableLeft="@drawable/sealtalk_search"
             android:drawablePadding="6dp"
             android:hint="@string/ac_search_phone_number"
-            android:inputType="phone"
             android:maxLength="11"
             android:maxLines="1"/>
 

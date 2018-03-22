@@ -6,6 +6,7 @@
     android:background="@color/seal_bg"
     android:orientation="vertical">
 
+    <!--好友的基本信息-->
     <LinearLayout
         android:id="@+id/group_info"
         android:layout_width="match_parent"
@@ -78,7 +79,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-
+    <!--设置备注-->
     <LinearLayout
         android:id="@+id/ac_ll_note_name"
         android:layout_width="match_parent"
@@ -86,7 +87,8 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/btn_list_item_bg"
         android:clickable="true"
-        android:onClick="setDisplayName">
+        android:onClick="setDisplayName"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -99,6 +101,7 @@
 
     </LinearLayout>
 
+    <!--发起聊天界面-->
     <LinearLayout
         android:id="@+id/ac_ll_chat_button_group"
         android:layout_width="match_parent"
@@ -144,6 +147,7 @@
         <!--CallKit end-->
     </LinearLayout>
 
+    <!--加为好友-->
     <Button
         android:id="@+id/ac_bt_add_friend"
         android:layout_width="match_parent"

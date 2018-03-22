@@ -165,19 +165,24 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
         if (!TextUtils.isEmpty(mFriend.getUserId())) {
             String mySelf = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-            if (mySelf.equals(mFriend.getUserId())) {
+            if (mySelf.equals(mFriend.getUserId())) { // 点击的是自己
                 mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
                 mAddFriendButton.setVisibility(View.GONE);
                 return;
             }
-            if (mIsFriendsRelationship) {
-                mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
-                mAddFriendButton.setVisibility(View.GONE);
-            } else {
-                mAddFriendButton.setVisibility(View.VISIBLE);
-                mChatButtonGroupLinearLayout.setVisibility(View.GONE);
-                mNoteNameLinearLayout.setVisibility(View.GONE);
-            }
+
+
+            // 不维护好友关系，目前都是好友
+            mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
+            mAddFriendButton.setVisibility(View.GONE);
+//            if (mIsFriendsRelationship) { // 点击的是好友
+//                mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
+//                mAddFriendButton.setVisibility(View.GONE);
+//            } else {                       // 点击的是非好友
+//                mAddFriendButton.setVisibility(View.VISIBLE);
+//                mChatButtonGroupLinearLayout.setVisibility(View.GONE);
+//                mNoteNameLinearLayout.setVisibility(View.GONE);
+//            }
         }
     }
 

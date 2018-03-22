@@ -36,7 +36,7 @@ public class LoginResponse {
      */
 
     private int Result;
-    private Object Error;
+    private String Error;
     private int ID;
     private String UserName;
     private String UserLeve;
@@ -68,11 +68,11 @@ public class LoginResponse {
         this.Result = Result;
     }
 
-    public Object getError() {
+    public String getError() {
         return Error;
     }
 
-    public void setError(Object Error) {
+    public void setError(String Error) {
         this.Error = Error;
     }
 

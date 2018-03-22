@@ -115,7 +115,9 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         if (intent == null || intent.getData() == null)
             return;
 
+        // 消息接受方 ID
         mTargetId = intent.getData().getQueryParameter("targetId");
+
         //10000 为 Demo Server 加好友的 id，若 targetId 为 10000，则为加好友消息，默认跳转到 NewFriendListActivity
         // Demo 逻辑
         if (mTargetId != null && mTargetId.equals("10000")) {

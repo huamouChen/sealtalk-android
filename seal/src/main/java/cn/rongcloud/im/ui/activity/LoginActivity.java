@@ -61,6 +61,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private String loginToken;
+    private String rong_token;
     private ImageView mValidCodeImg;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -84,7 +85,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         initView();
 
         // 获取验证码，验证码一分钟失效
-        getValidateImg();
+//        getValidateImg();
     }
 
     private void initView() {
@@ -183,7 +184,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 2 && data != null) {
@@ -227,12 +227,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
             switch (requestCode) {
+
                 case LOGIN:
-                    LoginResponse loginResponse = (LoginResponse) result;
+                    final LoginResponse loginResponse = (LoginResponse) result;
                     if (loginResponse.getResult() == 0) {
-                        loginToken = loginResponse.getRongToken();
-                        if (!TextUtils.isEmpty(loginToken)) {
-                            RongIM.connect(loginToken, new RongIMClient.ConnectCallback() {
+                        loginToken = loginResponse.getToken();
+                        rong_token = loginResponse.getRongToken();
+                        if (!TextUtils.isEmpty(rong_token)) {
+                            RongIM.connect(rong_token, new RongIMClient.ConnectCallback() {
                                 @Override
                                 public void onTokenIncorrect() {
                                     NLog.e("connect", "onTokenIncorrect");
@@ -246,7 +248,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                     editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
                                     editor.commit();
                                     SealUserInfoManager.getInstance().openDB();
-                                    request(SYNC_USER_INFO, true);
+                                    editor.putString(SealConst.SEALTALK_LOGIN_NAME, loginResponse.getUserName());
+                                    editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
+                                    editor.commit();
+                                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(loginResponse.getUserName(), loginResponse.getUserName(), Uri.parse("")));
+//                                    request(SYNC_USER_INFO, true);
+                                    goToMain();
                                 }
 
                                 @Override
@@ -255,14 +262,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 }
                             });
                         }
-                    } else if (loginResponse.getResult() == 6) {
+                    } else  {
                         LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, R.string.phone_or_psw_error);
-                    } else if (loginResponse.getResult() == 1000) {
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, R.string.phone_or_psw_error);
+                        NToast.shortToast(mContext, loginResponse.getError());
                     }
                     break;
+
+
                 case SYNC_USER_INFO:
                     GetUserInfoByIdResponse userInfoByIdResponse = (GetUserInfoByIdResponse) result;
                     if (userInfoByIdResponse.getCode() == 200) {
@@ -346,7 +352,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void goToMain() {
-        editor.putString("loginToken", loginToken);
+        // 要保存的是融云的 token
+        editor.putString("loginToken", rong_token);
         editor.putString(SealConst.SEALTALK_LOGING_PHONE, phoneString);
         editor.putString(SealConst.SEALTALK_LOGING_PASSWORD, passwordString);
         editor.commit();

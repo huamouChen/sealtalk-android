@@ -92,6 +92,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    //  好友详情界面
     private void startFriendDetailsPage(Friend friend) {
         Intent intent = new Intent(getActivity(), UserDetailActivity.class);
         intent.putExtra("type", CLICK_CONTACT_FRAGMENT_FRIEND);
@@ -141,6 +142,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
 
     private void initData() {
         mFriendList = new ArrayList<>();
+
         FriendListAdapter adapter = new FriendListAdapter(getActivity(), mFriendList);
         mListView.setAdapter(adapter);
         mFilteredFriendList = new ArrayList<>();
@@ -260,17 +262,27 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateUI() {
-        SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
-            @Override
-            public void onSuccess(List<Friend> friendsList) {
-                updateFriendsList(friendsList);
-            }
+        // 从网络获取好友列表
+//        SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
+//            @Override
+//            public void onSuccess(List<Friend> friendsList) {
+//                updateFriendsList(friendsList);
+//            }
+//
+//            @Override
+//            public void onError(String errString) {
+//                updateFriendsList(null);
+//            }
+//        });
 
-            @Override
-            public void onError(String errString) {
-                updateFriendsList(null);
-            }
-        });
+        // 暂时不用维护好友关系，直接从后台返回获取
+        List<Friend> list = new ArrayList<>();
+        Friend dl1 = new Friend("dl1", "dl1", Uri.parse("http://huamouchen.info/bmw.jpg"));
+        Friend hy1 = new Friend("hy1", "hy1", Uri.parse("http://huamouchen.info/bmw.jpg"));
+        list.add(dl1);
+        list.add(hy1);
+
+        updateFriendsList(list);
     }
 
     private void updateFriendsList(List<Friend> friendsList) {
@@ -280,7 +292,10 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
             mFriendList.clear();
             isReloadList = true;
         }
-        mFriendList = friendsList;
+
+        if (friendsList != null) {
+            mFriendList = friendsList;
+        }
         if (mFriendList != null && mFriendList.size() > 0) {
             handleFriendDataForSort();
             mNoFriends.setVisibility(View.GONE);

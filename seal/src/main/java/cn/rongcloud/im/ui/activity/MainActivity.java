@@ -81,10 +81,12 @@ public class MainActivity extends FragmentActivity implements
 
 
     private void initViews() {
+        // 底部 4个 tabBar item
         RelativeLayout chatRLayout = (RelativeLayout) findViewById(R.id.seal_chat);
         RelativeLayout contactRLayout = (RelativeLayout) findViewById(R.id.seal_contact_list);
         RelativeLayout foundRLayout = (RelativeLayout) findViewById(R.id.seal_find);
         RelativeLayout mineRLayout = (RelativeLayout) findViewById(R.id.seal_me);
+        // 图片和文字主要是为了点击的时候切换变色
         mImageChats = (ImageView) findViewById(R.id.tab_img_chats);
         mImageContact = (ImageView) findViewById(R.id.tab_img_contact);
         mImageFind = (ImageView) findViewById(R.id.tab_img_find);
@@ -97,12 +99,15 @@ public class MainActivity extends FragmentActivity implements
         moreImage = (ImageView) findViewById(R.id.seal_more);
         mSearchImageView = (ImageView) findViewById(R.id.ac_iv_search);
 
+        // 设置点击监听
         chatRLayout.setOnClickListener(this);
         contactRLayout.setOnClickListener(this);
         foundRLayout.setOnClickListener(this);
         mineRLayout.setOnClickListener(this);
         moreImage.setOnClickListener(this);
         mSearchImageView.setOnClickListener(this);
+
+        // 添加广播 提醒红点
         BroadcastManager.getInstance(mContext).addAction(MineFragment.SHOW_RED, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -113,13 +118,16 @@ public class MainActivity extends FragmentActivity implements
 
 
     private void initMainViewPager() {
+        // 最近会话列表
         Fragment conversationList = initConversationList();
+
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
 
         mUnreadNumView = (DragPointView) findViewById(R.id.seal_num);
         mUnreadNumView.setOnClickListener(this);
         mUnreadNumView.setDragListencer(this);
 
+        // 添加底部的 tab item
         mFragment.add(conversationList);
         mFragment.add(new ContactsFragment());
 //        mFragment.add(new DiscoverFragment());
@@ -233,9 +241,7 @@ public class MainActivity extends FragmentActivity implements
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
+    public void onPageScrollStateChanged(int state) { }
 
 
     long firstClick = 0;
@@ -299,6 +305,7 @@ public class MainActivity extends FragmentActivity implements
                 Conversation.ConversationType.PUBLIC_SERVICE, Conversation.ConversationType.APP_PUBLIC_SERVICE
         };
 
+        // 未读消息
         RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
         getConversationPush();// 获取 push 的 id 和 target
         getPushMessage();

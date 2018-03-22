@@ -69,10 +69,10 @@ public class SearchFriendActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 11) {
                     mPhone = s.toString().trim();
-                    if (!AMUtils.isMobile(mPhone)) {
-                        NToast.shortToast(mContext, "非法手机号");
-                        return;
-                    }
+//                    if (!AMUtils.isMobile(mPhone)) {
+//                        NToast.shortToast(mContext, "非法手机号");
+//                        return;
+//                    }
                     hintKbTwo();
                     LoadDialog.show(mContext);
                     request(SEARCH_PHONE, true);
