@@ -11,6 +11,13 @@ public class Groups extends UserInfoBean {
     private String timestamp;
     private String nameSpelling;
 
+    // rong
+    private int Id;
+    private String GroupId;
+    private String GroupName;
+    private String GroupOwner;
+    private String AddTime;
+
     public Groups() {
         super();
     }
@@ -100,6 +107,46 @@ public class Groups extends UserInfoBean {
 
     public void setNameSpelling(String nameSpelling) {
         this.nameSpelling = nameSpelling;
+    }
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int Id) {
+        this.Id = Id;
+    }
+
+    public String getGroupId() {
+        return GroupId;
+    }
+
+    public void setGroupId(String GroupId) {
+        this.GroupId = GroupId;
+    }
+
+    public String getGroupName() {
+        return GroupName;
+    }
+
+    public void setGroupName(String GroupName) {
+        this.GroupName = GroupName;
+    }
+
+    public String getGroupOwner() {
+        return GroupOwner;
+    }
+
+    public void setGroupOwner(String GroupOwner) {
+        this.GroupOwner = GroupOwner;
+    }
+
+    public String getAddTime() {
+        return AddTime;
+    }
+
+    public void setAddTime(String AddTime) {
+        this.AddTime = AddTime;
     }
 
 }

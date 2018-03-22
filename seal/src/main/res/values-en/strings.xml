@@ -9,6 +9,7 @@
     <string name="login_api_fail">login api fail</string>
     <string name="sync_userinfo_api_fail">sync userinfo api fail</string>
     <string name="get_token_api_fail">get token api fail</string>
+    <string name="get_groups_api_fail">get groups api fail</string>
     <string name="sync_group_api_fail">sync group api fail</string>
     <string name="login_success">login success</string>
     <string name="phone_or_psw_error">phone number or password mistake</string>

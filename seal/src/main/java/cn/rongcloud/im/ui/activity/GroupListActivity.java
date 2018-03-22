@@ -3,6 +3,7 @@ package cn.rongcloud.im.ui.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,8 +26,13 @@ import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Groups;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
+import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.pinyin.Group;
+import cn.rongcloud.im.server.response.GetRongGroupResponse;
+import cn.rongcloud.im.server.utils.CommonUtils;
+import cn.rongcloud.im.server.utils.NToast;
 import cn.rongcloud.im.server.utils.RongGenerate;
+import cn.rongcloud.im.server.widget.LoadDialog;
 import cn.rongcloud.im.server.widget.SelectableRoundedImageView;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
@@ -36,6 +42,8 @@ import io.rong.imkit.RongIM;
  * Company RongCloud
  */
 public class GroupListActivity extends BaseActivity {
+
+    private static final int GET_RONG_GROUPS = 700;
 
     private ListView mGroupListView;
     private GroupAdapter adapter;
@@ -64,46 +72,125 @@ public class GroupListActivity extends BaseActivity {
         });
     }
 
-    private void initData() {
-        // 暂时写死群组的信息
-        List<Groups> list = new ArrayList<>();
-        Groups groups1 = new Groups("g123", "地球最强战队", "http://huamouchen.info/bmw.jpg");
-        Groups groups2 = new Groups("g456", "吹牛逼打酱油", "http://huamouchen.info/bmw.jpg");
-        list.add(groups1); list.add(groups2);
-
-        mList = list;
-        if (mList != null && mList.size() > 0) {
-            adapter = new GroupAdapter(mContext, mList);
-            mGroupListView.setAdapter(adapter);
-            mNoGroups.setVisibility(View.GONE);
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
-            mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Groups bean = (Groups) adapter.getItem(position);
-                    RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
-                }
-            });
-
-            mSearch.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    filterData(s.toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-        } else {
-            mNoGroups.setVisibility(View.VISIBLE);
+    @Override
+    public Object doInBackground(int requestCode, String id) throws HttpException {
+        switch (requestCode) {
+            case GET_RONG_GROUPS:
+                SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+                String userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
+                return action.getRongGroups(userName);
         }
+
+        return null;
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        if (result != null) {
+            switch (requestCode) {
+                case GET_RONG_GROUPS:
+                    GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
+                    mList = getRongGroupResponse.getValue();
+                    if (mList != null && mList.size() > 0) {
+                        adapter = new GroupAdapter(mContext, mList);
+                        mGroupListView.setAdapter(adapter);
+                        mNoGroups.setVisibility(View.GONE);
+                        mTextView.setVisibility(View.VISIBLE);
+                        mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
+                        mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Groups bean = (Groups) adapter.getItem(position);
+                                RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
+                            }
+                        });
+
+                        mSearch.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                filterData(s.toString());
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                            }
+                        });
+                    } else {
+                        mNoGroups.setVisibility(View.VISIBLE);
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) {
+        if (!CommonUtils.isNetworkConnected(mContext)) {
+            LoadDialog.dismiss(mContext);
+            NToast.shortToast(mContext, getString(R.string.network_not_available));
+            return;
+        }
+        switch (requestCode) {
+            case GET_RONG_GROUPS:
+                LoadDialog.dismiss(mContext);
+                NToast.shortToast(mContext, R.string.get_groups_api_fail);
+                break;
+        }
+    }
+
+    private void initData() {
+        request(GET_RONG_GROUPS);
+
+
+
+//        // 暂时写死群组的信息
+//        List<Groups> list = new ArrayList<>();
+//        Groups groups1 = new Groups("g123", "地球最强战队", "http://huamouchen.info/bmw.jpg");
+//        Groups groups2 = new Groups("g456", "吹牛逼打酱油", "http://huamouchen.info/bmw.jpg");
+//        list.add(groups1); list.add(groups2);
+//
+//        mList = list;
+//        if (mList != null && mList.size() > 0) {
+//            adapter = new GroupAdapter(mContext, mList);
+//            mGroupListView.setAdapter(adapter);
+//            mNoGroups.setVisibility(View.GONE);
+//            mTextView.setVisibility(View.VISIBLE);
+//            mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
+//            mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Groups bean = (Groups) adapter.getItem(position);
+//                    RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
+//                }
+//            });
+//
+//            mSearch.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    filterData(s.toString());
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
+//        } else {
+//            mNoGroups.setVisibility(View.VISIBLE);
+//        }
+
+
+
+
 
 
 //        // 从网络获取 群聊列表

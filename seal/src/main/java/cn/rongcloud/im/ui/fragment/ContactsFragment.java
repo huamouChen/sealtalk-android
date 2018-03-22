@@ -205,19 +205,19 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.re_newfriends:
+            case R.id.re_newfriends:  // 新的朋友
                 mUnreadTextView.setVisibility(View.GONE);
                 Intent intent = new Intent(getActivity(), NewFriendListActivity.class);
                 startActivityForResult(intent, 20);
                 break;
-            case R.id.re_chatroom:
+            case R.id.re_chatroom:   // 群聊
                 startActivity(new Intent(getActivity(), GroupListActivity.class));
                 break;
-            case R.id.publicservice:
+            case R.id.publicservice:  // 公众号
                 Intent intentPublic = new Intent(getActivity(), PublicServiceActivity.class);
                 startActivity(intentPublic);
                 break;
-            case R.id.contact_me_item:
+            case R.id.contact_me_item:  // 当前用户，也就是自己
                 RongIM.getInstance().startPrivateChat(getActivity(), mId, mCacheName);
                 break;
         }
