@@ -108,6 +108,8 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         mDialogTextView = (TextView) view.findViewById(R.id.group_dialog);
         mSidBar.setTextView(mDialogTextView);
         LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
+
+        // 头部 新的朋友 群组 公众号 自己 4个选项
         mHeadView = mLayoutInflater.inflate(R.layout.item_contact_list_header,
                                             null);
         mUnreadTextView = (TextView) mHeadView.findViewById(R.id.tv_unread);

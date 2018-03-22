@@ -6,12 +6,14 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
+    <!--新的朋友-->
     <RelativeLayout
         android:id="@+id/re_newfriends"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="@drawable/btn_list_item_bg"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="gone">
 
         <cn.rongcloud.im.server.widget.SelectableRoundedImageView
             android:id="@+id/iv_avatar"
@@ -51,14 +53,15 @@
             android:textSize="12sp"
             android:visibility="gone" />
     </RelativeLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:background="#d9d9d9" />
+        android:background="#d9d9d9"
+        android:visibility="gone"/>
 
+    <!--群组-->
     <RelativeLayout
         android:id="@+id/re_chatroom"
         android:layout_width="match_parent"
@@ -90,8 +93,6 @@
             android:textColor="#353535"
             android:textSize="16sp" />
     </RelativeLayout>
-
-
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
@@ -99,12 +100,14 @@
         android:layout_marginRight="12dp"
         android:background="#d9d9d9" />
 
+    <!--公众号-->
     <RelativeLayout
         android:id="@+id/publicservice"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="@drawable/btn_list_item_bg"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="gone">
 
         <cn.rongcloud.im.server.widget.SelectableRoundedImageView
             android:id="@+id/iv_avatar4"
@@ -130,15 +133,15 @@
             android:textColor="#353535"
             android:textSize="16sp" />
     </RelativeLayout>
-
-
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:background="#d9d9d9" />
+        android:background="#d9d9d9"
+        android:visibility="gone"/>
 
+    <!--自己-->
     <RelativeLayout
         android:id="@+id/contact_me_item"
         android:layout_width="match_parent"
