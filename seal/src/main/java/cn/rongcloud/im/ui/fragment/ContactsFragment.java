@@ -72,7 +72,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 
     private SealAction action;
     private AsyncTaskManager mAsyncTaskManager;
+    private List<Friend> friendList = new ArrayList<>();
     private String groupId = "";
+    private String userName = "";
     /**
      * 中部展示的字母提示
      */
@@ -158,6 +160,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void initData() {
+        SharedPreferences sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
+        userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
+
         mAsyncTaskManager = AsyncTaskManager.getInstance(getContext());
         action = new SealAction(getContext());
         mFriendList = new ArrayList<>();
@@ -309,8 +314,6 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     public Object doInBackground(int requestCode, String parameter) throws HttpException {
         switch (requestCode) {
             case GET_RONG_GROUPS:
-                SharedPreferences sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-                String userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
                 return action.getRongGroups(userName);
             case GET_RONG_GROUP_MEMBERS:
                 return action.getRongGroupMembers(groupId);
@@ -334,10 +337,19 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
             case GET_RONG_GROUP_MEMBERS:
                 GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
                 List<Groups> membersList = getRongGroupMembersResponse.getValue();
-                List<Friend> friendList = new ArrayList<>();
                 for (int i = 0; i < membersList.size(); i++) {
                     Groups groups = membersList.get(i);
+                    String userID = groups.getUserName();
+                    boolean isHave = false;
+                    // 判断有没有添加过
+                    for (Friend itme : friendList) {
+                        isHave = itme.getUserId().equals(userID) || itme.getUserId().equals(userName);
+                        if (isHave) break;
+                    }
+                    // 如果已经添加过了，就不重复添加，因为有的人可能会在相同的群组里面
+                    if (isHave) continue;
                     Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+
                     friendList.add(friend);
                 }
                 updateFriendsList(friendList);

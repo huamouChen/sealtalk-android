@@ -146,53 +146,6 @@ public class GroupListActivity extends BaseActivity {
     private void initData() {
         request(GET_RONG_GROUPS);
 
-
-
-//        // 暂时写死群组的信息
-//        List<Groups> list = new ArrayList<>();
-//        Groups groups1 = new Groups("g123", "地球最强战队", "http://huamouchen.info/bmw.jpg");
-//        Groups groups2 = new Groups("g456", "吹牛逼打酱油", "http://huamouchen.info/bmw.jpg");
-//        list.add(groups1); list.add(groups2);
-//
-//        mList = list;
-//        if (mList != null && mList.size() > 0) {
-//            adapter = new GroupAdapter(mContext, mList);
-//            mGroupListView.setAdapter(adapter);
-//            mNoGroups.setVisibility(View.GONE);
-//            mTextView.setVisibility(View.VISIBLE);
-//            mTextView.setText(getString(R.string.ac_group_list_group_number, mList.size()));
-//            mGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    Groups bean = (Groups) adapter.getItem(position);
-//                    RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
-//                }
-//            });
-//
-//            mSearch.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    filterData(s.toString());
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                }
-//            });
-//        } else {
-//            mNoGroups.setVisibility(View.VISIBLE);
-//        }
-
-
-
-
-
-
 //        // 从网络获取 群聊列表
 //        SealUserInfoManager.getInstance().getGroups(new SealUserInfoManager.ResultCallback<List<Groups>>() {
 //            @Override

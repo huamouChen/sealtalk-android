@@ -51,7 +51,8 @@ public class UpdateNameActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return action.setName(newName);
+//        return action.setName(newName);
+        return action.postKQWFPCDD("21");
     }
 
     @Override

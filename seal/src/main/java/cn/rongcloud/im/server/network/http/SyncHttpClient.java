@@ -1,6 +1,7 @@
 package cn.rongcloud.im.server.network.http;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -723,6 +724,10 @@ public class SyncHttpClient {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }
+
+        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+        String token = sp.getString(SealConst.TOKEN, "");
+        uriRequest.addHeader("Authorization", "Bearer " + token);
 
 //    	//set cookie
 //    	List<Cookie> list = cookieStore.getCookies();

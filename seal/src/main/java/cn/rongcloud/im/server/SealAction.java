@@ -4,11 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-
+import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -37,7 +35,6 @@ import cn.rongcloud.im.server.request.SetGroupNameRequest;
 import cn.rongcloud.im.server.request.SetGroupPortraitRequest;
 import cn.rongcloud.im.server.request.SetNameRequest;
 import cn.rongcloud.im.server.request.SetPortraitRequest;
-import cn.rongcloud.im.server.request.ValidateCodeRequest;
 import cn.rongcloud.im.server.request.VerifyCodeRequest;
 import cn.rongcloud.im.server.response.AddGroupMemberResponse;
 import cn.rongcloud.im.server.response.AddToBlackListResponse;
@@ -58,11 +55,11 @@ import cn.rongcloud.im.server.response.GetGroupResponse;
 import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
 import cn.rongcloud.im.server.response.GetRongGroupResponse;
 import cn.rongcloud.im.server.response.GetRongTokenResponse;
-import cn.rongcloud.im.server.response.GetTokenResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByIdResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByPhoneResponse;
 import cn.rongcloud.im.server.response.GetUserInfosResponse;
 import cn.rongcloud.im.server.response.JoinGroupResponse;
+import cn.rongcloud.im.server.response.KqwfPcddResponse;
 import cn.rongcloud.im.server.response.LoginResponse;
 import cn.rongcloud.im.server.response.QiNiuTokenResponse;
 import cn.rongcloud.im.server.response.QuitGroupResponse;
@@ -72,13 +69,13 @@ import cn.rongcloud.im.server.response.RestPasswordResponse;
 import cn.rongcloud.im.server.response.SendCodeResponse;
 import cn.rongcloud.im.server.response.SetFriendDisplayNameResponse;
 import cn.rongcloud.im.server.response.SetGroupDisplayNameResponse;
+import cn.rongcloud.im.server.response.SetGroupNameResponse;
 import cn.rongcloud.im.server.response.SetGroupPortraitResponse;
 import cn.rongcloud.im.server.response.SetNameResponse;
 import cn.rongcloud.im.server.response.SetPortraitResponse;
 import cn.rongcloud.im.server.response.SyncTotalDataResponse;
 import cn.rongcloud.im.server.response.UserRelationshipResponse;
 import cn.rongcloud.im.server.response.VerifyCodeResponse;
-import cn.rongcloud.im.server.response.SetGroupNameResponse;
 import cn.rongcloud.im.server.response.VersionResponse;
 import cn.rongcloud.im.server.utils.NLog;
 import cn.rongcloud.im.server.utils.json.JsonMananger;
@@ -969,7 +966,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetRongTokenResponse getRongToken(String userName) throws HttpException {
-        String url = getURL("/api/Rong/Token");
+        String url = getURL("api/Rong/Token");
         String result = httpManager.get(mContext, url, new RequestParams("userName", userName));
         GetRongTokenResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -985,7 +982,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetRongGroupResponse getRongGroups(String userName) throws HttpException {
-        String url = getURL("/api/Rong/Groups");
+        String url = getURL("api/Rong/Groups");
         String result = httpManager.get(mContext, url, new RequestParams("userName", userName));
         GetRongGroupResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -1001,7 +998,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetRongGroupMembersResponse getRongGroupMembers(String groupId) throws HttpException {
-        String url = getURL("/api/Rong/GroupUsers");
+        String url = getURL("api/Rong/GroupUsers");
         String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
         GetRongGroupMembersResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -1011,6 +1008,19 @@ public class SealAction extends BaseAction {
         return response;
     }
 
-
-
+    /**
+     * KQWF PCDD
+     *
+     * @throws HttpException
+     */
+    public KqwfPcddResponse postKQWFPCDD(String bettingNumber) throws HttpException {
+        String url = getURL("api/Lottery/KQWFImBettingPcdd");
+        String result = httpManager.post(mContext, url,  new RequestParams("BettingNumber", bettingNumber));
+        KqwfPcddResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("KqwfPcddResponse", result);
+            response = jsonToBean(result, KqwfPcddResponse.class);
+        }
+        return response;
+    }
 }

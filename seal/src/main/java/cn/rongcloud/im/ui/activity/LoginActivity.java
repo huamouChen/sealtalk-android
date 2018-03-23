@@ -237,6 +237,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     final LoginResponse loginResponse = (LoginResponse) result;
                     if (loginResponse.getResult() == 0) {
                         loginToken = loginResponse.getToken();
+                        editor.putString(SealConst.TOKEN, loginToken);
+                        editor.commit();
                         // 登录成功，获取融云 token
                         request(GET_RONG_TOKEN);
                     } else {
