@@ -80,6 +80,7 @@
     <string name="sync_userinfo_api_fail">同步用户信息接口请求失败</string>
     <string name="get_token_api_fail">获取token请求接口失败</string>
     <string name="get_groups_api_fail">获取群组请求接口失败</string>
+    <string name="get_group_members_api_fail">获取群组成员请求接口失败</string>
     <string name="sync_group_api_fail">同步群组信息请求接口失败</string>
     <string name="phone_or_psw_error">手机或者密码错误</string>
     <string name="phone_number_is_null">手机号不能为空</string>

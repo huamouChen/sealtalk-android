@@ -24,8 +24,13 @@ import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.db.GroupMember;
+import cn.rongcloud.im.db.Groups;
+import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.pinyin.CharacterParser;
+import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
+import cn.rongcloud.im.server.utils.NToast;
 import cn.rongcloud.im.server.utils.RongGenerate;
+import cn.rongcloud.im.server.widget.LoadDialog;
 import cn.rongcloud.im.server.widget.SelectableRoundedImageView;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imlib.model.Conversation;
@@ -37,8 +42,9 @@ import io.rong.imlib.model.UserInfo;
  */
 public class TotalGroupMemberActivity extends BaseActivity {
     private static final int CLICK_CONVERSATION_USER_PORTRAIT = 1;
+    private static final int GET_GROUP_ALL_MEMBERS = 800;
 
-    private List<GroupMember> mGroupMember;
+    private List<GroupMember> mGroupMember = new ArrayList<>();
 
     private ListView mTotalListView;
     private TotalGroupMember adapter;
@@ -53,53 +59,127 @@ public class TotalGroupMemberActivity extends BaseActivity {
         setTitle(R.string.total_member);
         initViews();
         mGroupID = getIntent().getStringExtra("targetId");
-        SealUserInfoManager.getInstance().getGroupMembers(mGroupID, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
-            @Override
-            public void onSuccess(List<GroupMember> groupMembers) {
-                mGroupMember = groupMembers;
-                if (mGroupMember != null && mGroupMember.size() > 0) {
-                    setTitle(getString(R.string.total_member) + "(" + mGroupMember.size() + ")");
-                    adapter = new TotalGroupMember(mGroupMember, mContext);
-                    mTotalListView.setAdapter(adapter);
-                    mTotalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            GroupMember bean = (GroupMember) adapter.getItem(position);
-                            UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getName(),
-                                                             TextUtils.isEmpty(bean.getPortraitUri().toString())
-                                                                     ? Uri.parse(RongGenerate.generateDefaultAvatar(bean.getName(), bean.getUserId())) : bean.getPortraitUri());
-                            Intent intent = new Intent(mContext, UserDetailActivity.class);
-                            Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
-                            intent.putExtra("friend", friend);
-                            intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
-                            intent.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
-                            startActivity(intent);
-                        }
-                    });
-                    mSearch.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                        }
+        initData();
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            filterData(s.toString());
-                        }
+//        SealUserInfoManager.getInstance().getGroupMembers(mGroupID, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
+//            @Override
+//            public void onSuccess(List<GroupMember> groupMembers) {
+//                mGroupMember = groupMembers;
+//                if (mGroupMember != null && mGroupMember.size() > 0) {
+//                    setTitle(getString(R.string.total_member) + "(" + mGroupMember.size() + ")");
+//                    adapter = new TotalGroupMember(mGroupMember, mContext);
+//                    mTotalListView.setAdapter(adapter);
+//                    mTotalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                            GroupMember bean = (GroupMember) adapter.getItem(position);
+//                            UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getName(),
+//                                    TextUtils.isEmpty(bean.getPortraitUri().toString())
+//                                            ? Uri.parse(RongGenerate.generateDefaultAvatar(bean.getName(), bean.getUserId())) : bean.getPortraitUri());
+//                            Intent intent = new Intent(mContext, UserDetailActivity.class);
+//                            Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
+//                            intent.putExtra("friend", friend);
+//                            intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
+//                            intent.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
+//                            startActivity(intent);
+//                        }
+//                    });
+//                    mSearch.addTextChangedListener(new TextWatcher() {
+//                        @Override
+//                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                            filterData(s.toString());
+//                        }
+//
+//                        @Override
+//                        public void afterTextChanged(Editable s) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String errString) {
+//
+//            }
+//        });
+    }
 
-                        @Override
-                        public void afterTextChanged(Editable s) {
+    // 初始化请求群组成员数据
+    private void initData() {
+        request(GET_GROUP_ALL_MEMBERS);
+    }
 
-                        }
-                    });
+    // 请求 获取群成员
+    @Override
+    public Object doInBackground(int requestCode, String id) throws HttpException {
+        switch (requestCode) {
+            case GET_GROUP_ALL_MEMBERS:
+                return action.getRongGroupMembers(mGroupID);
+        }
+        return null;
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
+        List<Groups> list = getRongGroupMembersResponse.getValue();
+
+        for (int i = 0 ; i < list.size(); i++) {
+            Groups groups = list.get(i);
+            GroupMember groupMember = new GroupMember(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+            mGroupMember.add(groupMember);
+        }
+
+        if (mGroupMember != null && mGroupMember.size() > 0) {
+            setTitle(getString(R.string.total_member) + "(" + mGroupMember.size() + ")");
+            adapter = new TotalGroupMember(mGroupMember, mContext);
+            mTotalListView.setAdapter(adapter);
+            mTotalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    GroupMember bean = (GroupMember) adapter.getItem(position);
+                    UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getName(),
+                            TextUtils.isEmpty(bean.getPortraitUri().toString())
+                                    ? Uri.parse(RongGenerate.generateDefaultAvatar(bean.getName(), bean.getUserId())) : bean.getPortraitUri());
+                    Intent intent = new Intent(mContext, UserDetailActivity.class);
+                    Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
+                    intent.putExtra("friend", friend);
+                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
+                    intent.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
+                    startActivity(intent);
                 }
-            }
+            });
+            mSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            @Override
-            public void onError(String errString) {
+                }
 
-            }
-        });
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    filterData(s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) {
+        LoadDialog.dismiss(mContext);
+        NToast.shortToast(mContext, R.string.get_group_members_api_fail);
     }
 
     private void filterData(String s) {

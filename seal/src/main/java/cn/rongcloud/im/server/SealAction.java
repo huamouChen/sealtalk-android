@@ -55,6 +55,7 @@ import cn.rongcloud.im.server.response.GetFriendInfoByIDResponse;
 import cn.rongcloud.im.server.response.GetGroupInfoResponse;
 import cn.rongcloud.im.server.response.GetGroupMemberResponse;
 import cn.rongcloud.im.server.response.GetGroupResponse;
+import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
 import cn.rongcloud.im.server.response.GetRongGroupResponse;
 import cn.rongcloud.im.server.response.GetRongTokenResponse;
 import cn.rongcloud.im.server.response.GetTokenResponse;
@@ -993,5 +994,23 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
+
+    /**
+     * 获取 群组成员
+     *
+     * @throws HttpException
+     */
+    public GetRongGroupMembersResponse getRongGroupMembers(String groupId) throws HttpException {
+        String url = getURL("/api/Rong/GroupUsers");
+        String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
+        GetRongGroupMembersResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetRongGroupMembersResponse", result);
+            response = jsonToBean(result, GetRongGroupMembersResponse.class);
+        }
+        return response;
+    }
+
+
 
 }

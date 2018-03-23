@@ -17,6 +17,7 @@ public class Groups extends UserInfoBean {
     private String GroupName;
     private String GroupOwner;
     private String AddTime;
+    private String UserName;
 
     public Groups() {
         super();
@@ -153,4 +154,11 @@ public class Groups extends UserInfoBean {
         this.AddTime = AddTime;
     }
 
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
 }

@@ -24,6 +24,12 @@ public class Friend extends UserInfo {
     private String nameSpelling;
     private String displayNameSpelling;
 
+
+
+
+
+
+
     public Friend(String userId, String name, Uri portraitUri) {
         super(userId, name, portraitUri);
     }
@@ -142,6 +148,10 @@ public class Friend extends UserInfo {
         this.displayNameSpelling = displayNameSpelling;
     }
 
+    public static Creator<Friend> getCREATOR() {
+        return CREATOR;
+    }
+
     public Friend(Parcel in) {
         super(in);
         setDisplayName(ParcelUtils.readFromParcel(in));
@@ -201,4 +211,6 @@ public class Friend extends UserInfo {
             return false;
         }
     }
+
+
 }
