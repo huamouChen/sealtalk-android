@@ -16,14 +16,6 @@ android {
         }
     }
 
-    signingConfigs {
-        config {
-            storeFile file("rong.key")
-            storePassword "Amigo123"
-            keyAlias "RongCloud"
-            keyPassword "Amigo123"
-        }
-    }
     sourceSets {
         main {
             jni.srcDirs = []
@@ -37,12 +29,10 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.config //for release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.config //for release
         }
     }
 

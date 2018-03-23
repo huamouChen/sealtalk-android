@@ -116,7 +116,6 @@ public class Groups extends UserInfoBean {
 
     public void setId(int Id) {
         this.Id = Id;
-        super.setUserId(Id + "");
     }
 
     public String getGroupId() {
@@ -133,9 +132,9 @@ public class Groups extends UserInfoBean {
     }
 
     public void setGroupName(String GroupName) {
-        this.GroupName = GroupName;
         super.setName(GroupName);
-        this.displayName = GroupName;
+        setDisplayName(GroupName);
+        this.GroupName = GroupName;
     }
 
     public String getGroupOwner() {

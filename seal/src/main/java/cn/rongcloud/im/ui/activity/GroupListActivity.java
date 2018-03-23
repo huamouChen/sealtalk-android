@@ -101,7 +101,7 @@ public class GroupListActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 Groups bean = (Groups) adapter.getItem(position);
-                                RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getName());
+                                RongIM.getInstance().startGroupChat(GroupListActivity.this, bean.getGroupsId(), bean.getGroupName());
                             }
                         });
 

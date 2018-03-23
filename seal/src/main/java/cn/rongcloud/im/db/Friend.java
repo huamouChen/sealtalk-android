@@ -26,10 +26,6 @@ public class Friend extends UserInfo {
 
 
 
-
-
-
-
     public Friend(String userId, String name, Uri portraitUri) {
         super(userId, name, portraitUri);
     }

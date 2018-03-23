@@ -296,6 +296,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 case GET_RONG_TOKEN:
                     final GetRongTokenResponse rongTokenResponse = (GetRongTokenResponse) result;
                     rong_token = rongTokenResponse.getValue().getRongToken();
+                    editor.putString("loginToken", rong_token);
+                    editor.commit();
                     // 连接 融云 服务器
                     if (!TextUtils.isEmpty(rong_token)) {
                         RongIM.connect(rong_token, new RongIMClient.ConnectCallback() {
@@ -313,6 +315,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 editor.commit();
                                 SealUserInfoManager.getInstance().openDB();
                                 editor.putString(SealConst.SEALTALK_LOGIN_NAME, rongTokenResponse.getValue().getUserName());
+                                editor.putString("loginToken", rong_token);
                                 editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                                 editor.commit();
                                 RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));

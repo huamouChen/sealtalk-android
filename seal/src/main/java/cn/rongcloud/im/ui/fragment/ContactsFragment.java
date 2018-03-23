@@ -29,10 +29,18 @@ import cn.rongcloud.im.SealAppContext;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Friend;
+import cn.rongcloud.im.db.GroupMember;
+import cn.rongcloud.im.db.Groups;
+import cn.rongcloud.im.server.SealAction;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
+import cn.rongcloud.im.server.network.async.AsyncTaskManager;
+import cn.rongcloud.im.server.network.async.OnDataListener;
+import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.pinyin.CharacterParser;
 import cn.rongcloud.im.server.pinyin.PinyinComparator;
 import cn.rongcloud.im.server.pinyin.SideBar;
+import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
+import cn.rongcloud.im.server.response.GetRongGroupResponse;
 import cn.rongcloud.im.server.widget.SelectableRoundedImageView;
 import cn.rongcloud.im.ui.activity.GroupListActivity;
 import cn.rongcloud.im.ui.activity.NewFriendListActivity;
@@ -47,7 +55,10 @@ import io.rong.imlib.model.UserInfo;
  * tab 2 通讯录的 Fragment
  * Created by Bob on 2015/1/25.
  */
-public class ContactsFragment extends Fragment implements View.OnClickListener {
+public class ContactsFragment extends Fragment implements View.OnClickListener, OnDataListener {
+
+    private static final int GET_RONG_GROUPS = 700;
+    private static final int GET_RONG_GROUP_MEMBERS = 800;
 
     private SelectableRoundedImageView mSelectableRoundedImageView;
     private TextView mNameTextView;
@@ -58,6 +69,10 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
     private ListView mListView;
     private PinyinComparator mPinyinComparator;
     private SideBar mSidBar;
+
+    private SealAction action;
+    private AsyncTaskManager mAsyncTaskManager;
+    private String groupId = "";
     /**
      * 中部展示的字母提示
      */
@@ -111,7 +126,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
 
         // 头部 新的朋友 群组 公众号 自己 4个选项
         mHeadView = mLayoutInflater.inflate(R.layout.item_contact_list_header,
-                                            null);
+                null);
         mUnreadTextView = (TextView) mHeadView.findViewById(R.id.tv_unread);
         RelativeLayout newFriendsLayout = (RelativeLayout) mHeadView.findViewById(R.id.re_newfriends);
         RelativeLayout groupLayout = (RelativeLayout) mHeadView.findViewById(R.id.re_chatroom);
@@ -143,6 +158,8 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
+        mAsyncTaskManager = AsyncTaskManager.getInstance(getContext());
+        action = new SealAction(getContext());
         mFriendList = new ArrayList<>();
 
         FriendListAdapter adapter = new FriendListAdapter(getActivity(), mFriendList);
@@ -198,8 +215,6 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         mFilteredFriendList = filterDateList;
         mFriendListAdapter.updateListView(filterDateList);
     }
-
-
 
 
     @Override
@@ -278,13 +293,63 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
 //        });
 
         // 暂时不用维护好友关系，直接从后台返回获取
-        List<Friend> list = new ArrayList<>();
-        Friend dl1 = new Friend("dl1", "dl1", Uri.parse("http://huamouchen.info/bmw.jpg"));
-        Friend hy1 = new Friend("hy1", "hy1", Uri.parse("http://huamouchen.info/bmw.jpg"));
-        list.add(dl1);
-        list.add(hy1);
+//        List<Friend> list = new ArrayList<>();
+//        Friend dl1 = new Friend("dl1", "dl1", Uri.parse("http://huamouchen.info/bmw.jpg"));
+//        Friend hy1 = new Friend("hy1", "hy1", Uri.parse("http://huamouchen.info/bmw.jpg"));
+//        list.add(dl1);
+//        list.add(hy1);
+//        updateFriendsList(list);
 
-        updateFriendsList(list);
+        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
+
+
+    }
+
+    @Override
+    public Object doInBackground(int requestCode, String parameter) throws HttpException {
+        switch (requestCode) {
+            case GET_RONG_GROUPS:
+                SharedPreferences sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
+                String userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
+                return action.getRongGroups(userName);
+            case GET_RONG_GROUP_MEMBERS:
+                return action.getRongGroupMembers(groupId);
+        }
+        return null;
+
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        switch (requestCode) {
+            case GET_RONG_GROUPS:
+                GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
+                List<Groups> list = getRongGroupResponse.getValue();
+                for (int i = 0; i < list.size(); i++) {
+                    Groups groups = list.get(i);
+                    groupId = groups.getGroupId();
+                    mAsyncTaskManager.request(GET_RONG_GROUP_MEMBERS, this);
+                }
+                break;
+            case GET_RONG_GROUP_MEMBERS:
+                GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
+                List<Groups> membersList = getRongGroupMembersResponse.getValue();
+                List<Friend> friendList = new ArrayList<>();
+                for (int i = 0; i < membersList.size(); i++) {
+                    Groups groups = membersList.get(i);
+                    Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+                    friendList.add(friend);
+                }
+                updateFriendsList(friendList);
+                break;
+        }
+
+
+    }
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) {
+
     }
 
     private void updateFriendsList(List<Friend> friendsList) {
