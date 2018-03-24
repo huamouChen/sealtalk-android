@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.github.erizet.signala:signala-longpolling-0.20">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-longpolling-0.20.aar/e83f89d90356555c1d0c03172a8a59bc/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-longpolling-0.20.aar/e83f89d90356555c1d0c03172a8a59bc/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.erizet.signala/signala-longpolling/0.20/9ad02fef86b00347b1231ea8f2f11342ee4b7c49/signala-longpolling-0.20-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

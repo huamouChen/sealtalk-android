@@ -5,6 +5,7 @@ import java.util.List;
 import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.db.GroupMember;
 import cn.rongcloud.im.db.Groups;
+import cn.rongcloud.im.db.UserInfoBean;
 
 /**
  * Created by AMing on 15/12/24.

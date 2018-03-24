@@ -21,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.zsoft.signala.Connection;
+import com.zsoft.signala.transport.StateBase;
+import com.zsoft.signala.transport.longpolling.LongPollingTransport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +70,8 @@ public class MainActivity extends FragmentActivity implements
     private Context mContext;
     private Conversation.ConversationType[] mConversationsTypes = null;
 
+    private Connection con;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +83,46 @@ public class MainActivity extends FragmentActivity implements
         changeSelectedTabState(0);
         initMainViewPager();
         registerHomeKeyReceiver(this);
+
+        initSignalR();
+
+        starSignalA();
+    }
+
+    // 初始化 signalR
+    private void initSignalR() {
+        String url = "http://<address to your SignalR-server>";
+        new Connection(url, this, new LongPollingTransport()) {
+            @Override
+            public void OnError(Exception exception) {
+                super.OnError(exception);
+            }
+
+            @Override
+            public void OnMessage(String message) {
+                super.OnMessage(message);
+            }
+
+            @Override
+            public void OnStateChanged(StateBase oldState, StateBase newState) {
+                super.OnStateChanged(oldState, newState);
+            }
+        };
+
+    }
+
+    // 开始 signalR
+    public void starSignalA() {
+        if (con != null) {
+            con.Start();
+        }
+    }
+
+    // 结束 signalR
+    public void stopSignalA() {
+        if (con != null) {
+            con.Stop();
+        }
     }
 
 

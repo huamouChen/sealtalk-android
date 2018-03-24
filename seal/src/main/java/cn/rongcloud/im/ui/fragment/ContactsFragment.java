@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,6 +33,7 @@ import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.db.GroupMember;
 import cn.rongcloud.im.db.Groups;
+import cn.rongcloud.im.db.UserInfoBean;
 import cn.rongcloud.im.server.SealAction;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.network.async.AsyncTaskManager;
@@ -73,6 +76,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     private SealAction action;
     private AsyncTaskManager mAsyncTaskManager;
     private List<Friend> friendList = new ArrayList<>();
+    private List<Friend> friendListFilter = new ArrayList<>(); // 用来判断是否添加过了
     private String groupId = "";
     private String userName = "";
     /**
@@ -221,7 +225,6 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
         mFriendListAdapter.updateListView(filterDateList);
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -332,6 +335,13 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                     Groups groups = list.get(i);
                     groupId = groups.getGroupId();
                     mAsyncTaskManager.request(GET_RONG_GROUP_MEMBERS, this);
+                    // 循环完才会执行，所以拿到的ID 都是最后的,所以让线程睡一下，再去获取数据，但是这样并不能完美的解决这个问题，后续需要再修改
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 break;
             case GET_RONG_GROUP_MEMBERS:
@@ -340,18 +350,21 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                 for (int i = 0; i < membersList.size(); i++) {
                     Groups groups = membersList.get(i);
                     String userID = groups.getUserName();
+                    // 是当前用户，就不添加了
+                    if (userID.equals(userName)) continue;
+
+                    // 已经添加过了，就不重复添加了，因为不同的群组可能会有相同的人
                     boolean isHave = false;
-                    // 判断有没有添加过
-                    for (Friend itme : friendList) {
-                        isHave = itme.getUserId().equals(userID) || itme.getUserId().equals(userName);
-                        if (isHave) break;
+                    for (Friend item : friendListFilter) {
+                        if (item.getName().equals(userID)) {isHave = true; break;}
                     }
-                    // 如果已经添加过了，就不重复添加，因为有的人可能会在相同的群组里面
                     if (isHave) continue;
                     Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
-
                     friendList.add(friend);
                 }
+                // 先清空之前的，再添加所有的
+                friendListFilter.clear();
+                friendListFilter.addAll(friendList);
                 updateFriendsList(friendList);
                 break;
         }
@@ -368,7 +381,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
         //updateUI fragment初始化和好友信息更新时都会调用,isReloadList表示是否是好友更新时调用
         boolean isReloadList = false;
         if (mFriendList != null && mFriendList.size() > 0) {
-            mFriendList.clear();
+//            mFriendList.clear();
             isReloadList = true;
         }
 
