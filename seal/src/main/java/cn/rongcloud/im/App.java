@@ -91,7 +91,7 @@ public class App extends MultiDexApplication {
              */
             RongIM.setServerInfo("nav.cn.ronghub.com", "up.qbox.me");
             RongIM.init(this);
-            NLog.setDebug(true);//Seal Module Log 开关
+            NLog.setDebug(false);//Seal Module Log 开关
             SealAppContext.init(this);
             SharedPreferencesContext.init(this);
             Thread.setDefaultUncaughtExceptionHandler(new RongExceptionHandler(this));

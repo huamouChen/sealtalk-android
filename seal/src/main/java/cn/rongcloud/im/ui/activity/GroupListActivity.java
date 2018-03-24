@@ -91,6 +91,13 @@ public class GroupListActivity extends BaseActivity {
                 case GET_RONG_GROUPS:
                     GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
                     mList = getRongGroupResponse.getValue();
+                    // 把群组的名称写入本地
+                    for(Groups item : mList) {
+                        SealUserInfoManager.getInstance().addGroup(item);
+                        BroadcastManager.getInstance(mContext).sendBroadcast("REFRESH_GROUP_UI");
+                    }
+
+
                     if (mList != null && mList.size() > 0) {
                         adapter = new GroupAdapter(mContext, mList);
                         mGroupListView.setAdapter(adapter);
