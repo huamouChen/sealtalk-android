@@ -46,6 +46,8 @@ import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
 import io.rong.message.ContactNotificationMessage;
 //import io.rong.toolkit.TestActivity;
 
@@ -158,6 +160,21 @@ public class MainActivity extends FragmentActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 mMineRed.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // 发送消息的监听
+        RongIM.getInstance().setSendMessageListener(new RongIM.OnSendMessageListener() {
+            @Override
+            public Message onSend(Message message) {
+                System.out.println("--------------------------" + message.getContent().toString());
+                MessageContent content = message.getContent();
+                return message;
+            }
+
+            @Override
+            public boolean onSent(Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
+                return false;
             }
         });
     }
