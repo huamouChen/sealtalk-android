@@ -19,15 +19,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
+import cn.rongcloud.im.db.Groups;
 import cn.rongcloud.im.server.BaseAction;
+import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.network.GetPicThread;
 import cn.rongcloud.im.server.network.http.HttpException;
+import cn.rongcloud.im.server.response.GetRongGroupResponse;
 import cn.rongcloud.im.server.response.GetRongTokenResponse;
 import cn.rongcloud.im.server.response.GetTokenResponse;
 import cn.rongcloud.im.server.response.GetUserInfoByIdResponse;
@@ -52,6 +57,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private static final int LOGIN = 5;
     private static final int GET_TOKEN = 6;
     private static final int GET_RONG_TOKEN = 600;
+    private static final int GET_RONG_GROUPS = 700;
     private static final int SYNC_USER_INFO = 9;
 
     private ImageView mImg_Background;
@@ -223,6 +229,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return action.getUserInfoById(connectResultId);
             case GET_RONG_TOKEN:
                 return action.getRongToken(phoneString);
+            case GET_RONG_GROUPS:
+                return action.getRongGroups(phoneString);
 
         }
         return null;
@@ -322,6 +330,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 editor.commit();
                                 RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
 //                                    request(SYNC_USER_INFO, true);
+                                request(GET_RONG_GROUPS);
                                 goToMain();
                             }
 
@@ -332,6 +341,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         });
                     }
 
+                    break;
+
+                case GET_RONG_GROUPS:
+                    GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
+                    List<Groups> list = new ArrayList<>();
+                    list = getRongGroupResponse.getValue();
+                    // 把群组的名称写入本地
+                    for(Groups item : list) {
+                        SealUserInfoManager.getInstance().addGroup(item);
+                        BroadcastManager.getInstance(this).sendBroadcast("REFRESH_GROUP_UI");
+                    }
                     break;
             }
         }
