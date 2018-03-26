@@ -92,6 +92,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
 
     private static final int Bet = 1000;
+    private RongIM.OnSendMessageListener msgListener;
 
     public static final int SET_TEXT_TYPING_TITLE = 1;
     public static final int SET_VOICE_TYPING_TITLE = 2;
@@ -218,6 +219,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
         // 发送消息的监听
         sendMessageListener();
+
     }
 
     /**
@@ -595,6 +597,8 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         RongIMClient.setTypingStatusListener(null);
         SealAppContext.getInstance().popActivity(this);
         super.onDestroy();
+
+        msgListener = null;
     }
 
     @Override
@@ -686,7 +690,8 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     // 发送消息的监听
 
     private void sendMessageListener() {
-        RongIM.getInstance().setSendMessageListener(new RongIM.OnSendMessageListener() {
+
+        msgListener = new RongIM.OnSendMessageListener() {
             @Override
             public io.rong.imlib.model.Message onSend(io.rong.imlib.model.Message message) {
                 if (message.getContent() instanceof TextMessage) {
@@ -705,7 +710,9 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             public boolean onSent(io.rong.imlib.model.Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
                 return false;
             }
-        });
+        };
+
+        RongIM.getInstance().setSendMessageListener(msgListener);
     }
 
 
