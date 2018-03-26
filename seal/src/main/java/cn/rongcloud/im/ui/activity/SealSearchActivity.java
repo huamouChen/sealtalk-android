@@ -317,7 +317,6 @@ public class SealSearchActivity extends Activity {
                                 }
                                 ChattingRecordsAdapter chattingRecordsAdapter = new ChattingRecordsAdapter(mSearchConversationResultsList);
                                 mChattingRecordsListView.setAdapter(chattingRecordsAdapter);
-
                             }
 
                             @Override

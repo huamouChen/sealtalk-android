@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,9 +29,7 @@ import cn.rongcloud.im.SealAppContext;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Friend;
-import cn.rongcloud.im.db.GroupMember;
 import cn.rongcloud.im.db.Groups;
-import cn.rongcloud.im.db.UserInfoBean;
 import cn.rongcloud.im.server.SealAction;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.network.async.AsyncTaskManager;
@@ -331,7 +327,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                     mAsyncTaskManager.request(GET_RONG_GROUP_MEMBERS, this);
                     // 循环完才会执行，所以拿到的ID 都是最后的,所以让线程睡一下，再去获取数据，但是这样并不能完美的解决这个问题，后续需要再修改
                     try {
-                        Thread.sleep(1);
+                        Thread.sleep(3);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -363,9 +359,17 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                 friendListFilter.clear();
                 friendListFilter.addAll(friendList);
                 updateFriendsList(friendList);
+                // 把好友写入到数据库
+                addFrientToDataBase(friendList);
                 break;
         }
+    }
 
+    // 把好友写进
+    private void addFrientToDataBase(List<Friend> list) {
+        for (Friend item : list) {
+            SealUserInfoManager.getInstance().addFriend(item);
+        }
 
     }
 
