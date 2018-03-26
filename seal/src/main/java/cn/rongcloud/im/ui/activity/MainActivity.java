@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zsoft.signala.Connection;
 import com.zsoft.signala.transport.StateBase;
@@ -91,23 +92,28 @@ public class MainActivity extends FragmentActivity implements
         initMainViewPager();
         registerHomeKeyReceiver(this);
 
+        // 初始化消息推送监听 signalR
         initSignalR();
 
+        // 开始监听
         starSignalA();
     }
 
     // 初始化 signalR
     private void initSignalR() {
-        String url = "http://<address to your SignalR-server>";
-        new Connection(url, this, new LongPollingTransport()) {
+        String url = "http://192.168.1.88/signalr";
+        con = new Connection(url, this, new LongPollingTransport()) {
             @Override
             public void OnError(Exception exception) {
                 super.OnError(exception);
+                System.out.println("----------On error:---------------- " + exception.getMessage());
+                Toast.makeText(MainActivity.this, "On error:---------------- " + exception.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void OnMessage(String message) {
                 super.OnMessage(message);
+                Toast.makeText(MainActivity.this, "Message:----------------- " + message, Toast.LENGTH_LONG).show();
             }
 
             @Override

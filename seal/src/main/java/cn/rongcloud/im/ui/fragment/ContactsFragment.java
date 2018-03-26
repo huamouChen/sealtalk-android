@@ -79,6 +79,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     private List<Friend> friendListFilter = new ArrayList<>(); // 用来判断是否添加过了
     private String groupId = "";
     private String userName = "";
+
     /**
      * 中部展示的字母提示
      */
@@ -299,13 +300,6 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 //                updateFriendsList(null);
 //            }
 //        });
-
-        // 暂时不用维护好友关系，直接从后台返回获取
-//        List<Friend> list = new ArrayList<>();
-//        Friend dl1 = new Friend("dl1", "dl1", Uri.parse("http://huamouchen.info/bmw.jpg"));
-//        Friend hy1 = new Friend("hy1", "hy1", Uri.parse("http://huamouchen.info/bmw.jpg"));
-//        list.add(dl1);
-//        list.add(hy1);
 //        updateFriendsList(list);
 
         mAsyncTaskManager.request(GET_RONG_GROUPS, this);
@@ -360,6 +354,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                     }
                     if (isHave) continue;
                     Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+                    // 设置这两个属性主要是为了通讯录界面进行排序
+                    friend.setDisplayName(groups.getUserName());
+                    friend.setDisplayNameSpelling(groups.getUserName());
                     friendList.add(friend);
                 }
                 // 先清空之前的，再添加所有的
