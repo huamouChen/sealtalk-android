@@ -29,11 +29,13 @@ import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealAppContext;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.GroupMember;
+import cn.rongcloud.im.server.network.http.HttpException;
+import cn.rongcloud.im.server.response.KqwfPcddResponse;
 import cn.rongcloud.im.server.utils.NLog;
 import cn.rongcloud.im.server.utils.NToast;
 import cn.rongcloud.im.ui.fragment.ConversationFragmentEx;
 import cn.rongcloud.im.ui.widget.LoadingDialog;
-import io.rong.common.RLog;
+import io.rong.callkit.RongCallKit;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.RongKitIntent;
 import io.rong.imkit.fragment.UriFragment;
@@ -49,7 +51,6 @@ import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 
 //CallKit start 1
-import io.rong.callkit.RongCallKit;
 //CallKit end 1
 
 /**
@@ -86,6 +87,11 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     private final String VoiceTypingTitle = "对方正在讲话...";
 
     private Handler mHandler;
+
+    private String betNum = "";
+
+
+    private static final int Bet = 1000;
 
     public static final int SET_TEXT_TYPING_TITLE = 1;
     public static final int SET_VOICE_TYPING_TITLE = 2;
@@ -208,6 +214,10 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
 
         //CallKit end 2
+
+
+        // 发送消息的监听
+        sendMessageListener();
     }
 
     /**
@@ -670,6 +680,60 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             } else {
                 SealAppContext.getInstance().popAllActivity();
             }
+        }
+    }
+
+    // 发送消息的监听
+
+    private void sendMessageListener() {
+        RongIM.getInstance().setSendMessageListener(new RongIM.OnSendMessageListener() {
+            @Override
+            public io.rong.imlib.model.Message onSend(io.rong.imlib.model.Message message) {
+                if (message.getContent() instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage) message.getContent();
+                    String msgContent = textMessage.getContent();
+                    if (msgContent.startsWith("#") && msgContent.endsWith("#")) {
+                        // 截取 betNum
+                        betNum = msgContent.substring(1, msgContent.length() - 1);
+                        request(Bet);
+                    }
+                }
+                return message;
+            }
+
+            @Override
+            public boolean onSent(io.rong.imlib.model.Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
+                return false;
+            }
+        });
+    }
+
+
+    @Override
+    public Object doInBackground(int requestCode, String id) throws HttpException {
+        return action.postKQWFPCDD(betNum);
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        switch (requestCode) {
+            case Bet:
+                KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
+                if (kqwfPcddResponse.isResult()) {
+                    NToast.shortToast(mContext, "KQWF-PCDD成功");
+                } else {
+                    NToast.shortToast(mContext, kqwfPcddResponse.getError());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) {
+        switch (requestCode) {
+            case Bet:
+                NToast.shortToast(mContext, "KQWF-PCDD失败");
+                break;
         }
     }
 }

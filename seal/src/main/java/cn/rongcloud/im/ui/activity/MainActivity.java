@@ -25,6 +25,8 @@ import com.zsoft.signala.Connection;
 import com.zsoft.signala.transport.StateBase;
 import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import cn.rongcloud.im.ui.widget.DragPointView;
 import cn.rongcloud.im.ui.widget.MorePopWindow;
 import io.rong.common.RLog;
 import io.rong.imkit.RongContext;
+import io.rong.imkit.RongExtension;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.manager.IUnReadMessageObserver;
@@ -49,6 +52,7 @@ import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.ContactNotificationMessage;
+import io.rong.message.TextMessage;
 //import io.rong.toolkit.TestActivity;
 
 @SuppressWarnings("deprecation")
@@ -57,6 +61,7 @@ public class MainActivity extends FragmentActivity implements
         View.OnClickListener,
         DragPointView.OnDragListencer,
         IUnReadMessageObserver {
+
 
     public static ViewPager mViewPager;
     private List<Fragment> mFragment = new ArrayList<>();
@@ -160,21 +165,6 @@ public class MainActivity extends FragmentActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 mMineRed.setVisibility(View.VISIBLE);
-            }
-        });
-
-        // 发送消息的监听
-        RongIM.getInstance().setSendMessageListener(new RongIM.OnSendMessageListener() {
-            @Override
-            public Message onSend(Message message) {
-                System.out.println("--------------------------" + message.getContent().toString());
-                MessageContent content = message.getContent();
-                return message;
-            }
-
-            @Override
-            public boolean onSent(Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
-                return false;
             }
         });
     }
@@ -304,7 +294,8 @@ public class MainActivity extends FragmentActivity implements
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) { }
+    public void onPageScrollStateChanged(int state) {
+    }
 
 
     long firstClick = 0;
@@ -516,6 +507,7 @@ public class MainActivity extends FragmentActivity implements
     }
 
     private HomeWatcherReceiver mHomeKeyReceiver = null;
+
     //如果遇见 Android 7.0 系统切换到后台回来无效的情况 把下面注册广播相关代码注释或者删除即可解决。下面广播重写 home 键是为了解决三星 note3 按 home 键花屏的一个问题
     private void registerHomeKeyReceiver(Context context) {
         if (mHomeKeyReceiver == null) {
