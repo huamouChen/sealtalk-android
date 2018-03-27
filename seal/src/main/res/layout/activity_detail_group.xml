@@ -132,7 +132,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/btn_list_item_bg"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -179,7 +180,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/btn_list_item_bg"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -237,7 +239,8 @@
                 android:layout_height="48dp"
                 android:background="@drawable/btn_list_item_bg"
                 android:clickable="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -317,7 +320,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="#ffffff"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -366,7 +370,8 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 android:background="#ffffff"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -512,7 +517,8 @@
                 android:background="@drawable/rs_select_btn_red"
                 android:text="@string/quit_group"
                 android:textColor="#FFF"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/group_dismiss"

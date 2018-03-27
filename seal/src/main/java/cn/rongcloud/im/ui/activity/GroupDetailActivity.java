@@ -523,8 +523,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                             @Override
                             public void onPositiveButtonClicked() {
                                 if (RongIM.getInstance() != null) {
-                                    if (mGroup != null) {
-                                        RongIM.getInstance().clearMessages(Conversation.ConversationType.GROUP, mGroup.getGroupsId(), new RongIMClient.ResultCallback<Boolean>() {
+//                                    if (mGroup != null) {
+                                        RongIM.getInstance().clearMessages(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Boolean>() {
                                             @Override
                                             public void onSuccess(Boolean aBoolean) {
                                                 NToast.shortToast(mContext, getString(R.string.clear_success));
@@ -535,8 +535,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                                                 NToast.shortToast(mContext, getString(R.string.clear_failure));
                                             }
                                         });
-                                        RongIMClient.getInstance().cleanRemoteHistoryMessages(Conversation.ConversationType.GROUP, mGroup.getGroupsId(), System.currentTimeMillis(), null);
-                                    }
+                                        RongIMClient.getInstance().cleanRemoteHistoryMessages(Conversation.ConversationType.GROUP, fromConversationId, System.currentTimeMillis(), null);
+//                                    }
                                 }
                             }
                         }).show();

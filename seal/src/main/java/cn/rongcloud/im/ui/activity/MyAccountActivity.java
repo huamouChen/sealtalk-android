@@ -131,7 +131,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_my_portrait:
-                showPhotoDialog();
+//                showPhotoDialog();
                 break;
             case R.id.rl_my_username:
                 startActivity(new Intent(this, UpdateNameActivity.class));
