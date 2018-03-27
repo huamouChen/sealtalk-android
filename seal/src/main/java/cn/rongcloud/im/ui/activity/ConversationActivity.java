@@ -726,6 +726,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         switch (requestCode) {
             case Bet:
                 KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
+
                 if (kqwfPcddResponse.isResult()) {
                     NToast.shortToast(mContext, "KQWF-PCDD成功");
                 } else {

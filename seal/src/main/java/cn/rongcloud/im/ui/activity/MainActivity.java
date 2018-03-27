@@ -22,6 +22,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.smartarmenia.dotnetcoresignalrclientjava.HubConnection;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubConnectionListener;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubEventListener;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubMessage;
+import com.smartarmenia.dotnetcoresignalrclientjava.WebSocketHubConnection;
 import com.zsoft.signala.Connection;
 import com.zsoft.signala.transport.StateBase;
 import com.zsoft.signala.transport.longpolling.LongPollingTransport;
@@ -32,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.rongcloud.im.R;
+import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.server.HomeWatcherReceiver;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.utils.NToast;
@@ -78,7 +84,11 @@ public class MainActivity extends FragmentActivity implements
     private Context mContext;
     private Conversation.ConversationType[] mConversationsTypes = null;
 
+    // SignalR
     private Connection con;
+
+    private HubConnectionListener connectionListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +103,12 @@ public class MainActivity extends FragmentActivity implements
         registerHomeKeyReceiver(this);
 
         // 初始化消息推送监听 signalR
-        initSignalR();
+//        initSignalR();
 
         // 开始监听
-        starSignalA();
+//        starSignalA();
+        initSignalR2();
+
     }
 
     // 初始化 signalR
@@ -121,8 +133,54 @@ public class MainActivity extends FragmentActivity implements
                 super.OnStateChanged(oldState, newState);
             }
         };
+        // 设置 header 授权认证
+        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+        String token = sp.getString(SealConst.TOKEN, "");
+        con.getHeaders().put("Authorization", "Bearer " + token);
 
     }
+
+
+    private void initSignalR2() {
+        // 设置 header 授权认证
+        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+        String token = sp.getString(SealConst.TOKEN, "");
+        HubConnection connection = new WebSocketHubConnection("http://192.168.1.88/signalr", "Bearer " + token);
+
+        connectionListener = new HubConnectionListener() {
+            @Override
+            public void onConnected() {
+                System.out.println("----------------连接成功");
+            }
+
+            @Override
+            public void onDisconnected() {
+                System.out.println("----------------失去连接");
+            }
+
+            @Override
+            public void onMessage(HubMessage message) {
+                System.out.println("----------------收到消息");
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                System.out.println("----------------发生错误");
+            }
+        };
+
+        connection.addListener(connectionListener);
+
+        connection.subscribeToEvent("Message", new HubEventListener() {
+            @Override
+            public void onEventMessage(HubMessage message) {
+                System.out.println("----------------onEventMessage");
+            }
+        });
+
+        connection.connect();
+    }
+
 
     // 开始 signalR
     public void starSignalA() {

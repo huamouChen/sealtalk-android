@@ -90,6 +90,12 @@ public class GroupListActivity extends BaseActivity {
             switch (requestCode) {
                 case GET_RONG_GROUPS:
                     GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
+                    // token 失效，返回登录界面
+                    if (getRongGroupResponse.getCode().getCodeId().equals("401")) {
+                        NToast.shortToast(this, getString(R.string.token_not_available));
+                        BroadcastManager.getInstance(this).sendBroadcast(SealConst.EXIT);
+                        return;
+                    }
                     mList = getRongGroupResponse.getValue();
                     // 把群组的名称写入本地
                     for(Groups item : mList) {

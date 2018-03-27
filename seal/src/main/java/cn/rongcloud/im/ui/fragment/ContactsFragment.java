@@ -40,6 +40,8 @@ import cn.rongcloud.im.server.pinyin.PinyinComparator;
 import cn.rongcloud.im.server.pinyin.SideBar;
 import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
 import cn.rongcloud.im.server.response.GetRongGroupResponse;
+import cn.rongcloud.im.server.utils.NLog;
+import cn.rongcloud.im.server.utils.NToast;
 import cn.rongcloud.im.server.widget.SelectableRoundedImageView;
 import cn.rongcloud.im.ui.activity.GroupListActivity;
 import cn.rongcloud.im.ui.activity.NewFriendListActivity;
@@ -320,6 +322,12 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
         switch (requestCode) {
             case GET_RONG_GROUPS:
                 GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
+                // token 失效，返回登录界面
+                if (getRongGroupResponse.getCode().getCodeId().equals("401")) {
+                    NToast.shortToast(getContext(), getString(R.string.token_not_available));
+                    BroadcastManager.getInstance(getContext()).sendBroadcast(SealConst.EXIT);
+                    return;
+                }
                 List<Groups> list = getRongGroupResponse.getValue();
                 for (int i = 0; i < list.size(); i++) {
                     Groups groups = list.get(i);
@@ -336,6 +344,12 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                 break;
             case GET_RONG_GROUP_MEMBERS:
                 GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
+                // token 失效，返回登录界面
+                if (getRongGroupMembersResponse.getCode().getCodeId().equals("401")) {
+                    NToast.shortToast(getContext(), getString(R.string.token_not_available));
+                    BroadcastManager.getInstance(getContext()).sendBroadcast(SealConst.EXIT);
+                    return;
+                }
                 List<Groups> membersList = getRongGroupMembersResponse.getValue();
                 for (int i = 0; i < membersList.size(); i++) {
                     Groups groups = membersList.get(i);

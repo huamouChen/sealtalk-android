@@ -986,7 +986,7 @@ public class SealAction extends BaseAction {
         String result = httpManager.get(mContext, url, new RequestParams("userName", userName));
         GetRongGroupResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            NLog.e("GetRongTokenResponse", result);
+            NLog.e("GetRongGroupResponse", result);
             response = jsonToBean(result, GetRongGroupResponse.class);
         }
         return response;

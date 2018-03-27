@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "cn.chenhuamou.im"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 18011717
         versionName "1.3.6"
@@ -59,6 +59,8 @@ dependencies {
     compile project(':RedPacket')
     compile(name: 'HMS-SDK-2.4.0.300', ext: 'aar')
     compile 'com.github.erizet.signala:signala-longpolling:0.20'
+    compile 'com.smartarmenia:dotnetcoresignalrclientjava:1.10'
+    implementation 'com.google.code.gson:gson:2.2.4'
 }
 apply plugin: 'com.google.gms.google-services'
 

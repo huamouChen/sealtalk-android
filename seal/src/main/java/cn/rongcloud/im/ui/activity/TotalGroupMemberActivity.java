@@ -21,10 +21,12 @@ import java.util.List;
 
 import cn.rongcloud.im.App;
 import cn.rongcloud.im.R;
+import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
 import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.db.GroupMember;
 import cn.rongcloud.im.db.Groups;
+import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.network.http.HttpException;
 import cn.rongcloud.im.server.pinyin.CharacterParser;
 import cn.rongcloud.im.server.response.GetRongGroupMembersResponse;
@@ -129,6 +131,12 @@ public class TotalGroupMemberActivity extends BaseActivity {
     @Override
     public void onSuccess(int requestCode, Object result) {
         GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
+        // token 失效，返回登录界面
+        if (getRongGroupMembersResponse.getCode().getCodeId().equals("401")) {
+            NToast.shortToast(this, getString(R.string.token_not_available));
+            BroadcastManager.getInstance(this).sendBroadcast(SealConst.EXIT);
+            return;
+        }
         List<Groups> list = getRongGroupMembersResponse.getValue();
 
         for (int i = 0 ; i < list.size(); i++) {

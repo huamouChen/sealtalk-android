@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SealTalk</string>
+    <string name="app_name">MyIM</string>
     <string name="action_settings">Settings</string>
 
+
+    <string name="token_not_available">token 失效，请重新登录</string>
 
     <!--主页-->
     <string name="main_name">融云</string>
