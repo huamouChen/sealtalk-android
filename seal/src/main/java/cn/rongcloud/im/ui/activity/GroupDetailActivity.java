@@ -132,7 +132,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         }
 
         if (isFromConversation) {//群组会话页进入
-            LoadDialog.show(mContext);
+//            LoadDialog.show(mContext);
             getGroups();
             getGroupMembers();
         }
@@ -141,6 +141,30 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         SealAppContext.getInstance().pushActivity(this);
 
         setGroupsInfoChangeListener();
+
+        // 获取消息免打扰的状态
+        getConversationNotificationStatus();
+    }
+
+
+    // 获取是否消息免打扰
+    private void getConversationNotificationStatus() {
+        RongIM.getInstance().getConversationNotificationStatus(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
+            @Override
+            public void onSuccess(Conversation.ConversationNotificationStatus conversationNotificationStatus) {
+
+                if (conversationNotificationStatus == Conversation.ConversationNotificationStatus.DO_NOT_DISTURB) {
+                    messageNotification.setChecked(true);
+                } else {
+                    messageNotification.setChecked(false);
+                }
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
     }
 
     private void getGroups() {
@@ -213,6 +237,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 }
             });
 
+            // 消息免打扰的状态
             RongIM.getInstance().getConversationNotificationStatus(Conversation.ConversationType.GROUP, mGroup.getGroupsId(), new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
                 @Override
                 public void onSuccess(Conversation.ConversationNotificationStatus conversationNotificationStatus) {
@@ -616,12 +641,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.sw_group_notfaction:
                 if (isChecked) {
-                    if (mGroup != null) {
-                        OperationRong.setConverstionNotif(mContext, Conversation.ConversationType.GROUP, mGroup.getGroupsId(), true);
+                    if (fromConversationId != null) {
+                        OperationRong.setConverstionNotif(mContext, Conversation.ConversationType.GROUP, fromConversationId, true);
                     }
                 } else {
-                    if (mGroup != null) {
-                        OperationRong.setConverstionNotif(mContext, Conversation.ConversationType.GROUP, mGroup.getGroupsId(), false);
+                    if (fromConversationId != null) {
+                        OperationRong.setConverstionNotif(mContext, Conversation.ConversationType.GROUP, fromConversationId, false);
                     }
                 }
 

@@ -16,6 +16,7 @@
             android:orientation="vertical"
             android:paddingBottom="30dp">
 
+            <!--群成员 gridView-->
             <cn.rongcloud.im.ui.widget.DemoGridView
                 android:id="@+id/gridview"
                 android:layout_width="match_parent"
@@ -27,6 +28,7 @@
                 android:listSelector="@android:color/transparent"
                 android:numColumns="4"/>
 
+            <!--
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +42,9 @@
                     android:layout_marginTop="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+            -->
 
+            <!--全部群成员-->
             <RelativeLayout
                 android:id="@+id/group_member_size_item"
                 android:layout_width="match_parent"
@@ -59,6 +63,8 @@
                     android:textSize="16sp" />
 
             </RelativeLayout>
+
+            <!--群成员在线状态-->
             <RelativeLayout
                 android:id="@+id/group_member_online_status"
                 android:layout_width="match_parent"
@@ -87,6 +93,7 @@
                 android:layout_marginTop="20dp"
                 android:background="#dfdfdd" />
 
+            <!--查找聊天记录-->
             <LinearLayout
                 android:id="@+id/ac_ll_search_chatting_records"
                 android:layout_width="match_parent"
@@ -107,6 +114,7 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +134,9 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="20dp"
                 android:background="#dfdfdd" />
+                -->
 
+            <!--群头像-->
             <LinearLayout
                 android:id="@+id/ll_group_port"
                 android:layout_width="match_parent"
@@ -162,6 +172,7 @@
 
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -174,7 +185,9 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+            -->
 
+            <!--群名称-->
             <LinearLayout
                 android:id="@+id/ll_group_name"
                 android:layout_width="match_parent"
@@ -233,6 +246,8 @@
                     android:background="#dfdfdd" />
             </LinearLayout>
 
+
+            <!--群公告-->
             <LinearLayout
                 android:id="@+id/group_announcement"
                 android:layout_width="match_parent"
@@ -257,13 +272,17 @@
 
             </LinearLayout>
 
+
+            <!--
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.25dp"
                 android:layout_marginLeft="14dp"
                 android:layout_marginRight="14dp"
                 android:background="#dfdfdd" />
+            -->
 
+            <!--群二维码-->
             <LinearLayout
                 android:id="@+id/group_code"
                 android:layout_width="match_parent"
@@ -296,10 +315,12 @@
 
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#fff">
+                android:background="#fff"
+                android:visibility="gone">
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.25dp"
@@ -307,6 +328,8 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+
+
 
             <View
                 android:layout_width="match_parent"
@@ -316,12 +339,14 @@
                 android:layout_marginTop="20dp"
                 android:background="#dfdfdd" />
 
+
+            <!--消息免打扰-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="#ffffff"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                >
 
                 <TextView
                     android:layout_width="0dp"
@@ -352,6 +377,7 @@
                     app:kswThumbMarginTop="-2.5dp" />
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -364,7 +390,9 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+            -->
 
+            <!--绘画置顶-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -402,6 +430,7 @@
                     app:kswThumbMarginTop="-2.5dp" />
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -414,8 +443,18 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+            -->
 
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.25dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="20dp"
+                android:background="#dfdfdd" />
+
+            <!--清除聊天记录-->
             <LinearLayout
                 android:id="@+id/group_clean"
                 android:layout_width="match_parent"
@@ -440,6 +479,8 @@
 
             </LinearLayout>
 
+
+            <!--开启群组会话-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -465,7 +506,7 @@
                     android:background="@drawable/rp_arrow" />
             </LinearLayout>
 
-
+            <!--群组昵称-->
             <LinearLayout
                 android:id="@+id/group_displayname"
                 android:layout_width="match_parent"
@@ -506,7 +547,7 @@
                     android:background="@drawable/rp_arrow" />
             </LinearLayout>
 
-
+            <!--删除并退出-->
             <Button
                 android:id="@+id/group_quit"
                 android:layout_width="match_parent"
@@ -520,6 +561,7 @@
                 android:textSize="16sp"
                 android:visibility="gone"/>
 
+            <!--解散并退出-->
             <Button
                 android:id="@+id/group_dismiss"
                 android:layout_width="match_parent"
@@ -532,6 +574,8 @@
                 android:textColor="#FFF"
                 android:textSize="16sp"
                 android:visibility="gone" />
+
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>
