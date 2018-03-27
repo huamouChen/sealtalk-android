@@ -39,6 +39,8 @@ import java.util.List;
 
 import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealConst;
+import cn.rongcloud.im.SealUserInfoManager;
+import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.server.HomeWatcherReceiver;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
 import cn.rongcloud.im.server.utils.NToast;
@@ -59,6 +61,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
+import io.rong.imlib.model.UserInfo;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.TextMessage;
 //import io.rong.toolkit.TestActivity;
@@ -103,16 +106,28 @@ public class MainActivity extends FragmentActivity implements
         initMainViewPager();
         registerHomeKeyReceiver(this);
 
+        refreshUserInfoCache();
+
+
         // 初始化消息推送监听 signalR
         initSignalR();
-
         // 开始监听
         starSignalA();
     }
 
+    // 刷新个人信息
+    private void refreshUserInfoCache() {
+        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+        String userId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
+        RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId, userId, Uri.parse("")));
+
+        // 把自己当成一个好友保存到数据库，主要是为了给自己发送消息的时候用到
+        SealUserInfoManager.getInstance().addFriend(new Friend(userId, userId, Uri.parse("")));
+    }
+
     // 初始化 signalR
     private void initSignalR() {
-        String url = "http://192.168.1.88:8003/signalr";
+        String url = "http://192.168.1.88:8001/signalr";
         con = new Connection(url, this, new LongPollingTransport()) {
             @Override
             public void OnError(Exception exception) {
@@ -125,6 +140,7 @@ public class MainActivity extends FragmentActivity implements
             @Override
             public void OnMessage(String message) {
 
+                System.out.println("--------------------Message");
                 Toast.makeText(MainActivity.this, "Message:----------------- " + message, Toast.LENGTH_LONG).show();
                 super.OnMessage(message);
             }

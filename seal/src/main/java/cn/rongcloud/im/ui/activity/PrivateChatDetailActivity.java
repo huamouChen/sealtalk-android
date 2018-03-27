@@ -68,7 +68,6 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
 
         if (!TextUtils.isEmpty(fromConversationId)) {
             mUserInfo = RongUserInfoManager.getInstance().getUserInfo(fromConversationId);
-//            mUserInfo = new UserInfo(fromConversationId, fromConversationId, Uri.parse(""));
             updateUI();
         }
         EventBus.getDefault().register(this);

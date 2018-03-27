@@ -199,8 +199,10 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initBlackListStatusView() {
+        setHeadRightButtonVisibility(View.GONE);
         if (mIsFriendsRelationship) {
             Button rightButton = getHeadRightButton();
+            setHeadRightButtonVisibility(View.GONE);
             rightButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.main_activity_contact_more));
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override

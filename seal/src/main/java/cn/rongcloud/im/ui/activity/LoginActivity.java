@@ -30,6 +30,7 @@ import cn.rongcloud.im.R;
 import cn.rongcloud.im.SealAppContext;
 import cn.rongcloud.im.SealConst;
 import cn.rongcloud.im.SealUserInfoManager;
+import cn.rongcloud.im.db.Friend;
 import cn.rongcloud.im.db.Groups;
 import cn.rongcloud.im.server.BaseAction;
 import cn.rongcloud.im.server.broadcast.BroadcastManager;
@@ -258,9 +259,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(SealConst.SEALTALK_LOGIN_NAME, phoneString);
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                         editor.commit();
-
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(phoneString, phoneString, Uri.parse("")));
 
+                        // 把自己当成一个好友保存到数据库，主要是为了给自己发送消息的时候用到
+                        SealUserInfoManager.getInstance().addFriend(new Friend(phoneString, phoneString, Uri.parse("")));
 
                     } else {
                         LoadDialog.dismiss(mContext);
@@ -361,7 +363,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     List<Groups> list = new ArrayList<>();
                     list = getRongGroupResponse.getValue();
                     // 把群组的名称写入本地
-                    for(Groups item : list) {
+                    for (Groups item : list) {
                         SealUserInfoManager.getInstance().addGroup(item);
                         BroadcastManager.getInstance(this).sendBroadcast("REFRESH_GROUP_UI");
                     }
