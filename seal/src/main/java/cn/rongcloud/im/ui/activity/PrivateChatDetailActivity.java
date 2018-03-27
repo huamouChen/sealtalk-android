@@ -3,6 +3,7 @@ package cn.rongcloud.im.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -67,6 +68,7 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
 
         if (!TextUtils.isEmpty(fromConversationId)) {
             mUserInfo = RongUserInfoManager.getInstance().getUserInfo(fromConversationId);
+//            mUserInfo = new UserInfo(fromConversationId, fromConversationId, Uri.parse(""));
             updateUI();
         }
         EventBus.getDefault().register(this);

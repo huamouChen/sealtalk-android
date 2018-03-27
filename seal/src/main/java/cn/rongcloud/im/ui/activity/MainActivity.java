@@ -28,6 +28,7 @@ import com.smartarmenia.dotnetcoresignalrclientjava.HubEventListener;
 import com.smartarmenia.dotnetcoresignalrclientjava.HubMessage;
 import com.smartarmenia.dotnetcoresignalrclientjava.WebSocketHubConnection;
 import com.zsoft.signala.Connection;
+import com.zsoft.signala.ConnectionState;
 import com.zsoft.signala.transport.StateBase;
 import com.zsoft.signala.transport.longpolling.LongPollingTransport;
 
@@ -103,33 +104,38 @@ public class MainActivity extends FragmentActivity implements
         registerHomeKeyReceiver(this);
 
         // 初始化消息推送监听 signalR
-//        initSignalR();
+        initSignalR();
 
         // 开始监听
-//        starSignalA();
-        initSignalR2();
-
+        starSignalA();
     }
 
     // 初始化 signalR
     private void initSignalR() {
-        String url = "http://192.168.1.88/signalr";
+        String url = "http://192.168.1.88:8003/signalr";
         con = new Connection(url, this, new LongPollingTransport()) {
             @Override
             public void OnError(Exception exception) {
-                super.OnError(exception);
+
                 System.out.println("----------On error:---------------- " + exception.getMessage());
                 Toast.makeText(MainActivity.this, "On error:---------------- " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                super.OnError(exception);
             }
 
             @Override
             public void OnMessage(String message) {
-                super.OnMessage(message);
+
                 Toast.makeText(MainActivity.this, "Message:----------------- " + message, Toast.LENGTH_LONG).show();
+                super.OnMessage(message);
             }
 
             @Override
             public void OnStateChanged(StateBase oldState, StateBase newState) {
+
+                if (newState.getState() == ConnectionState.Connected) {
+                    System.out.println("--------------------连接成功");
+                }
+
                 super.OnStateChanged(oldState, newState);
             }
         };
@@ -137,50 +143,7 @@ public class MainActivity extends FragmentActivity implements
         SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
         String token = sp.getString(SealConst.TOKEN, "");
         con.getHeaders().put("Authorization", "Bearer " + token);
-
     }
-
-
-    private void initSignalR2() {
-        // 设置 header 授权认证
-        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-        String token = sp.getString(SealConst.TOKEN, "");
-        HubConnection connection = new WebSocketHubConnection("http://192.168.1.88/signalr", "Bearer " + token);
-
-        connectionListener = new HubConnectionListener() {
-            @Override
-            public void onConnected() {
-                System.out.println("----------------连接成功");
-            }
-
-            @Override
-            public void onDisconnected() {
-                System.out.println("----------------失去连接");
-            }
-
-            @Override
-            public void onMessage(HubMessage message) {
-                System.out.println("----------------收到消息");
-            }
-
-            @Override
-            public void onError(Exception exception) {
-                System.out.println("----------------发生错误");
-            }
-        };
-
-        connection.addListener(connectionListener);
-
-        connection.subscribeToEvent("Message", new HubEventListener() {
-            @Override
-            public void onEventMessage(HubMessage message) {
-                System.out.println("----------------onEventMessage");
-            }
-        });
-
-        connection.connect();
-    }
-
 
     // 开始 signalR
     public void starSignalA() {

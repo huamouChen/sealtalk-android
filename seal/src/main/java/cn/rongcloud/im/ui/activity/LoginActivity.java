@@ -250,8 +250,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         loginToken = loginResponse.getToken();
                         editor.putString(SealConst.TOKEN, loginToken);
                         editor.commit();
+                        SealUserInfoManager.getInstance().openDB();
                         // 登录成功，获取融云 token
                         request(GET_RONG_TOKEN);
+                        // 当前登录用户信息
+                        editor.putString(SealConst.SEALTALK_LOGIN_ID, phoneString);
+                        editor.putString(SealConst.SEALTALK_LOGIN_NAME, phoneString);
+                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
+                        editor.commit();
+
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phoneString, phoneString, Uri.parse("")));
+
+
                     } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, loginResponse.getError());
@@ -331,7 +341,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 editor.putString("loginToken", rong_token);
                                 editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                                 editor.commit();
-                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
+//                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
 //                                    request(SYNC_USER_INFO, true);
                                 request(GET_RONG_GROUPS);
                                 goToMain();
