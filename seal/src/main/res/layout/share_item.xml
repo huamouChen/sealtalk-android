@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_list_item_bg">
 
-        <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+        <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
             android:id="@+id/share_icon"
             android:layout_width="36dp"
             android:layout_height="36dp"

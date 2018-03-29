@@ -29,7 +29,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
 
-            <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+            <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                 android:id="@+id/disturb_switch"
                 style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"

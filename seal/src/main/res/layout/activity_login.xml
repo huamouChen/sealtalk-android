@@ -54,7 +54,7 @@
                 android:orientation="horizontal">
 
 
-                <cn.rongcloud.im.server.widget.ClearWriteEditText
+                <cn.chenhuamou.im.server.widget.ClearWriteEditText
                     android:id="@+id/de_login_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 android:orientation="horizontal">
 
 
-                <cn.rongcloud.im.server.widget.ClearWriteEditText
+                <cn.chenhuamou.im.server.widget.ClearWriteEditText
                     android:id="@+id/de_login_password"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                 android:orientation="horizontal">
 
 
-                <cn.rongcloud.im.server.widget.ClearWriteEditText
+                <cn.chenhuamou.im.server.widget.ClearWriteEditText
                     android:id="@+id/de_login_validcode"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"

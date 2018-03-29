@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+    <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
         android:id="@+id/selected_icon"
         android:layout_width="34dp"
         android:layout_height="34dp"

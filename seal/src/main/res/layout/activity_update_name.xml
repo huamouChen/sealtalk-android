@@ -5,7 +5,7 @@
     android:background="@color/seal_bg"
     android:orientation="vertical">
 
-    <cn.rongcloud.im.server.widget.ClearWriteEditText
+    <cn.chenhuamou.im.server.widget.ClearWriteEditText
         android:id="@+id/update_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

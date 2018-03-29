@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+        <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
             android:id="@+id/iv_avatar"
             android:layout_width="56dp"
             android:layout_height="56dp"

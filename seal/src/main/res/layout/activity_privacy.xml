@@ -25,7 +25,7 @@
             android:textColor="@color/text_color"
             android:textSize="16sp" />
 
-        <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+        <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
             style="@style/SwitchButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

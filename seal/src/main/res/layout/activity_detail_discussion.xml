@@ -31,7 +31,7 @@
                     android:textColor="@color/group_list_black_textview"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.ui.widget.DemoGridView
+                <cn.chenhuamou.im.ui.widget.DemoGridView
                     android:id="@+id/discu_gridview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:text="@string/activity_detail_discussion_to_top"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+                <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                     android:id="@+id/sw_discu_top"
                     style="@style/SwitchButtonStyle"
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                     android:text="@string/activity_detail_discussion_not_disturb"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+                <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                     android:id="@+id/sw_discu_notfaction"
                     style="@style/SwitchButtonStyle"
                     android:layout_width="wrap_content"

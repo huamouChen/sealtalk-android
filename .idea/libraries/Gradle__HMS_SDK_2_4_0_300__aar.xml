@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: HMS-SDK-2.4.0.300:@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/HMS-SDK-2.4.0.300.aar/269cdb943eee7f01c2ed22d39deb6f4b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/HMS-SDK-2.4.0.300.aar/269cdb943eee7f01c2ed22d39deb6f4b/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

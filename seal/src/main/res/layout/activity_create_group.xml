@@ -13,7 +13,7 @@
         android:layout_marginTop="80dp"
         android:src="@drawable/add_group_head" />
 
-    <cn.rongcloud.im.server.widget.ClearWriteEditText
+    <cn.chenhuamou.im.server.widget.ClearWriteEditText
         android:id="@+id/create_groupname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

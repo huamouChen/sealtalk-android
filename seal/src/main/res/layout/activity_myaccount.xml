@@ -25,7 +25,7 @@
             android:textColor="@color/text_color"
             android:textSize="16sp" />
 
-        <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+        <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
             android:id="@+id/img_my_portrait"
             android:layout_width="64dp"
             android:layout_height="64dp"

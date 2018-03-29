@@ -63,7 +63,7 @@
 
                 </RelativeLayout>
 
-                <cn.rongcloud.im.ui.widget.DragPointView
+                <cn.chenhuamou.im.ui.widget.DragPointView
                     android:id="@+id/seal_num"
                     android:layout_width="19dp"
                     android:layout_height="19dp"

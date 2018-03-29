@@ -13,7 +13,7 @@
         android:background="#ffffff"
         android:orientation="horizontal">
 
-        <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+        <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
             android:id="@+id/friend_header"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -98,7 +98,7 @@
             android:textColor="@color/text_color"
             android:textSize="16sp" />
 
-        <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+        <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
             android:id="@+id/sw_friend_notfaction"
             style="@style/SwitchButtonStyle"
             android:layout_width="wrap_content"
@@ -146,7 +146,7 @@
             android:textColor="@color/text_color"
             android:textSize="16sp" />
 
-        <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+        <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
             android:id="@+id/sw_freind_top"
             style="@style/SwitchButtonStyle"
             android:layout_width="wrap_content"

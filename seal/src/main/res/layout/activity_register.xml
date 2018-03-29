@@ -35,7 +35,7 @@
             android:layout_marginTop="61dip"
             android:src="@drawable/seal_logo" />
 
-        <cn.rongcloud.im.server.widget.ClearWriteEditText
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
             android:id="@+id/reg_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             android:textColor="#FFF"
             android:textColorHint="#FFFFFF" />
 
-        <cn.rongcloud.im.server.widget.ClearWriteEditText
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
             android:id="@+id/reg_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:orientation="horizontal">
 
 
-            <cn.rongcloud.im.server.widget.ClearWriteEditText
+            <cn.chenhuamou.im.server.widget.ClearWriteEditText
                 android:id="@+id/reg_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
 
         </LinearLayout>
 
-        <cn.rongcloud.im.server.widget.ClearWriteEditText
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
             android:id="@+id/reg_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

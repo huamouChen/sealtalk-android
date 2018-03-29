@@ -36,7 +36,7 @@
                         android:text="@string/ac_search_friend"/>
                     <View
                         style="@style/ac_search_list_view_divider" />
-                    <cn.rongcloud.im.ui.widget.NestedListView
+                    <cn.chenhuamou.im.ui.widget.NestedListView
                         android:id="@+id/ac_lv_filtered_friends_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                         android:text="@string/ac_search_group"/>
                     <View
                         style="@style/ac_search_list_view_divider" />
-                    <cn.rongcloud.im.ui.widget.NestedListView
+                    <cn.chenhuamou.im.ui.widget.NestedListView
                         android:id="@+id/ac_lv_filtered_groups_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                         android:text="@string/ac_search_chatting_records"/>
                     <View
                         style="@style/ac_search_list_view_divider"/>
-                    <cn.rongcloud.im.ui.widget.NestedListView
+                    <cn.chenhuamou.im.ui.widget.NestedListView
                         android:id="@+id/ac_lv_filtered_chatting_records_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

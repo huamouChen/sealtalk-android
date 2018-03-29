@@ -137,7 +137,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
 
-            <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+            <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                 android:id="@+id/switch_push_language"
                 style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"
@@ -172,7 +172,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
 
-            <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+            <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                 android:id="@+id/switch_push_detail"
                 style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"
@@ -207,7 +207,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
 
-            <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+            <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                 android:id="@+id/switch_push_receive"
                 style="@style/SwitchButtonStyle"
                 android:layout_width="wrap_content"

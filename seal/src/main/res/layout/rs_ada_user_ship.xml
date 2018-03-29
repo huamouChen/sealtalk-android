@@ -6,7 +6,7 @@
     android:background="#fff"
     android:orientation="horizontal">
 
-    <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+    <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
         android:id="@+id/new_header"
         android:layout_width="36dp"
         android:layout_height="36dp"

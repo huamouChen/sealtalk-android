@@ -37,7 +37,7 @@
             android:background="@color/cs_evaluate_dialog_divider" />
     </RelativeLayout>
 
-    <cn.rongcloud.im.ui.widget.CSEvaluateScrollView
+    <cn.chenhuamou.im.ui.widget.CSEvaluateScrollView
         android:id="@+id/scrollview_evaluate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                 android:textColor="@color/cs_evaluate_edittext_textcolor"
                 android:textSize="14sp" />
         </LinearLayout>
-    </cn.rongcloud.im.ui.widget.CSEvaluateScrollView>
+    </cn.chenhuamou.im.ui.widget.CSEvaluateScrollView>
 
     <TextView
         android:id="@+id/tv_submit"

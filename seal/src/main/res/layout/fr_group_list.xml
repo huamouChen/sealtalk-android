@@ -42,7 +42,7 @@
                 android:text="@string/fr_group_list_not_join_the_group"
                 android:textColor="@color/group_list_gray"
                 android:visibility="gone" />
-            <cn.rongcloud.im.ui.widget.NestedListView
+            <cn.chenhuamou.im.ui.widget.NestedListView
                 android:id="@+id/group_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

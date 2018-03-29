@@ -137,11 +137,11 @@
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
-            <cn.rongcloud.im.ui.widget.ReadReceiptViewPager
+            <cn.chenhuamou.im.ui.widget.ReadReceiptViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
-            </cn.rongcloud.im.ui.widget.ReadReceiptViewPager>
+            </cn.chenhuamou.im.ui.widget.ReadReceiptViewPager>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

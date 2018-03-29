@@ -17,7 +17,7 @@
             android:paddingBottom="30dp">
 
             <!--群成员 gridView-->
-            <cn.rongcloud.im.ui.widget.DemoGridView
+            <cn.chenhuamou.im.ui.widget.DemoGridView
                 android:id="@+id/gridview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.server.widget.SelectableRoundedImageView
+                <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
                     android:id="@+id/group_header"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -361,7 +361,7 @@
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+                <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                     android:id="@+id/sw_group_notfaction"
                     style="@style/SwitchButtonStyle"
                     android:layout_width="wrap_content"
@@ -414,7 +414,7 @@
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
-                <cn.rongcloud.im.ui.widget.switchbutton.SwitchButton
+                <cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton
                     android:id="@+id/sw_group_top"
                     style="@style/SwitchButtonStyle"
                     android:layout_width="wrap_content"
