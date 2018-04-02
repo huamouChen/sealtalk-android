@@ -22,7 +22,7 @@ public class MyPlugin implements IPluginModule {
 
     @Override
     public String obtainTitle(Context context) {   // 自定义插件图标下的标题
-        return null;
+        return "示例";
     }
 
     @Override

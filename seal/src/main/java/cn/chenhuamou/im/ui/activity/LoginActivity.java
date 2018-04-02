@@ -40,6 +40,7 @@ import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
 import cn.chenhuamou.im.server.response.GetTokenResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
+import cn.chenhuamou.im.server.response.GetUserInfoResponse;
 import cn.chenhuamou.im.server.response.LoginResponse;
 import cn.chenhuamou.im.server.utils.CommonUtils;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -230,9 +231,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case GET_TOKEN:
                 return action.getToken();
             case SYNC_USER_INFO:
-                return action.getUserInfoById(connectResultId);
+                return action.getUserInfo(phoneString);
             case GET_RONG_TOKEN:
-                return action.getRongToken(phoneString);
+                return action.getRongToken();
             case GET_RONG_GROUPS:
                 return action.getRongGroups(phoneString);
 
@@ -272,18 +273,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 
                 case SYNC_USER_INFO:
-                    GetUserInfoByIdResponse userInfoByIdResponse = (GetUserInfoByIdResponse) result;
-                    if (userInfoByIdResponse.getCode() == 200) {
-                        if (TextUtils.isEmpty(userInfoByIdResponse.getResult().getPortraitUri())) {
-                            userInfoByIdResponse.getResult().setPortraitUri(RongGenerate.generateDefaultAvatar(userInfoByIdResponse.getResult().getNickname(), userInfoByIdResponse.getResult().getId()));
-                        }
-                        String nickName = userInfoByIdResponse.getResult().getNickname();
-                        String portraitUri = userInfoByIdResponse.getResult().getPortraitUri();
-                        editor.putString(SealConst.SEALTALK_LOGIN_NAME, nickName);
-                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
-                        editor.commit();
-                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(connectResultId, nickName, Uri.parse(portraitUri)));
-                    }
+                    GetUserInfoResponse userInfoByIdResponse = (GetUserInfoResponse) result;
+//                    if (userInfoByIdResponse.getCode() == 200) {
+//                        if (TextUtils.isEmpty(userInfoByIdResponse.getResult().getPortraitUri())) {
+//                            userInfoByIdResponse.getResult().setPortraitUri(RongGenerate.generateDefaultAvatar(userInfoByIdResponse.getResult().getNickname(), userInfoByIdResponse.getResult().getId()));
+//                        }
+//                        String nickName = userInfoByIdResponse.getValue().getUserName();
+//                        String portraitUri = userInfoByIdResponse.getValue().getHeadimg();
+//                        editor.putString(SealConst.SEALTALK_LOGIN_NAME, nickName);
+//                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
+//                        editor.commit();
+//                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(connectResultId, nickName, Uri.parse(portraitUri)));
+//                    }
                     //不继续在login界面同步好友,群组,群组成员信息
                     SealUserInfoManager.getInstance().getAllUserInfo();
                     goToMain();
@@ -350,7 +351,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 editor.commit();
 //                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
 //                                    request(SYNC_USER_INFO, true);
-                                request(GET_RONG_GROUPS);
+//                                request(GET_RONG_GROUPS);
                                 goToMain();
                             }
 

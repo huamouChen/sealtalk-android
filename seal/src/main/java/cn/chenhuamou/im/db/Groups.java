@@ -18,6 +18,11 @@ public class Groups extends UserInfoBean {
     private String GroupOwner;
     private String AddTime;
     private String UserName;
+    private String HeadImg;
+    private boolean IsOnLine;
+
+
+
 
     public Groups() {
         super();
@@ -159,5 +164,21 @@ public class Groups extends UserInfoBean {
 
     public void setUserName(String userName) {
         UserName = userName;
+    }
+
+    public String getHeadImg() {
+        return HeadImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        HeadImg = headImg;
+    }
+
+    public boolean isOnLine() {
+        return IsOnLine;
+    }
+
+    public void setOnLine(boolean onLine) {
+        IsOnLine = onLine;
     }
 }

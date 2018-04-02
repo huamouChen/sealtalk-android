@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.chenhuamou.contactcard.message.ContactMessage;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
@@ -57,8 +58,11 @@ import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.ContactNotificationMessage;
+import io.rong.message.TextMessage;
 //import io.rong.toolkit.TestActivity;
 
 @SuppressWarnings("deprecation")
@@ -85,7 +89,6 @@ public class MainActivity extends FragmentActivity implements
 
     // SignalR
     private final static String HUB_URL = "http://192.168.1.88:8001/signalr";
-//    private final static String HUB_URL = "http://localhost:7782/signalr";
 
     private Connection con;
 
@@ -137,6 +140,22 @@ public class MainActivity extends FragmentActivity implements
         initSignalR();
 //        // 开始监听
         starSignalA();
+
+
+        RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
+            @Override
+            public void onSuccess(List<Conversation> conversations) {
+                System.out.println("-----------------获取会话列表成功");
+                for (Conversation item : conversations) {
+                    System.out.println(item.getTargetId());
+                }
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+                System.out.println("-----------------获取会话列表失败");
+            }
+        });
     }
 
     // 刷新个人信息
@@ -222,25 +241,6 @@ public class MainActivity extends FragmentActivity implements
     // 开始 signalR
     public void starSignalA() {
         if (con != null) {
-
-//            try {
-//                //服务器端的HUB为ChatHub
-//                hub = con.CreateHubProxy("legendHub");
-//            } catch (OperationApplicationException e) {
-//                e.printStackTrace();
-//            }
-//            hub.On("getNotification", new HubOnDataCallback() {
-//                @Override
-//                public void OnReceived(JSONArray args) {
-//                    EditText chatText = (EditText) findViewById(R.id.edit_area);
-//                    //chatText.setText(args.toString());
-//                    String str = "";
-//                    for (int i = 0; i < args.length(); i++) {
-//                        chatText.append(args.opt(i).toString());
-//                    }
-//                }
-//            });
-
             con.Start();
         }
     }

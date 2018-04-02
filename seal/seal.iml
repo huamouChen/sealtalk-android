@@ -119,7 +119,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\CallLib\libs\CallEngine_Agora.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\IMKit\src\main\libs\Rong_IMKit.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\CallLib\libs\Rong_CallLib.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:26.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.erizet.signala:signala-longpolling-0.20" level="project" />
@@ -150,6 +149,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-core-utils-26.0.0" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\seal\libs\MiPush_SDK_Client_3_5_1.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\seal\libs\jsoup-1.8.3.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.erizet.signala:parallel-basic-http-client-0.20" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:C.\Users\wuhan\Desktop\sealtalk\sealtalk-android-master\RedPacket\libs\alipaySingle-20170510.jar:unspecified@jar" level="project" />

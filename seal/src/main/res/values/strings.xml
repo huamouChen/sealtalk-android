@@ -352,6 +352,7 @@
     <string name="ac_share_receiver_from">来自：%1$s</string>
 
     <string name="ac_search_phone_number">手机号</string>
+    <string name="ac_search_username">用户名</string>
     <string name="layout_dialog_loading">正在加载</string>
     <string name="seal_mine_fragment_user_portrait">用户头像</string>
     <string name="item_filter_group_list_include">包含：</string>

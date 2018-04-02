@@ -49,6 +49,9 @@ public class MorePopWindow extends PopupWindow {
         RelativeLayout re_addfriends = (RelativeLayout) content.findViewById(R.id.re_addfriends);
         RelativeLayout re_chatroom = (RelativeLayout) content.findViewById(R.id.re_chatroom);
         RelativeLayout re_scanner = (RelativeLayout) content.findViewById(R.id.re_scanner);
+
+
+        // 创建群组
         re_addfriends.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -61,6 +64,8 @@ public class MorePopWindow extends PopupWindow {
             }
 
         });
+
+        // 发起聊天
         re_chatroom.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -71,6 +76,8 @@ public class MorePopWindow extends PopupWindow {
             }
 
         });
+
+        // 添加好友
         re_scanner.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

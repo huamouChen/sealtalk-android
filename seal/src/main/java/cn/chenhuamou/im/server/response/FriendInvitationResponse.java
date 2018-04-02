@@ -7,11 +7,22 @@ package cn.chenhuamou.im.server.response;
  */
 public class FriendInvitationResponse {
 
-    /**
-     * code : 200
-     * result : {"action":"Sent"}
-     * message : Request sent.
-     */
+
+//    private CodeEntity Code;
+//
+//    public CodeEntity getCode() {
+//        return Code;
+//    }
+//
+//    public void setCode(CodeEntity code) {
+//        Code = code;
+//    }
+
+    //    /**
+//     * code : 200
+//     * result : {"action":"Sent"}
+//     * message : Request sent.
+//     */
 
     private int code;
     /**
@@ -54,6 +65,33 @@ public class FriendInvitationResponse {
 
         public String getAction() {
             return action;
+        }
+    }
+
+    private class CodeEntity {
+
+        /**
+         * CodeId : string
+         * Description : string
+         */
+
+        private String CodeId;
+        private String Description;
+
+        public String getCodeId() {
+            return CodeId;
+        }
+
+        public void setCodeId(String CodeId) {
+            this.CodeId = CodeId;
+        }
+
+        public String getDescription() {
+            return Description;
+        }
+
+        public void setDescription(String Description) {
+            this.Description = Description;
         }
     }
 }

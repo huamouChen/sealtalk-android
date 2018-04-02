@@ -23,11 +23,60 @@
             android:layout_marginRight="14dp"
             android:drawableLeft="@drawable/sealtalk_search"
             android:drawablePadding="6dp"
-            android:hint="@string/ac_search_phone_number"
+            android:hint="@string/ac_search_username"
             android:maxLength="11"
             android:maxLines="1"/>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_search"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="1px"
+        android:background="#fff"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
+            android:id="@+id/img_search"
+            android:background="@color/blue"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="6dp"
+            android:scaleType="centerCrop"
+            app:sriv_left_bottom_corner_radius="3dip"
+            app:sriv_left_top_corner_radius="3dip"
+            app:sriv_right_bottom_corner_radius="3dip"
+            app:sriv_right_top_corner_radius="3dip" />
+
+        <TextView
+            android:id="@+id/tv_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_search"
+            android:textColor="@color/group_list_gray"
+            android:textSize="18sp"
+            android:text="查找IM账号："/>
+
+        <TextView
+            android:id="@+id/tv_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_item"
+            android:maxLines="1"
+            android:textColor="@color/button_backgroud"
+            android:textSize="18sp"
+            android:text=""/>
+
+
+
+
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -46,6 +95,7 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="6dp"
             android:scaleType="centerCrop"
+            android:background="@color/blue"
             app:sriv_left_bottom_corner_radius="3dip"
             app:sriv_left_top_corner_radius="3dip"
             app:sriv_right_bottom_corner_radius="3dip"

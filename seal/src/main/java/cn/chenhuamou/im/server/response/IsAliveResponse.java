@@ -1,34 +1,23 @@
 package cn.chenhuamou.im.server.response;
 
-
 /**
- * Created by AMing on 16/1/8.
+ * Created by AMing on 15/12/24.
  * Company RongCloud
  */
-public class AgreeFriendsResponse {
-    private int code;
+public class IsAliveResponse {
 
-    public int getCode() {
-        return code;
+    private ResultEntity Code;
+
+    public ResultEntity getCode() {
+        return Code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setCode(ResultEntity code) {
+        Code = code;
     }
 
 
-
-//    private CodeEntity Code;
-//
-//    public CodeEntity getCode() {
-//        return Code;
-//    }
-//
-//    public void setCode(CodeEntity code) {
-//        Code = code;
-//    }
-
-    private class CodeEntity {
+    public static class ResultEntity {
 
         /**
          * CodeId : string

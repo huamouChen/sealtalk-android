@@ -33,7 +33,7 @@ public class MyExtensionModule extends DefaultExtensionModule {
 
         pluginModules.add(imagePlugin);
         pluginModules.add(locationPlugin);
-
+        pluginModules.add(new MyPlugin());
 
         return pluginModules;
     }
