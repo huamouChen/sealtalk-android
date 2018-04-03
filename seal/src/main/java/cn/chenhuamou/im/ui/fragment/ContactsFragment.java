@@ -302,9 +302,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 //        });
 //        updateFriendsList(list);
 
-        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
+//        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
 
-//        mAsyncTaskManager.request(GET_RONG_FRIEND_LIST, this);
+        mAsyncTaskManager.request(GET_RONG_FRIEND_LIST, this);
 
     }
 
@@ -328,6 +328,31 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 
             case GET_RONG_FRIEND_LIST:
                 GetRongFriendListResponse getRongFriendListResponse = (GetRongFriendListResponse) result;
+                List<GetRongFriendListResponse.ValueEntity> membersList =  getRongFriendListResponse.getValue();
+                for (int i = 0; i < membersList.size(); i++) {
+                    GetRongFriendListResponse.ValueEntity groups = membersList.get(i);
+                    String userID = groups.getUserName();
+                    // 是当前用户，就不添加了
+                    if (userID.equals(userName)) continue;
+
+                    // 已经添加过了，就不重复添加了，因为不同的群组可能会有相同的人
+                    boolean isHave = false;
+                    for (Friend item : friendListFilter) {
+                        if (item.getName().equals(userID)) {isHave = true; break;}
+                    }
+                    if (isHave) continue;
+                    Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+                    // 设置这两个属性主要是为了通讯录界面进行排序
+                    friend.setDisplayName(groups.getUserName());
+                    friend.setDisplayNameSpelling(groups.getUserName());
+                    friendList.add(friend);
+                }
+                // 先清空之前的，再添加所有的
+                friendListFilter.clear();
+                friendListFilter.addAll(friendList);
+                updateFriendsList(friendList);
+                // 把好友写入到数据库
+                addFrientToDataBase(friendList);
                 break;
 
             case GET_RONG_GROUPS:
@@ -360,9 +385,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                     BroadcastManager.getInstance(getContext()).sendBroadcast(SealConst.EXIT);
                     return;
                 }
-                List<Groups> membersList = getRongGroupMembersResponse.getValue();
-                for (int i = 0; i < membersList.size(); i++) {
-                    Groups groups = membersList.get(i);
+                List<Groups> membersList2 = getRongGroupMembersResponse.getValue();
+                for (int i = 0; i < membersList2.size(); i++) {
+                    Groups groups = membersList2.get(i);
                     String userID = groups.getUserName();
                     // 是当前用户，就不添加了
                     if (userID.equals(userName)) continue;
