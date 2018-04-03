@@ -298,6 +298,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
             @Override
             public void onSuccess(List<Friend> friendList) {
+                System.out.println("--------------");
                 if (mListView != null) {
                     if (friendList != null && friendList.size() > 0) {
                         for (Friend friend : friendList) {
@@ -321,7 +322,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onError(String errString) {
-
+                System.out.println("------------------");
             }
         });
     }
@@ -347,7 +348,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     public Map<Integer, Boolean> mCBFlag;
 
     public List<Friend> adapterList;
-
 
     class StartDiscussionAdapter extends BaseAdapter implements SectionIndexer {
 
@@ -574,7 +574,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         }
         return super.doInBackground(requestCode, id);
     }
-
     @Override
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
@@ -607,7 +606,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             }
         }
     }
-
     @Override
     public void onFailure(int requestCode, int state, Object result) {
         switch (requestCode) {
@@ -621,6 +619,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 break;
         }
     }
+
+
 
     private List<String> startDisList;
     private List<Friend> createGroupList;

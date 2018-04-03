@@ -1,5 +1,6 @@
 package cn.chenhuamou.im.ui.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.chenhuamou.im.SealUserInfoManager;
+import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.ui.widget.LoadingDialog;
 import io.rong.imkit.RongIM;
@@ -99,6 +101,11 @@ public class ConversationListActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        BroadcastManager.getInstance(this).sendBroadcast("REFRESH_GROUP_UI");
+        super.onResume();
+    }
 
     private void reconnect(String token) {
         RongIM.connect(token, new RongIMClient.ConnectCallback() {

@@ -8,39 +8,44 @@ import java.util.List;
  */
 public class CreateMyGroupRequest {
 
+
     public CreateMyGroupRequest(String owner, String groupName, List<String> members) {
-        this.owner = owner;
-        this.groupName = groupName;
-        this.members = members;
+        Owner = owner;
+        GroupName = groupName;
+        Members = members;
     }
 
-    private String owner;
+    /**
+     * Owner : string
+     * Members : ["string"]
+     * GroupName : string
+     */
 
-    private String groupName;
-
-    private List<String> members;
+    private String Owner;
+    private String GroupName;
+    private List<String> Members;
 
     public String getOwner() {
-        return owner;
+        return Owner;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwner(String Owner) {
+        this.Owner = Owner;
     }
 
     public String getGroupName() {
-        return groupName;
+        return GroupName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupName(String GroupName) {
+        this.GroupName = GroupName;
     }
 
     public List<String> getMembers() {
-        return members;
+        return Members;
     }
 
-    public void setMembers(List<String> members) {
-        this.members = members;
+    public void setMembers(List<String> Members) {
+        this.Members = Members;
     }
 }

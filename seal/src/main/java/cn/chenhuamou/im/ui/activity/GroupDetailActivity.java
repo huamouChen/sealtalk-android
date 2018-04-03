@@ -45,8 +45,10 @@ import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.response.DismissGroupResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.QuitGroupResponse;
+import cn.chenhuamou.im.server.response.QuitMyGroupResponse;
 import cn.chenhuamou.im.server.response.SetGroupDisplayNameResponse;
 import cn.chenhuamou.im.server.response.SetGroupNameResponse;
 import cn.chenhuamou.im.server.response.SetGroupPortraitResponse;
@@ -80,6 +82,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private static final int CLICK_CONVERSATION_USER_PORTRAIT = 1;
 
+    private static final int GROUP_MEMBERS = 260;
     private static final int DISMISS_GROUP = 26;
     private static final int QUIT_GROUP = 27;
     private static final int SET_GROUP_NAME = 29;
@@ -93,7 +96,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private boolean isCreated = false;
     private DemoGridView mGridView;
-    private List<GroupMember> mGroupMember;
+    private List<GroupMember> mGroupMember = new ArrayList<>();
     private TextView mTextViewMemberSize, mGroupDisplayNameText;
     private SelectableRoundedImageView mGroupHeader;
     private SwitchButton messageTop, messageNotification;
@@ -186,21 +189,24 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroupMembers() {
-        SealUserInfoManager.getInstance().getGroupMembers(fromConversationId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
-            @Override
-            public void onSuccess(List<GroupMember> groupMembers) {
-                LoadDialog.dismiss(mContext);
-                if (groupMembers != null && groupMembers.size() > 0) {
-                    mGroupMember = groupMembers;
-                    initGroupMemberData();
-                }
-            }
 
-            @Override
-            public void onError(String errString) {
-                LoadDialog.dismiss(mContext);
-            }
-        });
+        request(GROUP_MEMBERS);
+
+//        SealUserInfoManager.getInstance().getGroupMembers(fromConversationId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
+//            @Override
+//            public void onSuccess(List<GroupMember> groupMembers) {
+//                LoadDialog.dismiss(mContext);
+//                if (groupMembers != null && groupMembers.size() > 0) {
+//                    mGroupMember = groupMembers;
+//                    initGroupMemberData();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String errString) {
+//                LoadDialog.dismiss(mContext);
+//            }
+//        });
     }
 
     @Override
@@ -296,7 +302,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case QUIT_GROUP:
-                return action.quitGroup(fromConversationId);
+                return action.quitMyGroup(fromConversationId);
             case DISMISS_GROUP:
                 return action.dissmissGroup(fromConversationId);
             case SET_GROUP_NAME:
@@ -311,6 +317,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 return action.setGroupName(fromConversationId, newGroupName);
             case CHECKGROUPURL:
                 return action.getGroupInfo(fromConversationId);
+            case GROUP_MEMBERS:
+                return action.getRongGroupMembers(fromConversationId);
         }
         return super.doInBackground(requestCode, id);
     }
@@ -319,10 +327,22 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
             switch (requestCode) {
-                case QUIT_GROUP:
-                    QuitGroupResponse response = (QuitGroupResponse) result;
-                    if (response.getCode() == 200) {
+                case GROUP_MEMBERS:
+                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse)result;
+                    if (getRongGroupMembersResponse.getCode() != null) {
+                        List<Groups> members = getRongGroupMembersResponse.getValue();
+                        for (Groups item : members) {
+                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(""));
+                            mGroupMember.add(groupMember);
+                        }
+                        initGroupMemberData();
+                    }
 
+                    break;
+
+                case QUIT_GROUP:
+                    QuitMyGroupResponse response = (QuitMyGroupResponse) result;
+                    if (response.getCode().getCodeId().equals("100")) {
                         RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Conversation>() {
                             @Override
                             public void onSuccess(Conversation conversation) {

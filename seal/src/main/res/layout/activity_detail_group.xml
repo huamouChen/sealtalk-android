@@ -559,7 +559,7 @@
                 android:text="@string/quit_group"
                 android:textColor="#FFF"
                 android:textSize="16sp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <!--解散并退出-->
             <Button

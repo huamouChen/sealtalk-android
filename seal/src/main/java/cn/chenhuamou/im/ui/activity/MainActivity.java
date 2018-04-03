@@ -141,21 +141,6 @@ public class MainActivity extends FragmentActivity implements
 //        // 开始监听
         starSignalA();
 
-
-        RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
-            @Override
-            public void onSuccess(List<Conversation> conversations) {
-                System.out.println("-----------------获取会话列表成功");
-                for (Conversation item : conversations) {
-                    System.out.println(item.getTargetId());
-                }
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                System.out.println("-----------------获取会话列表失败");
-            }
-        });
     }
 
     // 刷新个人信息

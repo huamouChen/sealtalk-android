@@ -38,6 +38,7 @@ import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.pinyin.PinyinComparator;
 import cn.chenhuamou.im.server.pinyin.SideBar;
+import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -60,6 +61,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 
     private static final int GET_RONG_GROUPS = 700;
     private static final int GET_RONG_GROUP_MEMBERS = 800;
+    private static final int GET_RONG_FRIEND_LIST = 900;
 
     private SelectableRoundedImageView mSelectableRoundedImageView;
     private TextView mNameTextView;
@@ -302,6 +304,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 
         mAsyncTaskManager.request(GET_RONG_GROUPS, this);
 
+//        mAsyncTaskManager.request(GET_RONG_FRIEND_LIST, this);
 
     }
 
@@ -312,6 +315,8 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
                 return action.getRongGroups(userName);
             case GET_RONG_GROUP_MEMBERS:
                 return action.getRongGroupMembers(groupId);
+            case GET_RONG_FRIEND_LIST:
+                return action.getFriendList();
         }
         return null;
 
@@ -320,6 +325,11 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onSuccess(int requestCode, Object result) {
         switch (requestCode) {
+
+            case GET_RONG_FRIEND_LIST:
+                GetRongFriendListResponse getRongFriendListResponse = (GetRongFriendListResponse) result;
+                break;
+
             case GET_RONG_GROUPS:
                 GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
                 // token 失效，返回登录界面

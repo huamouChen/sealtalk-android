@@ -7,6 +7,10 @@ package cn.chenhuamou.im.server.response;
 public class CreateMyGroupResponse {
 
 
+
+
+    private ValueEntity Value;
+
     private CodeEntity Code;
 
     public CodeEntity getCode() {
@@ -15,6 +19,41 @@ public class CreateMyGroupResponse {
 
     public void setCode(CodeEntity code) {
         Code = code;
+    }
+
+    public ValueEntity getValue() {
+        return Value;
+    }
+
+    public void setValue(ValueEntity value) {
+        Value = value;
+    }
+
+    public class ValueEntity {
+
+        /**
+         * GroupId : 2839
+         * GroupName : group2
+         */
+
+        private int GroupId;
+        private String GroupName;
+
+        public int getGroupId() {
+            return GroupId;
+        }
+
+        public void setGroupId(int GroupId) {
+            this.GroupId = GroupId;
+        }
+
+        public String getGroupName() {
+            return GroupName;
+        }
+
+        public void setGroupName(String GroupName) {
+            this.GroupName = GroupName;
+        }
     }
 
     public class CodeEntity {

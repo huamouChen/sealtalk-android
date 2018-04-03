@@ -37,6 +37,8 @@ import cn.chenhuamou.im.server.response.GetBlackListResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
 import cn.chenhuamou.im.server.response.GetGroupResponse;
+import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetTokenResponse;
 import cn.chenhuamou.im.server.response.UserRelationshipResponse;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -371,7 +373,7 @@ public class SealUserInfoManager implements OnDataListener {
             List<UserRelationshipResponse.ResultEntity> list = userRelationshipResponse.getResult();
             if (list != null && list.size() > 0) {
                 syncDeleteFriends();
-                addFriends(list);
+//                addFriends(list);
             }
             mGetAllUserInfoState |= FRIEND;
             return true;
@@ -381,15 +383,15 @@ public class SealUserInfoManager implements OnDataListener {
 
     private List<Friend> pullFriends() throws HttpException {
         List<Friend> friendsList = null;
-        UserRelationshipResponse userRelationshipResponse;
+        GetRongFriendListResponse userRelationshipResponse;
         try {
-            userRelationshipResponse = action.getAllUserRelationship();
+            userRelationshipResponse = action.getFriendList();
         } catch (JSONException e) {
             NLog.d(TAG, "pullFriends occurs JSONException e=" + e.toString());
             return null;
         }
-        if (userRelationshipResponse != null && userRelationshipResponse.getCode() == 200) {
-            List<UserRelationshipResponse.ResultEntity> list = userRelationshipResponse.getResult();
+        if (userRelationshipResponse != null && userRelationshipResponse.getCode() != null) {
+            List<GetRongFriendListResponse.ValueEntity> list = userRelationshipResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteFriends();
                 friendsList = addFriends(list);
@@ -528,7 +530,7 @@ public class SealUserInfoManager implements OnDataListener {
                     List<GetGroupMemberResponse.ResultEntity> list = groupMemberResponse.getResult();
                     if (list != null && list.size() > 0) {
                         if (mGroupMemberDao != null) {
-                            addGroupMembers(list, group.getGroupsId());
+//                            addGroupMembers(list, group.getGroupsId());
                         } else if (mDBManager == null) {
                             //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
                             return false;
@@ -583,7 +585,7 @@ public class SealUserInfoManager implements OnDataListener {
                         List<GetGroupMemberResponse.ResultEntity> list = groupMemberResponse.getResult();
                         if (list != null && list.size() > 0) {
                             syncDeleteGroupMembers(groupID);
-                            addGroupMembers(list, groupID);
+//                            addGroupMembers(list, groupID);
                         }
                     } else {
                         setGetAllUserInfoWithPartGroupMembersState();
@@ -626,17 +628,17 @@ public class SealUserInfoManager implements OnDataListener {
         if (mGroupsList != null && mGroupsList.size() > 0) {
             syncDeleteGroupMembers();
             for (Groups group : mGroupsList) {
-                GetGroupMemberResponse groupMemberResponse;
+                GetRongGroupMembersResponse groupMemberResponse;
                 try {
-                    groupMemberResponse = action.getGroupMember(group.getGroupsId());
+                    groupMemberResponse = action.getRongGroupMembers(groupsID);
                 } catch (JSONException e) {
                     NLog.d(TAG, "pullGroupMembers(String groupsID) occurs JSONException e=" + e.toString() + ", groupID=" + groupsID);
                     fetchGroupCount++;
                     continue;
                 }
-                if (groupMemberResponse != null && groupMemberResponse.getCode() == 200) {
+                if (groupMemberResponse != null && groupMemberResponse.getCode() != null) {
                     fetchGroupCount++;
-                    List<GetGroupMemberResponse.ResultEntity> list = groupMemberResponse.getResult();
+                    List<Groups> list = groupMemberResponse.getValue();
                     if (list != null && list.size() > 0) {
                         List<GroupMember> memberList = addGroupMembers(list, group.getGroupsId());
                         if (groupsID.equals(group.getGroupsId())) {
@@ -793,19 +795,19 @@ public class SealUserInfoManager implements OnDataListener {
      * @param list server获取的好友信息
      * @return List<Friend> 好友列表
      */
-    private List<Friend> addFriends(final List<UserRelationshipResponse.ResultEntity> list) {
+    private List<Friend> addFriends(final List<GetRongFriendListResponse.ValueEntity> list) {
         if (list != null && list.size() > 0) {
             List<Friend> friendsList = new ArrayList<>();
-            for (UserRelationshipResponse.ResultEntity resultEntity : list) {
-                if (resultEntity.getStatus() == 20) {
+            for (GetRongFriendListResponse.ValueEntity resultEntity : list) {
+//                if (resultEntity.getStatus() == 20) {
                     Friend friend = new Friend(
-                            resultEntity.getUser().getId(),
-                            resultEntity.getUser().getNickname(),
-                            Uri.parse(resultEntity.getUser().getPortraitUri()),
-                            resultEntity.getDisplayName(),
+                            resultEntity.getUserName(),
+                            resultEntity.getUserName(),
+                            Uri.parse(resultEntity.getHeadImg()),
+                            resultEntity.getUserName(),
                             null, null, null, null,
-                            CharacterParser.getInstance().getSpelling(resultEntity.getUser().getNickname()),
-                            CharacterParser.getInstance().getSpelling(resultEntity.getDisplayName()));
+                            CharacterParser.getInstance().getSpelling(resultEntity.getUserName()),
+                            CharacterParser.getInstance().getSpelling(resultEntity.getUserName()));
                     if (friend.getPortraitUri() == null || TextUtils.isEmpty(friend.getPortraitUri().toString())) {
                         String portrait = getPortrait(friend);
                         if (portrait != null) {
@@ -813,7 +815,7 @@ public class SealUserInfoManager implements OnDataListener {
                         }
                     }
                     friendsList.add(friend);
-                }
+//                }
             }
             if (friendsList.size() > 0) {
                 if (mFriendDao != null) {
@@ -878,7 +880,7 @@ public class SealUserInfoManager implements OnDataListener {
      * @param groupID 群组ID
      * @return List<GroupMember> 群组成员列表
      */
-    private List<GroupMember> addGroupMembers(final List<GetGroupMemberResponse.ResultEntity> list, final String groupID) {
+    private List<GroupMember> addGroupMembers(final List<Groups> list, final String groupID) {
         if (list != null && list.size() > 0) {
             List<GroupMember> groupsMembersList = setCreatedToTop(list, groupID);
             if (groupsMembersList != null && groupsMembersList.size() > 0) {
@@ -1604,10 +1606,10 @@ public class SealUserInfoManager implements OnDataListener {
         }
     }
 
-    private List<GroupMember> setCreatedToTop(List<GetGroupMemberResponse.ResultEntity> groupMember, String groupID) {
+    private List<GroupMember> setCreatedToTop(List<Groups> groupMember, String groupID) {
         List<GroupMember> newList = new ArrayList<>();
         GroupMember created = null;
-        for (GetGroupMemberResponse.ResultEntity group : groupMember) {
+        for (Groups group : groupMember) {
             String groupName = null;
             String groupPortraitUri = null;
             Groups groups = getGroupsByID(groupID);
@@ -1616,20 +1618,23 @@ public class SealUserInfoManager implements OnDataListener {
                 groupPortraitUri = groups.getPortraitUri();
             }
             GroupMember newMember = new GroupMember(groupID,
-                    group.getUser().getId(),
-                    group.getUser().getNickname(),
-                    Uri.parse(group.getUser().getPortraitUri()),
+                    group.getUserName(),
+                    group.getUserName(),
+                    Uri.parse(group.getUserName()),
                     group.getDisplayName(),
-                    CharacterParser.getInstance().getSpelling(group.getUser().getNickname()),
+                    CharacterParser.getInstance().getSpelling(group.getUserName()),
                     CharacterParser.getInstance().getSpelling(group.getDisplayName()),
                     groupName,
                     CharacterParser.getInstance().getSpelling(groupName),
                     groupPortraitUri);
-            if (group.getRole() == 0) {
-                created = newMember;
-            } else {
-                newList.add(newMember);
-            }
+
+            newList.add(newMember);
+
+//            if (group.getRole() == 0) {
+//                created = newMember;
+//            } else {
+//                newList.add(newMember);
+//            }
         }
         if (created != null) {
             newList.add(created);

@@ -535,7 +535,7 @@ public class SyncHttpClient {
      * @throws HttpException
      */
     public String get(Context context, String url, RequestParams params) throws HttpException {
-        return sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(isUrlEncodingEnabled, url, params)), null, context);
+        return sendRequest(httpClient, httpContext, new HttpGet(getUrlWithQueryString(isUrlEncodingEnabled, url, params)), "application/json", context);
     }
 
     /**
@@ -723,11 +723,18 @@ public class SyncHttpClient {
 
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
+
+
+
         }
 
-        SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
-        String token = sp.getString(SealConst.TOKEN, "");
-        uriRequest.addHeader("Authorization", "Bearer " + token);
+
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            String token = sp.getString(SealConst.TOKEN, "");
+            uriRequest.addHeader("Authorization", "Bearer " + token);
+        }
+
 
 //    	//set cookie
 //    	List<Cookie> list = cookieStore.getCookies();

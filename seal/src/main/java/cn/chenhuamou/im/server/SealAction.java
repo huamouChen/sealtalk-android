@@ -58,6 +58,7 @@ import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
 import cn.chenhuamou.im.server.response.GetGroupResponse;
+import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
@@ -1059,13 +1060,13 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public GetRongGroupMembersResponse getFriendList() throws HttpException {
+    public GetRongFriendListResponse getFriendList() throws HttpException {
         String url = getURL("api/Im/ListFriends");
         String result = httpManager.get(mContext, url);
-        GetRongGroupMembersResponse response = null;
+        GetRongFriendListResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("GetRongGroupMembersResponse", result);
-            response = jsonToBean(result, GetRongGroupMembersResponse.class);
+            response = jsonToBean(result, GetRongFriendListResponse.class);
         }
         return response;
     }
@@ -1076,7 +1077,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetRongGroupResponse getRongGroups(String userName) throws HttpException {
-        String url = getURL("api/Im/Groups");
+        String url = getURL("api/Im/ListGroups");
         String result = httpManager.get(mContext, url);
         GetRongGroupResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -1092,7 +1093,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetRongGroupMembersResponse getRongGroupMembers(String groupId) throws HttpException {
-        String url = getURL("api/Im/GroupUsers");
+        String url = getURL("api/Im/ListGroupUsers");
         String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
         GetRongGroupMembersResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -1174,7 +1175,7 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public CreateMyGroupResponse createGroup(String owner, String groupName, List<String> members) throws HttpException {
+    public CreateMyGroupResponse createMyGroup(String owner, String groupName, List<String> members) throws HttpException {
         String url = getURL("api/Im/CreateGroup");
         String json = JsonMananger.beanToJson(new CreateMyGroupRequest(owner, groupName, members));
         StringEntity entity = null;

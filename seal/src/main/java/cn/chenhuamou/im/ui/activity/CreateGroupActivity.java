@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.CreateGroupResponse;
+import cn.chenhuamou.im.server.response.CreateMyGroupResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.SetGroupPortraitResponse;
 import cn.chenhuamou.im.server.utils.NToast;
@@ -73,7 +75,7 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
         initView();
         setPortraitChangeListener();
         if (memberList != null && memberList.size() > 0) {
-            groupIds.add(getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, ""));
+//            groupIds.add(getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, ""));
             for (Friend f : memberList) {
                 groupIds.add(f.getUserId());
             }
@@ -142,7 +144,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case CREATE_GROUP:
-                return action.createGroup(mGroupName, groupIds);
+                String loninid= getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+                return action.createMyGroup(loninid, mGroupName, groupIds);
             case SET_GROUP_PORTRAIT_URI:
                 return action.setGroupPortrait(mGroupId, imageUrl);
             case GET_QI_NIU_TOKEN:
@@ -156,21 +159,29 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
         if (result != null) {
             switch (requestCode) {
                 case CREATE_GROUP:
-                    CreateGroupResponse createGroupResponse = (CreateGroupResponse) result;
-                    if (createGroupResponse.getCode() == 200) {
-                        mGroupId = createGroupResponse.getResult().getId(); //id == null
-                        if (TextUtils.isEmpty(imageUrl)) {
-                            SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
-                            BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
-                            LoadDialog.dismiss(mContext);
-                            NToast.shortToast(mContext, getString(R.string.create_group_success));
-                            RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
-                            finish();
-                        } else {
-                            if (!TextUtils.isEmpty(mGroupId)) {
-                                request(SET_GROUP_PORTRAIT_URI);
-                            }
-                        }
+                    CreateMyGroupResponse createGroupResponse = (CreateMyGroupResponse) result;
+                    if (createGroupResponse.getCode() != null && createGroupResponse.getCode().getCodeId().equals("100")) {
+                        mGroupId = createGroupResponse.getValue().getGroupId() + ""; //id == null
+                        mGroupName = createGroupResponse.getValue().getGroupName();
+                        SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, ""));
+                        BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, getString(R.string.create_group_success));
+                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
+                        finish();
+
+//                        if (TextUtils.isEmpty(imageUrl)) {
+//                            SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
+//                            BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
+//                            LoadDialog.dismiss(mContext);
+//                            NToast.shortToast(mContext, getString(R.string.create_group_success));
+//                            RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
+//                            finish();
+//                        } else {
+//                            if (!TextUtils.isEmpty(mGroupId)) {
+//                                request(SET_GROUP_PORTRAIT_URI);
+//                            }
+//                        }
                     }
                     break;
                 case SET_GROUP_PORTRAIT_URI:
