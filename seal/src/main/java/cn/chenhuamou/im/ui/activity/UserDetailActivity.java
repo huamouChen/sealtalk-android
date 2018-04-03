@@ -38,15 +38,11 @@ import cn.chenhuamou.im.server.utils.RongGenerate;
 import cn.chenhuamou.im.server.widget.DialogWithYesOrNoUtils;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.widget.SinglePopWindow;
-
-//CallKit start 1
 import io.rong.callkit.RongCallAction;
 import io.rong.callkit.RongVoIPIntent;
 import io.rong.calllib.RongCallClient;
 import io.rong.calllib.RongCallCommon;
 import io.rong.calllib.RongCallSession;
-//CallKit end 1
-
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.IRongCallback;
@@ -54,6 +50,9 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
 import io.rong.imlib.model.UserOnlineStatusInfo;
+
+//CallKit start 1
+//CallKit end 1
 
 /**
  * Created by tiankui on 16/11/2.
@@ -165,24 +164,19 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
         if (!TextUtils.isEmpty(mFriend.getUserId())) {
             String mySelf = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-            if (mySelf.equals(mFriend.getUserId())) { // 点击的是自己
+            if (mySelf.equals(mFriend.getUserId())) {
                 mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
                 mAddFriendButton.setVisibility(View.GONE);
                 return;
             }
-
-
-            // 不维护好友关系，目前都是好友
-            mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
-            mAddFriendButton.setVisibility(View.GONE);
-//            if (mIsFriendsRelationship) { // 点击的是好友
-//                mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
-//                mAddFriendButton.setVisibility(View.GONE);
-//            } else {                       // 点击的是非好友
-//                mAddFriendButton.setVisibility(View.VISIBLE);
-//                mChatButtonGroupLinearLayout.setVisibility(View.GONE);
-//                mNoteNameLinearLayout.setVisibility(View.GONE);
-//            }
+            if (mIsFriendsRelationship) {
+                mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
+                mAddFriendButton.setVisibility(View.GONE);
+            } else {
+                mAddFriendButton.setVisibility(View.VISIBLE);
+                mChatButtonGroupLinearLayout.setVisibility(View.GONE);
+                mNoteNameLinearLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -199,10 +193,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initBlackListStatusView() {
-        setHeadRightButtonVisibility(View.GONE);
         if (mIsFriendsRelationship) {
             Button rightButton = getHeadRightButton();
-            setHeadRightButtonVisibility(View.GONE);
             rightButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.main_activity_contact_more));
             rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override

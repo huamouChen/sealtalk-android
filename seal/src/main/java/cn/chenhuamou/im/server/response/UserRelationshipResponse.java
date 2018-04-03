@@ -116,6 +116,12 @@ public class UserRelationshipResponse {
             private String nickname;
             private String portraitUri;
 
+            public UserEntity(String id, String nickname, String portraitUri) {
+                this.id = id;
+                this.nickname = nickname;
+                this.portraitUri = portraitUri;
+            }
+
             public void setId(String id) {
                 this.id = id;
             }

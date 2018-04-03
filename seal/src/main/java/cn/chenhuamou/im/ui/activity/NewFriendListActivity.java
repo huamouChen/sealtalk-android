@@ -3,6 +3,7 @@ package cn.chenhuamou.im.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -10,9 +11,9 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealAppContext;
@@ -21,12 +22,21 @@ import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
+import cn.chenhuamou.im.server.request.SetFriendDisplayNameRequest;
+import cn.chenhuamou.im.server.response.AgreeFriendApplyResponse;
 import cn.chenhuamou.im.server.response.AgreeFriendsResponse;
+import cn.chenhuamou.im.server.response.ExtraResponse;
+import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.UserRelationshipResponse;
 import cn.chenhuamou.im.server.utils.CommonUtils;
 import cn.chenhuamou.im.server.utils.NToast;
+import cn.chenhuamou.im.server.utils.json.JsonMananger;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.adapter.NewFriendListAdapter;
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
+import io.rong.message.TextMessage;
 
 
 public class NewFriendListActivity extends BaseActivity implements NewFriendListAdapter.OnItemButtonClick, View.OnClickListener {
@@ -38,7 +48,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     private NewFriendListAdapter adapter;
     private String friendId;
     private TextView isData;
-    private UserRelationshipResponse userRelationshipResponse;
+    private UserRelationshipResponse userRelationshipResponse = new UserRelationshipResponse();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +63,57 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
         request(GET_ALL);
         adapter = new NewFriendListAdapter(mContext);
         shipListView.setAdapter(adapter);
+
+        initMyData();
+    }
+
+
+    private void initMyData() {
+
+        RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
+            @Override
+            public void onSuccess(List<Conversation> conversations) {
+                List<UserRelationshipResponse.ResultEntity> list = new ArrayList<>();
+                for (Conversation item : conversations) {
+                    if (item.getObjectName().equals("RC:ContactNtf")) {
+                        UserRelationshipResponse.ResultEntity resultEntity = new UserRelationshipResponse.ResultEntity();
+                        resultEntity.setDisplayName(item.getTargetId());
+                        resultEntity.setMessage(item.getTargetId() + " 想加你为好友");
+                        resultEntity.setStatus(11);
+                        resultEntity.setUpdatedAt("");
+                        String applyId = "";
+                        if (item.getLatestMessage() instanceof TextMessage) {
+                            TextMessage message = (TextMessage) item.getLatestMessage();
+                            String extraJson = message.getExtra();
+                            if (!TextUtils.isEmpty(extraJson)) {
+                                try {
+                                    ExtraResponse extraResponse = JsonMananger.jsonToBean(extraJson, ExtraResponse.class);
+                                    applyId = extraResponse.getApplyId();
+                                } catch (HttpException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        resultEntity.setUser(new UserRelationshipResponse.ResultEntity.UserEntity(item.getTargetId(), item.getTargetId(), applyId));
+                        list.add(resultEntity);
+                    }
+                }
+
+                adapter.removeAll();
+                adapter.addData(list);
+                adapter.notifyDataSetChanged();
+                LoadDialog.dismiss(mContext);
+                userRelationshipResponse.setResult(list);
+
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+            }
+        });
+
+        adapter.setOnItemButtonClick(this);
     }
 
     protected void initView() {
@@ -69,9 +130,11 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case GET_ALL:
-                return action.getAllUserRelationship();
+                return action.getFriendList();
             case AGREE_FRIENDS:
-                return action.agreeFriends(friendId);
+                // applyid 放在消息的 extra 里面， 然后保存在 用户的头像地址里面
+//                UserRelationshipResponse.ResultEntity bean = userRelationshipResponse.getResult().get(index);
+                return action.agreeFriend("44");
         }
         return super.doInBackground(requestCode, id);
     }
@@ -79,41 +142,15 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onSuccess(int requestCode, Object result) {
+    public void onSuccess(int requestCode, final Object result) {
         if (result != null) {
             switch (requestCode) {
                 case GET_ALL:
-                    userRelationshipResponse = (UserRelationshipResponse) result;
-
-                    if (userRelationshipResponse.getResult().size() == 0) {
-                        isData.setVisibility(View.VISIBLE);
-                        LoadDialog.dismiss(mContext);
-                        return;
-                    }
-
-                    Collections.sort(userRelationshipResponse.getResult(), new Comparator<UserRelationshipResponse.ResultEntity>() {
-
-                        @Override
-                        public int compare(UserRelationshipResponse.ResultEntity lhs, UserRelationshipResponse.ResultEntity rhs) {
-                            Date date1 = stringToDate(lhs);
-                            Date date2 = stringToDate(rhs);
-                            if (date1.before(date2)) {
-                                return 1;
-                            }
-                            return -1;
-                        }
-                    });
-
-                    adapter.removeAll();
-                    adapter.addData(userRelationshipResponse.getResult());
-
-                    adapter.notifyDataSetChanged();
-                    adapter.setOnItemButtonClick(this);
                     LoadDialog.dismiss(mContext);
                     break;
                 case AGREE_FRIENDS:
-                    AgreeFriendsResponse afres = (AgreeFriendsResponse) result;
-                    if (afres.getCode() == 200) {
+                    AgreeFriendApplyResponse agreeFriendApplyResponse = (AgreeFriendApplyResponse) result;
+                    if (agreeFriendApplyResponse.getCode() != null) {
                         UserRelationshipResponse.ResultEntity bean = userRelationshipResponse.getResult().get(index);
                         SealUserInfoManager.getInstance().addFriend(new Friend(bean.getUser().getId(),
                                 bean.getUser().getNickname(),
@@ -130,8 +167,11 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         LoadDialog.dismiss(mContext);
                         BroadcastManager.getInstance(mContext).sendBroadcast(SealAppContext.UPDATE_FRIEND);
                         request(GET_ALL); //刷新 UI 按钮
+                    } else {
+                        // 通知好友列表刷新数据
+                        NToast.shortToast(mContext, "接受好友失败");
+                        LoadDialog.dismiss(mContext);
                     }
-
             }
         }
     }
@@ -167,7 +207,6 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                     break;
                 }
                 LoadDialog.show(mContext);
-//                friendId = null;
                 friendId = userRelationshipResponse.getResult().get(position).getUser().getId();
                 request(AGREE_FRIENDS);
                 break;

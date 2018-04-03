@@ -15,6 +15,7 @@ import cn.chenhuamou.im.server.network.http.RequestParams;
 import cn.chenhuamou.im.server.request.AddGroupMemberRequest;
 import cn.chenhuamou.im.server.request.AddToBlackListRequest;
 import cn.chenhuamou.im.server.request.AgreeFriendsRequest;
+import cn.chenhuamou.im.server.request.AgreeMyFriendRequest;
 import cn.chenhuamou.im.server.request.ChangePasswordRequest;
 import cn.chenhuamou.im.server.request.CheckPhoneRequest;
 import cn.chenhuamou.im.server.request.CreateGroupRequest;
@@ -1143,8 +1144,17 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public AgreeFriendApplyResponse agreeFriend(String applyId) throws HttpException {
-        String url = getURL("api/Im/ApplyFriend");
-        String result = httpManager.post(mContext, url,  new RequestParams("applyId", applyId));
+        String url = getURL("api/Im/AgreeFirendApply");
+//        String json = JsonMananger.beanToJson(new AgreeMyFriendRequest(applyId));
+//        StringEntity entity = null;
+//        try {
+//            entity = new StringEntity(json, ENCODING);
+//            entity.setContentType(CONTENT_TYPE);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+
+        String result = httpManager.post(mContext, url,  new RequestParams("ApplyId", applyId));
         AgreeFriendApplyResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("AgreeFriendApplyResponse", result);
