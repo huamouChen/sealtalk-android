@@ -131,6 +131,12 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         if (isAddGroupMember || isDeleteGroupMember) {
             initGroupMemberList();
         }
+
+        if (isDeleteGroupMember) {
+            // 获取群组成员
+            request(GET_GROUP_MEMBER);
+        }
+
         addDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("AddDiscuMember");
         deleDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("DeleteDiscuMember");
 
@@ -145,8 +151,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
          */
         initData();
 
-        // 获取群组成员
-        request(GET_GROUP_MEMBER);
+
     }
 
     // 添加群组成员 或者  删除群组成员
