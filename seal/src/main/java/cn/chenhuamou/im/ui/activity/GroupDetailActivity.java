@@ -252,8 +252,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             });
         }
 
-        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
-            isCreated = true;
+//        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
+//            isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
             mGroupNotice.setVisibility(View.VISIBLE);
@@ -323,9 +323,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 case GROUP_INFO:  // 获取群组信息
                     GetRongGroupInfoResponse getRongGroupResponse = (GetRongGroupInfoResponse) result;
                     if (getRongGroupResponse.getValue() != null) {
-                        String groupId = getRongGroupResponse.getValue().get(0).getGroupId();
-                        String groupName = getRongGroupResponse.getValue().get(0).getGroupName();
-                        String groupOwer = getRongGroupResponse.getValue().get(0).getGroupOwner();
+                        String groupId = getRongGroupResponse.getValue().getGroupId();
+                        String groupName = getRongGroupResponse.getValue().getGroupName();
+                        String groupOwer = getRongGroupResponse.getValue().getGroupOwner();
                         mGroup = new Groups(groupId, groupName, "");
                         initGroupData();
                         String userId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");

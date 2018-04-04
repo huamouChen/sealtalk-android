@@ -31,6 +31,7 @@ import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.db.GroupMember;
+import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
@@ -38,7 +39,9 @@ import cn.chenhuamou.im.server.pinyin.PinyinComparator;
 import cn.chenhuamou.im.server.pinyin.SideBar;
 import cn.chenhuamou.im.server.response.AddGroupMemberResponse;
 import cn.chenhuamou.im.server.response.DeleteGroupMemberResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.InviteMyGroupResponse;
+import cn.chenhuamou.im.server.response.KickMyGroupResponse;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.DialogWithYesOrNoUtils;
@@ -58,6 +61,10 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
     private static final int ADD_GROUP_MEMBER = 21;
     private static final int DELETE_GROUP_MEMBER = 23;
+
+    private static final int GET_GROUP_MEMBER = 230;
+
+
     public static final String DISCUSSION_UPDATE = "DISCUSSION_UPDATE";
     /**
      * 好友列表的 ListView
@@ -119,6 +126,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         groupName = getIntent().getStringExtra("GroupName");
         isAddGroupMember = getIntent().getBooleanExtra("isAddGroupMember", false);
         isDeleteGroupMember = getIntent().getBooleanExtra("isDeleteGroupMember", false);
+
+        // 添加群组成员 或者 删除群组成员
         if (isAddGroupMember || isDeleteGroupMember) {
             initGroupMemberList();
         }
@@ -135,8 +144,12 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
          * 后两个操作全都根据异步操作推后
          */
         initData();
+
+        // 获取群组成员
+        request(GET_GROUP_MEMBER);
     }
 
+    // 添加群组成员 或者  删除群组成员
     private void initGroupMemberList() {
         SealUserInfoManager.getInstance().getGroupMembers(groupId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
             @Override
@@ -573,10 +586,13 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             case ADD_GROUP_MEMBER:
                 return action.inviteMyGroup(groupId, groupName, startDisList);
             case DELETE_GROUP_MEMBER:
-                return action.deleGroupMember(groupId, startDisList);
+                return action.kickMyGroup(groupId, startDisList);
+            case GET_GROUP_MEMBER:
+                return action.getRongGroupMembers(groupId);
         }
         return super.doInBackground(requestCode, id);
     }
+
     @Override
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
@@ -593,22 +609,38 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     }
                     break;
                 case DELETE_GROUP_MEMBER:
-                    DeleteGroupMemberResponse response = (DeleteGroupMemberResponse) result;
-                    if (response.getCode() == 200) {
+                    KickMyGroupResponse response = (KickMyGroupResponse) result;
+                    if (response.getCode() != null && response.getCode().getCodeId().equals("100")) {
                         Intent intent = new Intent();
                         intent.putExtra("deleteMember", (Serializable) createGroupList);
                         setResult(102, intent);
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.remove_successful));
                         finish();
-                    } else if (response.getCode() == 400) {
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, "创建者不能将自己移除");
+                    }
+//                    } else if (response.getCode() == 400) {
+//                        LoadDialog.dismiss(mContext);
+//                        NToast.shortToast(mContext, "创建者不能将自己移除");
+//                    }
+                    break;
+
+                case GET_GROUP_MEMBER:
+                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
+                    if (getRongGroupMembersResponse.getCode() != null && getRongGroupMembersResponse.getCode().getCodeId().equals("100")) {
+                        List<Groups> memberList = getRongGroupMembersResponse.getValue();
+                        deleteGroupMemberList = new ArrayList<>();
+                        for (Groups item : memberList) {
+                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(""));
+                            groupMember.setGroupId(groupId);
+                            deleteGroupMemberList.add(groupMember);
+                        }
+                        fillSourceDataListForDeleteGroupMember();
                     }
                     break;
             }
         }
     }
+
     @Override
     public void onFailure(int requestCode, int state, Object result) {
         switch (requestCode) {
@@ -622,7 +654,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 break;
         }
     }
-
 
 
     private List<String> startDisList;

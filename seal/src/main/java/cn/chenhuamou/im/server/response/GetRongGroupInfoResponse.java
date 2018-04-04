@@ -1,26 +1,25 @@
 package cn.chenhuamou.im.server.response;
 
-import java.util.List;
-
 /**
  * Created by AMing on 15/12/24.
  * Company RongCloud
  */
 public class GetRongGroupInfoResponse {
 
-    public GetRongGroupInfoResponse(CodeEntity code, List<ValueEntity> value) {
-        this.Code = code;
-        this.Value = value;
-    }
 
-    public GetRongGroupInfoResponse() {
 
-    }
+
+    private ValueEntity Value;
 
     private CodeEntity Code;
 
-    private List<ValueEntity> Value;
+    public ValueEntity getValue() {
+        return Value;
+    }
 
+    public void setValue(ValueEntity value) {
+        Value = value;
+    }
 
     public CodeEntity getCode() {
         return Code;
@@ -30,30 +29,16 @@ public class GetRongGroupInfoResponse {
         Code = code;
     }
 
-    public List<ValueEntity> getValue() {
-        return Value;
-    }
-
-    public void setValue(List<ValueEntity> value) {
-        Value = value;
-    }
-
     public class ValueEntity {
 
-        public ValueEntity(String groupId, String groupName, String groupOwner, boolean isOfficial, String addTime) {
-            GroupId = groupId;
-            GroupName = groupName;
-            GroupOwner = groupOwner;
-            IsOfficial = isOfficial;
-            AddTime = addTime;
-        }
+
 
         /**
-         * GroupId : string
-         * GroupName : string
-         * GroupOwner : string
-         * IsOfficial : true
-         * AddTime : 2018-04-04T02:54:04.108Z
+         * GroupId : 2870
+         * GroupName : 2222
+         * GroupOwner : dl1
+         * IsOfficial : false
+         * AddTime : 2018-04-04T15:40:04.587
          */
 
         private String GroupId;
@@ -104,18 +89,14 @@ public class GetRongGroupInfoResponse {
     }
 
 
-    public static class CodeEntity {
-        public CodeEntity(String codeId, String description) {
-            CodeId = codeId;
-            Description = description;
-        }
+    public class CodeEntity {
+
+
 
         /**
-         * CodeId : string
-         * Description : string
+         * CodeId : 100
+         * Description : 成功
          */
-
-
 
         private String CodeId;
         private String Description;
@@ -136,5 +117,4 @@ public class GetRongGroupInfoResponse {
             this.Description = Description;
         }
     }
-
 }

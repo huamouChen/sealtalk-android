@@ -1,35 +1,40 @@
 package cn.chenhuamou.im.server.request;
 
+import java.util.List;
+
 /**
  * Created by AMing on 16/1/25.
  * Company RongCloud
  */
 public class KickMyGroupRequest {
 
-
-    private String groupId;
-
-    private String kickUser;
-
-
-    public KickMyGroupRequest(String groupId, String kickUser) {
-        this.groupId = groupId;
-        this.kickUser = kickUser;
+    public KickMyGroupRequest(int groupId, List<String> kickUsers) {
+        GroupId = groupId;
+        KickUsers = kickUsers;
     }
 
-    public String getGroupId() {
-        return groupId;
+    /**
+     * GroupId : 0
+     * KickUsers : ["string"]
+     */
+
+    private int GroupId;
+    private List<String> KickUsers;
+
+    public int getGroupId() {
+        return GroupId;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroupId(int GroupId) {
+        this.GroupId = GroupId;
     }
 
-    public String getKickUser() {
-        return kickUser;
+    public List<String> getKickUsers() {
+        return KickUsers;
     }
 
-    public void setKickUser(String kickUser) {
-        this.kickUser = kickUser;
+    public void setKickUsers(List<String> KickUsers) {
+        this.KickUsers = KickUsers;
     }
 }
+

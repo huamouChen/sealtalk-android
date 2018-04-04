@@ -1060,7 +1060,7 @@ public class SealAction extends BaseAction {
     }
 
     /**
-     * 获取 好友成员
+     * 获取 好友
      *
      * @throws HttpException
      */
@@ -1077,7 +1077,7 @@ public class SealAction extends BaseAction {
 
 
     /**
-     * 获取 指定群组的
+     * 获取 指定群组的信息
      *
      * @throws HttpException
      */
@@ -1302,9 +1302,9 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public KickMyGroupResponse kickMyGroup(String groupId, String kickUser) throws HttpException {
+    public KickMyGroupResponse kickMyGroup(String groupId, List<String> kickUser) throws HttpException {
         String url = getURL("api/Im/KickGroup");
-        String json = JsonMananger.beanToJson(new KickMyGroupRequest(groupId, kickUser));
+        String json = JsonMananger.beanToJson(new KickMyGroupRequest(Integer.valueOf(groupId), kickUser));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);
