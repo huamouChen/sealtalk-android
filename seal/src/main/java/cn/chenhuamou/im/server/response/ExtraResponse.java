@@ -6,17 +6,17 @@ package cn.chenhuamou.im.server.response;
  * Company RongCloud
  */
 public class ExtraResponse {
-    private String ApplyId;
+    private int ApplyId;
 
-    public ExtraResponse(String applyId) {
+    public ExtraResponse(int applyId) {
         ApplyId = applyId;
     }
 
-    public String getApplyId() {
+    public int getApplyId() {
         return ApplyId;
     }
 
-    public void setApplyId(String applyId) {
+    public void setApplyId(int applyId) {
         ApplyId = applyId;
     }
 }

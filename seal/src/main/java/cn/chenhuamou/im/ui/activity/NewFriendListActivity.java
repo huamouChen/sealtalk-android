@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
+import com.alibaba.fastjson.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,11 +25,8 @@ import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
-import cn.chenhuamou.im.server.request.SetFriendDisplayNameRequest;
 import cn.chenhuamou.im.server.response.AgreeFriendApplyResponse;
-import cn.chenhuamou.im.server.response.AgreeFriendsResponse;
 import cn.chenhuamou.im.server.response.ExtraResponse;
-import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.UserRelationshipResponse;
 import cn.chenhuamou.im.server.utils.CommonUtils;
 import cn.chenhuamou.im.server.utils.NToast;
@@ -36,7 +36,7 @@ import cn.chenhuamou.im.ui.adapter.NewFriendListAdapter;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
-import io.rong.message.TextMessage;
+import io.rong.message.ContactNotificationMessage;
 
 
 public class NewFriendListActivity extends BaseActivity implements NewFriendListAdapter.OnItemButtonClick, View.OnClickListener {
@@ -82,16 +82,12 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         resultEntity.setStatus(11);
                         resultEntity.setUpdatedAt("");
                         String applyId = "";
-                        if (item.getLatestMessage() instanceof TextMessage) {
-                            TextMessage message = (TextMessage) item.getLatestMessage();
+                        if (item.getLatestMessage() instanceof ContactNotificationMessage) {
+                            ContactNotificationMessage message = (ContactNotificationMessage) item.getLatestMessage();
                             String extraJson = message.getExtra();
                             if (!TextUtils.isEmpty(extraJson)) {
-                                try {
-                                    ExtraResponse extraResponse = JsonMananger.jsonToBean(extraJson, ExtraResponse.class);
-                                    applyId = extraResponse.getApplyId();
-                                } catch (HttpException e) {
-                                    e.printStackTrace();
-                                }
+                                JSONObject jsonObject= JSONObject.parseObject(extraJson);
+                                applyId = jsonObject.getIntValue("ApplyId") + "";
                             }
                         }
 
@@ -133,8 +129,8 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                 return action.getFriendList();
             case AGREE_FRIENDS:
                 // applyid 放在消息的 extra 里面， 然后保存在 用户的头像地址里面
-//                UserRelationshipResponse.ResultEntity bean = userRelationshipResponse.getResult().get(index);
-                return action.agreeFriend("44");
+                UserRelationshipResponse.ResultEntity bean = userRelationshipResponse.getResult().get(index);
+                return action.agreeFriend(bean.getUser().getPortraitUri());
         }
         return super.doInBackground(requestCode, id);
     }

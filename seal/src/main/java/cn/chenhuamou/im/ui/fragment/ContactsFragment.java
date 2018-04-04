@@ -287,6 +287,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    // 获取好友数据
     private void updateUI() {
         // 从网络获取好友列表
 //        SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
@@ -301,6 +302,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
 //            }
 //        });
 //        updateFriendsList(list);
+
 
 //        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
 

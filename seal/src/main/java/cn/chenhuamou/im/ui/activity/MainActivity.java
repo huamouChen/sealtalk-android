@@ -43,7 +43,13 @@ import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
+import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
+import cn.chenhuamou.im.server.network.async.OnDataListener;
+import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.response.IsAliveResponse;
+import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.adapter.ConversationListAdapterEx;
@@ -70,7 +76,9 @@ public class MainActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener,
         View.OnClickListener,
         DragPointView.OnDragListencer,
-        IUnReadMessageObserver {
+        IUnReadMessageObserver, OnDataListener {
+
+    private static final int RONG_ALIVE = 1000;
 
 
     public static ViewPager mViewPager;
@@ -79,6 +87,13 @@ public class MainActivity extends FragmentActivity implements
     private TextView mTextChats, mTextContact, mTextFind, mTextMe;
     private DragPointView mUnreadNumView;
     private ImageView mSearchImageView;
+
+
+    // 网络请求
+    public AsyncTaskManager mAsyncTaskManager;
+    protected SealAction action;
+
+
     /**
      * 会话列表的fragment
      */
@@ -125,6 +140,13 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
         mContext = this;
         isDebug = getSharedPreferences("config", MODE_PRIVATE).getBoolean("isDebug", false);
+
+
+        mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
+        // Activity管理
+        action = new SealAction(mContext);
+
+
         initViews();
         changeTextViewColor();
         changeSelectedTabState(0);
@@ -141,7 +163,12 @@ public class MainActivity extends FragmentActivity implements
 //        // 开始监听
         starSignalA();
 
+        mAsyncTaskManager.request(RONG_ALIVE, this);
+
     }
+
+
+
 
     // 刷新个人信息
     private void refreshUserInfoCache() {
@@ -625,4 +652,23 @@ public class MainActivity extends FragmentActivity implements
             }
         }
     }
+
+    @Override
+    public Object doInBackground(int requestCode, String parameter) throws HttpException {
+        return action.isAlive();
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        IsAliveResponse isAliveResponse = (IsAliveResponse) result;
+        if (isAliveResponse.getCode() != null) {
+            NLog.d("------------------------isAlive响应成功");
+        } else {
+            NLog.d("------------------------isAlive响应失败");
+        }
+
+    }
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) { }
 }

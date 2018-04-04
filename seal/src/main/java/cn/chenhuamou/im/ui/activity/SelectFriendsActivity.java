@@ -298,7 +298,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
             @Override
             public void onSuccess(List<Friend> friendList) {
-                System.out.println("--------------");
+
                 if (mListView != null) {
                     if (friendList != null && friendList.size() > 0) {
                         for (Friend friend : friendList) {
@@ -322,7 +322,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onError(String errString) {
-                System.out.println("------------------");
+
             }
         });
     }
