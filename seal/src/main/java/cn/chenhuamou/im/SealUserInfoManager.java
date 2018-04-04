@@ -39,6 +39,7 @@ import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
 import cn.chenhuamou.im.server.response.GetGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetTokenResponse;
 import cn.chenhuamou.im.server.response.UserRelationshipResponse;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -402,15 +403,15 @@ public class SealUserInfoManager implements OnDataListener {
     }
 
     private boolean fetchGroups() throws HttpException {
-        GetGroupResponse groupResponse;
+        GetRongGroupResponse groupResponse;
         try {
-            groupResponse = action.getGroups();
+            groupResponse = action.getRongGroups("");
         } catch (JSONException e) {
             NLog.d(TAG, "fetchGroups occurs JSONException e=" + e.toString());
             return true;
         }
-        if (groupResponse != null && groupResponse.getCode() == 200) {
-            List<GetGroupResponse.ResultEntity> groupsList = groupResponse.getResult();
+        if (groupResponse != null && groupResponse.getCode().getCodeId().equals("100")) {
+            List<Groups> groupsList = groupResponse.getValue();
             if (groupsList != null && groupsList.size() > 0) {
                 syncDeleteGroups();
                 addGroups(groupsList);
@@ -467,15 +468,15 @@ public class SealUserInfoManager implements OnDataListener {
 
     private List<Groups> pullGroups() throws HttpException {
         List<Groups> groupsList = null;
-        GetGroupResponse groupResponse;
+        GetRongGroupResponse groupResponse;
         try {
-            groupResponse = action.getGroups();
+            groupResponse = action.getRongGroups("");
         } catch (JSONException e) {
             NLog.d(TAG, "pullGroups occurs JSONException e=" + e.toString());
             return null;
         }
-        if (groupResponse != null && groupResponse.getCode() == 200) {
-            List<GetGroupResponse.ResultEntity> list = groupResponse.getResult();
+        if (groupResponse != null && groupResponse.getCode().getCodeId().equals("100")) {
+            List<Groups> list = groupResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteGroups();
                 groupsList = addGroups(list);
@@ -489,15 +490,15 @@ public class SealUserInfoManager implements OnDataListener {
     private Groups pullGroups(String groupID) throws HttpException {
         Groups group = null;
         List<Groups> groupsList;
-        GetGroupResponse groupResponse;
+        GetRongGroupResponse groupResponse;
         try {
-            groupResponse = action.getGroups();
+            groupResponse = action.getRongGroups(groupID);
         } catch (JSONException e) {
             NLog.d(TAG, "pullGroups(String groupID) occurs JSONException e=" + e.toString());
             return null;
         }
-        if (groupResponse != null && groupResponse.getCode() == 200) {
-            List<GetGroupResponse.ResultEntity> list = groupResponse.getResult();
+        if (groupResponse != null && groupResponse.getCode().getCodeId().equals("100")) {
+            List<Groups> list = groupResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteGroups();
                 groupsList = addGroups(list);
@@ -834,16 +835,16 @@ public class SealUserInfoManager implements OnDataListener {
      * @param list server获取的群组信息
      * @return List<Groups> 群组列表
      */
-    private List<Groups> addGroups(final List<GetGroupResponse.ResultEntity> list) {
+    private List<Groups> addGroups(final List<Groups> list) {
         if (list != null && list.size() > 0) {
             mGroupsList = new ArrayList<>();
-            for (GetGroupResponse.ResultEntity groups : list) {
-                String portrait = groups.getGroup().getPortraitUri();
+            for (Groups groups : list) {
+                String portrait = groups.getPortraitUri();
                 if (TextUtils.isEmpty(portrait)) {
-                    portrait = RongGenerate.generateDefaultAvatar(groups.getGroup().getName(), groups.getGroup().getId());
+                    portrait = RongGenerate.generateDefaultAvatar(groups.getName(), groups.getGroupsId() + "");
                 }
-                mGroupsList.add(new Groups(groups.getGroup().getId(),
-                        groups.getGroup().getName(),
+                mGroupsList.add(new Groups(groups.getGroupsId() +"",
+                        groups.getName(),
                         portrait,
                         String.valueOf(groups.getRole())
                 ));

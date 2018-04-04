@@ -303,6 +303,20 @@ public class MainActivity extends FragmentActivity implements
 
 
     private void initMainViewPager() {
+
+        RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
+            @Override
+            public void onSuccess(List<Conversation> conversations) {
+
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+
+
         // 最近会话列表
         Fragment conversationList = initConversationList();
 

@@ -158,13 +158,16 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
             switch (requestCode) {
-                case CREATE_GROUP:
+                case CREATE_GROUP:   // 创建群组成功
                     CreateMyGroupResponse createGroupResponse = (CreateMyGroupResponse) result;
                     if (createGroupResponse.getCode() != null && createGroupResponse.getCode().getCodeId().equals("100")) {
-                        mGroupId = createGroupResponse.getValue().getGroupId() + ""; //id == null
+                        mGroupId = createGroupResponse.getValue().getGroupId() + "";
                         mGroupName = createGroupResponse.getValue().getGroupName();
-                        SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, ""));
-                        BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
+                        Groups groups = new Groups(mGroupId, mGroupName, "");
+                        groups.setDisplayName(mGroupName);
+                        SealUserInfoManager.getInstance().addGroup(groups);
+                        BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI);
+
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.create_group_success));
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);

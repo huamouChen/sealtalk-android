@@ -24,6 +24,7 @@ import cn.chenhuamou.im.server.request.DeleteFriendRequest;
 import cn.chenhuamou.im.server.request.DeleteGroupMemberRequest;
 import cn.chenhuamou.im.server.request.DismissGroupRequest;
 import cn.chenhuamou.im.server.request.FriendInvitationRequest;
+import cn.chenhuamou.im.server.request.InviteMyGroupRequest;
 import cn.chenhuamou.im.server.request.JoinGroupRequest;
 import cn.chenhuamou.im.server.request.JoinMyGroupRequest;
 import cn.chenhuamou.im.server.request.KickMyGroupRequest;
@@ -60,6 +61,7 @@ import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
 import cn.chenhuamou.im.server.response.GetGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
@@ -67,6 +69,7 @@ import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByPhoneResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoResponse;
 import cn.chenhuamou.im.server.response.GetUserInfosResponse;
+import cn.chenhuamou.im.server.response.InviteMyGroupResponse;
 import cn.chenhuamou.im.server.response.IsAliveResponse;
 import cn.chenhuamou.im.server.response.JoinGroupResponse;
 import cn.chenhuamou.im.server.response.JoinMyGroupResponse;
@@ -1072,8 +1075,27 @@ public class SealAction extends BaseAction {
         return response;
     }
 
+
     /**
-     * 获取 群组
+     * 获取 指定群组的
+     *
+     * @throws HttpException
+     */
+    public GetRongGroupInfoResponse getRongGroupInfo(String groupId) throws HttpException {
+        String url = getURL("api/Im/GetGroup");
+        String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
+        GetRongGroupInfoResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetRongGroupInfoResponse", result);
+            response = jsonToBean(result, GetRongGroupInfoResponse.class);
+        }
+        return response;
+    }
+
+
+
+    /**
+     * 获取 用户所有群组
      *
      * @throws HttpException
      */
@@ -1145,15 +1167,6 @@ public class SealAction extends BaseAction {
      */
     public AgreeFriendApplyResponse agreeFriend(String applyId) throws HttpException {
         String url = getURL("api/Im/AgreeFirendApply");
-//        String json = JsonMananger.beanToJson(new AgreeMyFriendRequest(applyId));
-//        StringEntity entity = null;
-//        try {
-//            entity = new StringEntity(json, ENCODING);
-//            entity.setContentType(CONTENT_TYPE);
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-
         String result = httpManager.post(mContext, url,  new RequestParams("ApplyId", applyId));
         AgreeFriendApplyResponse response = null;
         if (!TextUtils.isEmpty(result)) {
@@ -1210,7 +1223,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public JoinMyGroupResponse joinMyGroup(String groupId, String groupName) throws HttpException {
-        String url = getURL("api/Im/JoinImGroup");
+        String url = getURL("api/Im/JoinGroup");
         String json = JsonMananger.beanToJson(new JoinMyGroupRequest(groupId, groupName));
         StringEntity entity = null;
         try {
@@ -1228,6 +1241,30 @@ public class SealAction extends BaseAction {
     }
 
 
+    /**
+     * 邀请加入群组
+     *
+     * @throws HttpException
+     */
+    public InviteMyGroupResponse inviteMyGroup(String groupId, String groupName, List<String> Members) throws HttpException {
+        String url = getURL("api/Im/InviteGroup");
+        String json = JsonMananger.beanToJson(new InviteMyGroupRequest(Integer.valueOf(groupId), groupName, Members));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        InviteMyGroupResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            response = jsonToBean(result, InviteMyGroupResponse.class);
+        }
+        return response;
+    }
+
+
 
     /**
      * 离开群组
@@ -1235,8 +1272,21 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public QuitMyGroupResponse quitMyGroup(String groupId) throws HttpException {
-        String url = getURL("api/Im/QuitImGroup");
-        String result = httpManager.post(mContext, url,  new RequestParams("groupId", groupId));
+        String url = getURL("api/Im/QuitGroup");
+
+
+        String json = JsonMananger.beanToJson(new JoinGroupRequest(groupId));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+
+
+//        String result = httpManager.post(mContext, url,  new RequestParams("groupId", groupId));
         QuitMyGroupResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("QuitMyGroupResponse", result);

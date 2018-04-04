@@ -38,6 +38,7 @@ import cn.chenhuamou.im.server.pinyin.PinyinComparator;
 import cn.chenhuamou.im.server.pinyin.SideBar;
 import cn.chenhuamou.im.server.response.AddGroupMemberResponse;
 import cn.chenhuamou.im.server.response.DeleteGroupMemberResponse;
+import cn.chenhuamou.im.server.response.InviteMyGroupResponse;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.DialogWithYesOrNoUtils;
@@ -89,6 +90,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     private List<GroupMember> addGroupMemberList;
     private List<GroupMember> deleteGroupMemberList;
     private String groupId;
+    private String groupName;
     private String conversationStartId;
     private String conversationStartType = "null";
     private ArrayList<String> discListMember;
@@ -114,6 +116,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         isConversationActivityStartDiscussion = getIntent().getBooleanExtra("CONVERSATION_DISCUSSION", false);
         isConversationActivityStartPrivate = getIntent().getBooleanExtra("CONVERSATION_PRIVATE", false);
         groupId = getIntent().getStringExtra("GroupId");
+        groupName = getIntent().getStringExtra("GroupName");
         isAddGroupMember = getIntent().getBooleanExtra("isAddGroupMember", false);
         isDeleteGroupMember = getIntent().getBooleanExtra("isDeleteGroupMember", false);
         if (isAddGroupMember || isDeleteGroupMember) {
@@ -568,7 +571,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case ADD_GROUP_MEMBER:
-                return action.addGroupMember(groupId, startDisList);
+                return action.inviteMyGroup(groupId, groupName, startDisList);
             case DELETE_GROUP_MEMBER:
                 return action.deleGroupMember(groupId, startDisList);
         }
@@ -579,8 +582,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         if (result != null) {
             switch (requestCode) {
                 case ADD_GROUP_MEMBER:
-                    AddGroupMemberResponse res = (AddGroupMemberResponse) result;
-                    if (res.getCode() == 200) {
+                    InviteMyGroupResponse res = (InviteMyGroupResponse) result;
+                    if (res.getCode().getCodeId().equals("100")) {
                         Intent data = new Intent();
                         data.putExtra("newAddMember", (Serializable) createGroupList);
                         setResult(101, data);

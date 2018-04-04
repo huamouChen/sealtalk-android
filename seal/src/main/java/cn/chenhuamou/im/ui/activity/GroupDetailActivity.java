@@ -45,7 +45,9 @@ import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.response.DismissGroupResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.QuitGroupResponse;
 import cn.chenhuamou.im.server.response.QuitMyGroupResponse;
@@ -82,6 +84,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private static final int CLICK_CONVERSATION_USER_PORTRAIT = 1;
 
+    private static final int GROUP_INFO = 270;
     private static final int GROUP_MEMBERS = 260;
     private static final int DISMISS_GROUP = 26;
     private static final int QUIT_GROUP = 27;
@@ -135,7 +138,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         }
 
         if (isFromConversation) {//群组会话页进入
-//            LoadDialog.show(mContext);
             getGroups();
             getGroupMembers();
         }
@@ -171,6 +173,10 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroups() {
+
+        request(GROUP_INFO);
+
+
         SealUserInfoManager.getInstance().getGroupsByID(fromConversationId, new SealUserInfoManager.ResultCallback<Groups>() {
 
             @Override
@@ -189,24 +195,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroupMembers() {
-
         request(GROUP_MEMBERS);
-
-//        SealUserInfoManager.getInstance().getGroupMembers(fromConversationId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
-//            @Override
-//            public void onSuccess(List<GroupMember> groupMembers) {
-//                LoadDialog.dismiss(mContext);
-//                if (groupMembers != null && groupMembers.size() > 0) {
-//                    mGroupMember = groupMembers;
-//                    initGroupMemberData();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(String errString) {
-//                LoadDialog.dismiss(mContext);
-//            }
-//        });
     }
 
     @Override
@@ -223,7 +212,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         mGroupName.setText(mGroup.getName());
 
         if (RongIM.getInstance() != null) {
-            RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, mGroup.getGroupsId(), new RongIMClient.ResultCallback<Conversation>() {
+            String groupId = mGroup.getUserId();
+            RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, groupId, new RongIMClient.ResultCallback<Conversation>() {
                 @Override
                 public void onSuccess(Conversation conversation) {
                     if (conversation == null) {
@@ -262,7 +252,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             });
         }
 
-        if (mGroup.getRole().equals("0"))
+        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
             isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
@@ -319,6 +309,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 return action.getGroupInfo(fromConversationId);
             case GROUP_MEMBERS:
                 return action.getRongGroupMembers(fromConversationId);
+            case GROUP_INFO:
+                return action.getRongGroupInfo(fromConversationId);
         }
         return super.doInBackground(requestCode, id);
     }
@@ -327,8 +319,22 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
             switch (requestCode) {
+
+                case GROUP_INFO:  // 获取群组信息
+                    GetRongGroupInfoResponse getRongGroupResponse = (GetRongGroupInfoResponse) result;
+                    if (getRongGroupResponse.getValue() != null) {
+                        String groupId = getRongGroupResponse.getValue().get(0).getGroupId();
+                        String groupName = getRongGroupResponse.getValue().get(0).getGroupName();
+                        String groupOwer = getRongGroupResponse.getValue().get(0).getGroupOwner();
+                        mGroup = new Groups(groupId, groupName, "");
+                        initGroupData();
+                        String userId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+                        isCreated =  groupOwer.equals(userId);
+                    }
+                    break;
+
                 case GROUP_MEMBERS:
-                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse)result;
+                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
                     if (getRongGroupMembersResponse.getCode() != null) {
                         List<Groups> members = getRongGroupMembersResponse.getValue();
                         for (Groups item : members) {
@@ -340,7 +346,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
                     break;
 
-                case QUIT_GROUP:
+                case QUIT_GROUP:  // 离开群组
                     QuitMyGroupResponse response = (QuitMyGroupResponse) result;
                     if (response.getCode().getCodeId().equals("100")) {
                         RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Conversation>() {
@@ -488,6 +494,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 NToast.shortToast(mContext, "解散群组请求失败");
                 LoadDialog.dismiss(mContext);
                 break;
+            case GROUP_INFO:
+                NToast.shortToast(mContext, "获取群组信息失败");
+
         }
     }
 
@@ -569,18 +578,18 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                             public void onPositiveButtonClicked() {
                                 if (RongIM.getInstance() != null) {
 //                                    if (mGroup != null) {
-                                        RongIM.getInstance().clearMessages(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Boolean>() {
-                                            @Override
-                                            public void onSuccess(Boolean aBoolean) {
-                                                NToast.shortToast(mContext, getString(R.string.clear_success));
-                                            }
+                                    RongIM.getInstance().clearMessages(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Boolean>() {
+                                        @Override
+                                        public void onSuccess(Boolean aBoolean) {
+                                            NToast.shortToast(mContext, getString(R.string.clear_success));
+                                        }
 
-                                            @Override
-                                            public void onError(RongIMClient.ErrorCode errorCode) {
-                                                NToast.shortToast(mContext, getString(R.string.clear_failure));
-                                            }
-                                        });
-                                        RongIMClient.getInstance().cleanRemoteHistoryMessages(Conversation.ConversationType.GROUP, fromConversationId, System.currentTimeMillis(), null);
+                                        @Override
+                                        public void onError(RongIMClient.ErrorCode errorCode) {
+                                            NToast.shortToast(mContext, getString(R.string.clear_failure));
+                                        }
+                                    });
+                                    RongIMClient.getInstance().cleanRemoteHistoryMessages(Conversation.ConversationType.GROUP, fromConversationId, System.currentTimeMillis(), null);
 //                                    }
                                 }
                             }
@@ -701,7 +710,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             TextView tv_username = (TextView) convertView.findViewById(R.id.tv_username);
             ImageView badge_delete = (ImageView) convertView.findViewById(R.id.badge_delete);
 
-            // 最后一个item，减人按钮
+            // 最后一个item，减人按钮   // 减号按钮 踢人按钮
             if (position == getCount() - 1 && isCreated) {
                 tv_username.setText("");
                 badge_delete.setVisibility(View.GONE);
@@ -714,11 +723,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                         Intent intent = new Intent(GroupDetailActivity.this, SelectFriendsActivity.class);
                         intent.putExtra("isDeleteGroupMember", true);
                         intent.putExtra("GroupId", mGroup.getGroupsId());
+                        intent.putExtra("GroupName", mGroup.getName());
                         startActivityForResult(intent, 101);
                     }
 
                 });
-            } else if ((isCreated && position == getCount() - 2) || (!isCreated && position == getCount() - 1)) {
+            } else if ((isCreated && position == getCount() - 2) || (!isCreated && position == getCount() - 1)) { // 加号按钮 邀请好友
                 tv_username.setText("");
                 badge_delete.setVisibility(View.GONE);
                 iv_avatar.setImageResource(R.drawable.jy_drltsz_btn_addperson);

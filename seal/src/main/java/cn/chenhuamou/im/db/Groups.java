@@ -12,7 +12,7 @@ public class Groups extends UserInfoBean {
     private String nameSpelling;
 
     // rong
-    private int Id;
+//    private int Id;
     private String GroupId;
     private String GroupName;
     private String GroupOwner;
@@ -115,13 +115,13 @@ public class Groups extends UserInfoBean {
         this.nameSpelling = nameSpelling;
     }
 
-    public int getId() {
-        return Id;
-    }
+//    public int getId() {
+//        return Id;
+//    }
 
-    public void setId(int Id) {
-        this.Id = Id;
-    }
+//    public void setId(int Id) {
+//        this.Id = Id;
+//    }
 
     public String getGroupId() {
         return GroupId;
