@@ -1,6 +1,7 @@
 package cn.chenhuamou.im.server;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import cn.chenhuamou.im.server.request.AddGroupMemberRequest;
 import cn.chenhuamou.im.server.request.AddToBlackListRequest;
 import cn.chenhuamou.im.server.request.AgreeFriendsRequest;
 import cn.chenhuamou.im.server.request.AgreeMyFriendRequest;
+import cn.chenhuamou.im.server.request.BettingRequest;
 import cn.chenhuamou.im.server.request.ChangePasswordRequest;
 import cn.chenhuamou.im.server.request.CheckPhoneRequest;
 import cn.chenhuamou.im.server.request.CreateGroupRequest;
@@ -1327,9 +1329,17 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public KqwfPcddResponse postKQWFPCDD(String bettingNumber) throws HttpException {
-        String url = getURL("api/Lottery/KQWFImBettingPcdd");
-        String result = httpManager.post(mContext, url,  new RequestParams("BettingNumber", bettingNumber));
+    public KqwfPcddResponse postKQWFPCDD(String bettingMsg, String groupId) throws HttpException {
+        String url = getURL("api/Lottery/BettingIm");
+        String json = JsonMananger.beanToJson(new BettingRequest(bettingMsg, Integer.valueOf(groupId)));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
         KqwfPcddResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("KqwfPcddResponse", result);

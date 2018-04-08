@@ -688,37 +688,39 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     }
 
     // 发送消息的监听
-
     private void sendMessageListener() {
 
-        msgListener = new RongIM.OnSendMessageListener() {
-            @Override
-            public io.rong.imlib.model.Message onSend(io.rong.imlib.model.Message message) {
-                if (message.getContent() instanceof TextMessage) {
-                    TextMessage textMessage = (TextMessage) message.getContent();
-                    String msgContent = textMessage.getContent();
-                    if (msgContent.startsWith("#") && msgContent.endsWith("#")) {
-                        // 截取 betNum
-                        betNum = msgContent.substring(1, msgContent.length() - 1);
-                        request(Bet);
+        if (mConversationType == Conversation.ConversationType.GROUP) {
+            msgListener = new RongIM.OnSendMessageListener() {
+                @Override
+                public io.rong.imlib.model.Message onSend(io.rong.imlib.model.Message message) {
+                    if (message.getContent() instanceof TextMessage) {
+                        TextMessage textMessage = (TextMessage) message.getContent();
+                        String msgContent = textMessage.getContent();
+                        if (msgContent.startsWith("#") && msgContent.endsWith("#")) {
+                            // 截取 betNum
+//                            betNum = msgContent.substring(1, msgContent.length() - 1);
+                            betNum = msgContent;
+                            request(Bet);
+                        }
                     }
+                    return message;
                 }
-                return message;
-            }
 
-            @Override
-            public boolean onSent(io.rong.imlib.model.Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
-                return false;
-            }
-        };
+                @Override
+                public boolean onSent(io.rong.imlib.model.Message message, RongIM.SentMessageErrorCode sentMessageErrorCode) {
+                    return false;
+                }
+            };
 
-        RongIM.getInstance().setSendMessageListener(msgListener);
+            RongIM.getInstance().setSendMessageListener(msgListener);
+        }
     }
 
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return action.postKQWFPCDD(betNum);
+        return action.postKQWFPCDD(betNum, mTargetId);
     }
 
     @Override

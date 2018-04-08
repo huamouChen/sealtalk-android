@@ -5,12 +5,15 @@
     android:layout_height="match_parent"
     android:background="@color/rc_normal_bg">
 
+
+
     <include
         android:id="@id/rc_layout_msg_list"
         layout="@layout/rc_fr_messagelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rc_extension" />
+
 
     <io.rong.imkit.RongExtension
         android:id="@+id/rc_extension"

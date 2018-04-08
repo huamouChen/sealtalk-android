@@ -76,6 +76,9 @@
             </intent-filter>
         </activity>
 
+        <!--玩法选择-->
+        <activity android:name=".ui.activity.BetActivity" />
+
         <!--登录页面-->
         <activity
             android:name=".ui.activity.LoginActivity"
