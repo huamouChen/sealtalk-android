@@ -14,57 +14,39 @@
             android:id="@+id/tv_current_num"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="当前期号：20180408002"
-            android:gravity="center_vertical"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
             android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
             android:background="@null"
-            android:textSize="11sp"/>
+            android:gravity="center_vertical"
+            android:text="当前期号：20180408002"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/tv_pre_num"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="第20180408002开奖号码：3,6，8,5,0"
-            android:gravity="center_vertical"
-            android:textColor="@color/white"
-            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="4dp"
-            android:textSize="11sp"
-            android:layout_alignParentRight="true"/>
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:text="第20180408002开奖号码：3,6,8,5,0"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
 
-    <ProgressBar
-        android:id="@+id/pb_horizontial"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="70"
-        style="?android:progressBarStyleHorizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="-7dp"
-        />
+        <ProgressBar
+            android:id="@+id/pb_horizontial"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-7dp"
+            android:max="100"
+            android:progress="70" />
 
 
     </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_above="@id/linear_history"
-        android:gravity="center"
-        android:text="玩法选择"
-        android:textColor="@color/black_textview" />
-
-    <View
-        android:id="@+id/view_separator1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/linear_history"
-        android:background="@color/black" />
-
 
     <!--历史记录-->
     <LinearLayout
@@ -128,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/linear_bet"
-        android:background="@color/black" />
+        android:background="@color/color_80b5b5b5" />
 
 
     <!--金额输入界面-->
@@ -145,31 +127,15 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:hint="输入金额"
-            android:textSize="14sp"
             android:inputType="number"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:textSize="14sp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_money"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_toRightOf="@+id/et_money"/>
-
-        <!--<Button-->
-            <!--style="@style/bet_item"-->
-            <!--android:text="10" />-->
-
-        <!--<Button-->
-            <!--style="@style/bet_item"-->
-            <!--android:text="100" />-->
-
-        <!--<Button-->
-            <!--style="@style/bet_item"-->
-            <!--android:text="500" />-->
-
-        <!--<Button-->
-            <!--style="@style/bet_item"-->
-            <!--android:text="1000" />-->
+            android:layout_toRightOf="@+id/et_money" />
 
     </RelativeLayout>
 
