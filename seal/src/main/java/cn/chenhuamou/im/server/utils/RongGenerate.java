@@ -24,7 +24,7 @@ import io.rong.imlib.model.UserInfo;
  */
 public class RongGenerate {
 
-    private static String SAVEADDRESS = "/data/data/cn.rongcloud.im/temp";
+    private static String SAVEADDRESS = "/data/data/cn.chenhuamou.im/temp";
     private static final String SCHEMA = "file://";
 
 

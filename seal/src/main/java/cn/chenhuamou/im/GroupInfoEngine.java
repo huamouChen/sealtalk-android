@@ -8,6 +8,7 @@ import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import io.rong.imlib.model.Group;
 
 /**
@@ -48,15 +49,15 @@ public class GroupInfoEngine implements OnDataListener {
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return new SealAction(context).getGroupInfo(id);
+        return new SealAction(context).getRongGroupInfo(id);
     }
 
     @Override
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
-            GetGroupInfoResponse ggiRes = (GetGroupInfoResponse) result;
-            if (ggiRes.getCode() == 200) {
-                group = new Group(ggiRes.getResult().getId(), ggiRes.getResult().getName(), Uri.parse(ggiRes.getResult().getPortraitUri()));
+            GetRongGroupInfoResponse getRongGroupInfoResponse = (GetRongGroupInfoResponse) result;
+            if (getRongGroupInfoResponse.getCode().getCodeId().equals("100")) {
+                group = new Group(getRongGroupInfoResponse.getValue().getGroupId(), getRongGroupInfoResponse.getValue().getGroupName(), Uri.parse(""));
                 if (mListener != null) {
                     mListener.onResult(group);
                 }
