@@ -35,6 +35,7 @@ import io.rong.message.TextMessage;
 public class BetActivity extends BaseActivity implements View.OnClickListener {
 
     private String targetId;
+    private String conversationType;
 
 
     private Button btn_confirm;
@@ -55,7 +56,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
 
     private String playString;   // 玩法
     private String moneyString;  // 下注金额
-    
+
     private ProgressBar mProgressBar;
     // 定时器
     private int progress = 0;  // 进度 时间的进度
@@ -93,35 +94,35 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
     // 点击事件
     @Override
     public void onClick(View v) {
-        // 发送消息
-        TextMessage mTextMessage = TextMessage.obtain("#" + playString + "|" + moneyString + "#");
-        io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
-        RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
-            @Override
-            public void onProgress(io.rong.imlib.model.Message message, int i) {
+        // 只有是群聊的时候才发送消息或者指定的群才发送消息
+        if (conversationType.equals("group")) {
+            // 发送消息
+            TextMessage mTextMessage = TextMessage.obtain("#" + playString + "|" + moneyString + "#");
+            io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
+            RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
+                @Override
+                public void onProgress(io.rong.imlib.model.Message message, int i) {
+                }
 
-            }
+                @Override
+                public void onCanceled(io.rong.imlib.model.Message message) {
+                }
 
-            @Override
-            public void onCanceled(io.rong.imlib.model.Message message) {
+                @Override
+                public void onAttached(io.rong.imlib.model.Message message) {
+                }
 
-            }
+                @Override
+                public void onSuccess(io.rong.imlib.model.Message message) {
+                }
 
-            @Override
-            public void onAttached(io.rong.imlib.model.Message message) {
+                @Override
+                public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
+                }
+            });
+        }
 
-            }
 
-            @Override
-            public void onSuccess(io.rong.imlib.model.Message message) {
-
-            }
-
-            @Override
-            public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
-
-            }
-        });
         finish();
     }
 
@@ -140,7 +141,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
     private void initData() {
         Intent intent = getIntent();
         targetId = intent.getStringExtra("targetId");
-
+        conversationType = intent.getStringExtra("conversationType");
         mTimer.schedule(mTimerTask, 0, 1000);
     }
 
@@ -153,7 +154,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                
+
             }
 
             @Override
@@ -172,8 +173,6 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
 
         btn_confirm = (Button) findViewById(R.id.btn_confirm);
         btn_confirm.setOnClickListener(this);
-        
-        
 
 
         // 历史记录
@@ -212,7 +211,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
                 if (itemView.isSelected()) {
                     position = -1;
                 }
-                playString = position != -1 ?  play_list.get(position) : "";
+                playString = position != -1 ? play_list.get(position) : "";
                 play_adapter.refreshData(position);
             }
         });

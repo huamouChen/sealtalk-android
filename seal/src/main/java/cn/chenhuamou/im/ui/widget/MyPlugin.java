@@ -40,7 +40,7 @@ public class MyPlugin implements IPluginModule {
 
         Intent intent = new Intent(fragment.getActivity(), BetActivity.class);
         intent.putExtra("targetId", targetId);
-        intent.putExtra("conversationType", conversationType);
+        intent.putExtra("conversationType", conversationType.getName());
         rongExtension.startActivityForPluginResult(intent, 100, this);
     }
 
