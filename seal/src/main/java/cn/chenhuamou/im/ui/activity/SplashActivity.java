@@ -30,11 +30,8 @@ import io.rong.imkit.RongIM;
  * Created by AMing on 16/8/5.
  * Company RongCloud
  */
-public class SplashActivity extends Activity implements OnDataListener {
+public class SplashActivity extends Activity {
 
-    private static final int GET_RONG_GROUPS = 700;
-    public AsyncTaskManager mAsyncTaskManager;
-    protected SealAction action;
 
     private Context context;
     private android.os.Handler handler = new android.os.Handler();
@@ -64,17 +61,6 @@ public class SplashActivity extends Activity implements OnDataListener {
                 }
             }, 800);
         }
-
-        mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
-        // Activity管理
-        action = new SealAction(this);
-
-
-        initData();
-    }
-
-    private void initData() {
-        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
     }
 
 
@@ -92,42 +78,5 @@ public class SplashActivity extends Activity implements OnDataListener {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnectedOrConnecting();
-    }
-
-
-
-    @Override
-    public Object doInBackground(int requestCode, String parameter) throws HttpException {
-        switch (requestCode) {
-            case GET_RONG_GROUPS:
-                SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-                String userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
-                return action.getRongGroups(userName);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void onSuccess(int requestCode, Object result) {
-        if (result != null) {
-            switch (requestCode) {
-                case GET_RONG_GROUPS:
-                    GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
-                    List<Groups> list = new ArrayList<>();
-                    list = getRongGroupResponse.getValue();
-                    // 把群组的名称写入本地
-                    for(Groups item : list) {
-                        SealUserInfoManager.getInstance().addGroup(item);
-                        BroadcastManager.getInstance(this).sendBroadcast("REFRESH_GROUP_UI");
-                    }
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onFailure(int requestCode, int state, Object result) {
-
     }
 }

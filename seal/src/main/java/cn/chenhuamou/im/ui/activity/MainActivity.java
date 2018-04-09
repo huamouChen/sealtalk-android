@@ -102,38 +102,6 @@ public class MainActivity extends FragmentActivity implements
     private Context mContext;
     private Conversation.ConversationType[] mConversationsTypes = null;
 
-//    // SignalR
-//    private final static String HUB_URL = "http://192.168.1.88:8001/signalr";
-//
-//    private Connection con;
-//
-//
-//    private IHubProxy hub = null;
-//    private com.zsoft.signala.hubs.HubConnection hubConnection = new com.zsoft.signala.hubs.HubConnection(HUB_URL, this, new LongPollingTransport()){
-//        @Override
-//        public void OnError(Exception exception) {
-//            System.out.println("----------On error:---------------- " + exception.getMessage());
-//            super.OnError(exception);
-//        }
-//
-//        @Override
-//        public void OnMessage(String message) {
-//            System.out.println("--------------------Message");
-//            super.OnMessage(message);
-//        }
-//
-//        @Override
-//        public void OnStateChanged(StateBase oldState, StateBase newState) {
-//
-//            if (newState.getState() == ConnectionState.Connected) {
-//                System.out.println("--------------------连接成功");
-//            }
-//            super.OnStateChanged(oldState, newState);
-//        }
-//    };
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,11 +109,9 @@ public class MainActivity extends FragmentActivity implements
         mContext = this;
         isDebug = getSharedPreferences("config", MODE_PRIVATE).getBoolean("isDebug", false);
 
-
         mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
         // Activity管理
         action = new SealAction(mContext);
-
 
         initViews();
         changeTextViewColor();
@@ -155,19 +121,8 @@ public class MainActivity extends FragmentActivity implements
 
         refreshUserInfoCache();
 
-
-//        beginConnect();
-
-//         //初始化消息推送监听 signalR
-//        initSignalR();
-////        // 开始监听
-//        starSignalA();
-
         mAsyncTaskManager.request(RONG_ALIVE, this);
-
     }
-
-
 
 
     // 刷新个人信息
@@ -179,91 +134,6 @@ public class MainActivity extends FragmentActivity implements
         // 把自己当成一个好友保存到数据库，主要是为了给自己发送消息的时候用到
         SealUserInfoManager.getInstance().addFriend(new Friend(userId, userId, Uri.parse("")));
     }
-
-    // 初始化 signalR
-//    private void initSignalR() {
-//
-//            con = new Connection(HUB_URL, this, new LongPollingTransport()) {
-//                @Override
-//                public void OnError(Exception exception) {
-//
-//                    System.out.println("----------On error:---------------- " + exception.getMessage());
-//                    Toast.makeText(MainActivity.this, "On error:---------------- " + exception.getMessage(), Toast.LENGTH_LONG).show();
-//                    super.OnError(exception);
-//                }
-//
-//                @Override
-//                public void OnMessage(String message) {
-//
-//                    System.out.println("--------------------Message");
-//                    Toast.makeText(MainActivity.this, "Message:----------------- " + message, Toast.LENGTH_LONG).show();
-//                    super.OnMessage(message);
-//                }
-//
-//                @Override
-//                public void OnStateChanged(StateBase oldState, StateBase newState) {
-//
-//                    if (newState.getState() == ConnectionState.Connected) {
-//                        System.out.println("--------------------连接成功");
-//                    }
-//
-//                    super.OnStateChanged(oldState, newState);
-//                }
-//
-//                @Override
-//                public void Send(CharSequence text, SendCallback callback) {
-//                    super.Send("111111", callback);
-//                }
-//            };
-//
-//        // 设置 header 授权认证
-//        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-//        String token = sp.getString(SealConst.TOKEN, "");
-//        con.setConnectionToken(token);
-////        con.getHeaders().put("Authorization", "Bearer " + token);
-//
-//    }
-
-//    private void beginConnect() {
-//        try {
-//            //服务器端的HUB为ChatHub
-//            hub = hubConnection.CreateHubProxy("legendHub");
-//        } catch (OperationApplicationException e) {
-//            e.printStackTrace();
-//        }
-//        hub.On("getNotification", new HubOnDataCallback() {
-//            @Override
-//            public void OnReceived(JSONArray args) {
-//                EditText chatText = (EditText) findViewById(R.id.edit_area);
-//                //chatText.setText(args.toString());
-//                String str = "";
-//                for (int i = 0; i < args.length(); i++) {
-//                    chatText.append(args.opt(i).toString());
-//                }
-//            }
-//        });
-//        // 设置 header 授权认证
-//        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-//        String token = sp.getString(SealConst.TOKEN, "");
-//        hubConnection.getHeaders().put("Authorization", "Bearer " + token);
-//        hubConnection.Start();
-//
-//}
-
-    // 开始 signalR
-//    public void starSignalA() {
-//        if (con != null) {
-//            con.Start();
-//        }
-//    }
-
-    // 结束 signalR
-//    public void stopSignalA() {
-//        if (con != null) {
-//            con.Stop();
-//        }
-//    }
-
 
     private void initViews() {
         // 底部 4个 tabBar item
@@ -303,20 +173,6 @@ public class MainActivity extends FragmentActivity implements
 
 
     private void initMainViewPager() {
-
-        RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
-            @Override
-            public void onSuccess(List<Conversation> conversations) {
-
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-
-            }
-        });
-
-
         // 最近会话列表
         Fragment conversationList = initConversationList();
 
@@ -676,13 +532,15 @@ public class MainActivity extends FragmentActivity implements
     public void onSuccess(int requestCode, Object result) {
         IsAliveResponse isAliveResponse = (IsAliveResponse) result;
         if (isAliveResponse.getCode() != null) {
-            NLog.d("------------------------isAlive响应成功");
+            NLog.d("------------------------isAlive响应成功", "------------------------isAlive响应成功");
         } else {
-            NLog.d("------------------------isAlive响应失败");
+            NLog.d("------------------------isAlive响应失败", "------------------------isAlive响应失败");
         }
 
     }
 
     @Override
-    public void onFailure(int requestCode, int state, Object result) { }
+    public void onFailure(int requestCode, int state, Object result) {
+        NLog.d("------------------------isAlive响应失败", "------------------------isAlive响应失败");
+    }
 }

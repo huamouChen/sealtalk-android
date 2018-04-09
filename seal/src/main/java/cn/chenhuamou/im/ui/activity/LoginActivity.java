@@ -324,9 +324,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     if (rongTokenResponse.getValue() == null) {
                         LoadDialog.dismiss(mContext);
                     }
-//                    String token = "u7zs53P7O/vEigSTdRrfY5Fo+JgPj1M/zSlaPtimCR4k5lTy2OsprumdegVk4bT+XAohrJ80RWFs5F6tgEscEQ==";
                     rong_token = rongTokenResponse.getValue().getRongToken();
-//                    rong_token = token;
                     editor.putString("loginToken", rong_token);
                     editor.commit();
                     // 连接 融云 服务器
@@ -345,13 +343,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
                                 editor.commit();
                                 SealUserInfoManager.getInstance().openDB();
-//                                editor.putString(SealConst.SEALTALK_LOGIN_NAME, rongTokenResponse.getValue().getUserName());
+                                ;
                                 editor.putString("loginToken", rong_token);
-//                                editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                                 editor.commit();
-//                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(rongTokenResponse.getValue().getUserName(), rongTokenResponse.getValue().getUserName(), Uri.parse("")));
-//                                    request(SYNC_USER_INFO, true);
-//                                request(GET_RONG_GROUPS);
                                 goToMain();
                             }
 
@@ -360,18 +354,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 NLog.e("connect", "onError errorcode:" + errorCode.getValue());
                             }
                         });
-                    }
-
-                    break;
-
-                case GET_RONG_GROUPS:
-                    GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
-                    List<Groups> list = new ArrayList<>();
-                    list = getRongGroupResponse.getValue();
-                    // 把群组的名称写入本地
-                    for (Groups item : list) {
-                        SealUserInfoManager.getInstance().addGroup(item);
-                        BroadcastManager.getInstance(this).sendBroadcast("REFRESH_GROUP_UI");
                     }
                     break;
             }
