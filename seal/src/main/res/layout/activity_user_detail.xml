@@ -131,7 +131,8 @@
             android:onClick="startVoice"
             android:text="@string/start_voice"
             android:textColor="#363636"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone"/>
 
         <Button
             android:layout_width="match_parent"
@@ -143,7 +144,8 @@
             android:onClick="startVideo"
             android:text="@string/start_video"
             android:textColor="#363636"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone"/>
         <!--CallKit end-->
     </LinearLayout>
 

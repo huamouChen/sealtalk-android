@@ -194,25 +194,26 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private void initBlackListStatusView() {
         if (mIsFriendsRelationship) {
-            Button rightButton = getHeadRightButton();
-            rightButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.main_activity_contact_more));
-            rightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    RongIM.getInstance().getBlacklistStatus(mFriend.getUserId(), new RongIMClient.ResultCallback<RongIMClient.BlacklistStatus>() {
-                        @Override
-                        public void onSuccess(RongIMClient.BlacklistStatus blacklistStatus) {
-                            SinglePopWindow morePopWindow = new SinglePopWindow(UserDetailActivity.this, mFriend, blacklistStatus);
-                            morePopWindow.showPopupWindow(v);
-                        }
-
-                        @Override
-                        public void onError(RongIMClient.ErrorCode e) {
-
-                        }
-                    });
-                }
-            });
+            // 加入黑名单的按钮
+//            Button rightButton = getHeadRightButton();
+//            rightButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.main_activity_contact_more));
+//            rightButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(final View v) {
+//                    RongIM.getInstance().getBlacklistStatus(mFriend.getUserId(), new RongIMClient.ResultCallback<RongIMClient.BlacklistStatus>() {
+//                        @Override
+//                        public void onSuccess(RongIMClient.BlacklistStatus blacklistStatus) {
+//                            SinglePopWindow morePopWindow = new SinglePopWindow(UserDetailActivity.this, mFriend, blacklistStatus);
+//                            morePopWindow.showPopupWindow(v);
+//                        }
+//
+//                        @Override
+//                        public void onError(RongIMClient.ErrorCode e) {
+//
+//                        }
+//                    });
+//                }
+//            });
         }
     }
 
@@ -324,7 +325,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.contact_phone:
                 if (!TextUtils.isEmpty(mPhoneString)) {
-                    Uri telUri = Uri.parse("tel:"+mPhoneString);
+                    Uri telUri = Uri.parse("tel:" + mPhoneString);
                     Intent intent = new Intent(Intent.ACTION_DIAL, telUri);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -553,7 +554,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                     } else if (userOnlineStatusInfo.getServiceStatus() == 0) {
                         activity.mUserLineStatus.setTextColor(Color.parseColor("#666666"));
                         activity.mUserLineStatus.setText(R.string.offline);
-                    } else if (userOnlineStatusInfo != null){
+                    } else if (userOnlineStatusInfo != null) {
                         switch (userOnlineStatusInfo.getPlatform()) {
                             case Platform_PC:
                                 activity.mUserLineStatus.setText(R.string.pc_online);
