@@ -19,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jrmf360.rylib.modules.JrmfExtensionModule;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import cn.chenhuamou.contactcard.ContactCardExtensionModule;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealUserInfoManager;
@@ -35,7 +38,12 @@ import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.ui.fragment.ConversationFragmentEx;
 import cn.chenhuamou.im.ui.widget.LoadingDialog;
+import cn.chenhuamou.im.ui.widget.MyBetExtensionModule;
+import cn.chenhuamou.im.ui.widget.MyExtensionModule;
 import io.rong.callkit.RongCallKit;
+import io.rong.imkit.DefaultExtensionModule;
+import io.rong.imkit.IExtensionModule;
+import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.RongKitIntent;
 import io.rong.imkit.fragment.UriFragment;
@@ -49,6 +57,7 @@ import io.rong.imlib.model.PublicServiceProfile;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
+import io.rong.recognizer.RecognizeExtensionModule;
 
 //CallKit start 1
 //CallKit end 1
@@ -220,7 +229,58 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         // 发送消息的监听
         sendMessageListener();
 
+
+        setMyExtensionModule();
+
+
     }
+
+    // 自定义插件区域的插件
+    public void setMyExtensionModule() {
+        List<IExtensionModule> moduleList = RongExtensionManager.getInstance().getExtensionModules();
+        IExtensionModule defaultModule = null;
+        JrmfExtensionModule jrmfExtensionModule = null;
+        RecognizeExtensionModule recognizeExtensionModule = null;
+        ContactCardExtensionModule contactCardExtensionModule = null;
+        if (moduleList != null) {
+            for (IExtensionModule module : moduleList) {
+                if (module instanceof DefaultExtensionModule) {
+                    defaultModule = module;
+                    continue;
+                }
+
+                if (module instanceof JrmfExtensionModule) {
+                    jrmfExtensionModule = (JrmfExtensionModule)module;
+                    continue;
+                }
+
+                if (module instanceof RecognizeExtensionModule) {
+                    recognizeExtensionModule = (RecognizeExtensionModule)module;
+                    continue;
+                }
+
+                if (module instanceof ContactCardExtensionModule) {
+                    contactCardExtensionModule = (ContactCardExtensionModule)module;
+                }
+
+            }
+
+            if (defaultModule != null) {
+                RongExtensionManager.getInstance().unregisterExtensionModule(defaultModule);
+                RongExtensionManager.getInstance().unregisterExtensionModule(jrmfExtensionModule);
+                RongExtensionManager.getInstance().unregisterExtensionModule(recognizeExtensionModule);
+                RongExtensionManager.getInstance().unregisterExtensionModule(contactCardExtensionModule);
+                // 群聊才显示下注的插件，之后也可以改为指定群，或者从后台获取是否显示
+                if (mConversationType == Conversation.ConversationType.GROUP) {
+                    RongExtensionManager.getInstance().registerExtensionModule(new MyBetExtensionModule());
+                } else {
+                    RongExtensionManager.getInstance().registerExtensionModule(new MyExtensionModule());
+                }
+
+            }
+        }
+    }
+
 
     /**
      * 设置通告栏的监听

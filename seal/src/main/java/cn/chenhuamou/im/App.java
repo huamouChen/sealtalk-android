@@ -177,7 +177,7 @@ public class App extends MultiDexApplication {
 
 
             // 自定义自己的plugin
-            setMyExtensionModule();
+//            setMyExtensionModule();
 
         }
     }
@@ -224,17 +224,17 @@ public class App extends MultiDexApplication {
                 }
 
                 if (module instanceof JrmfExtensionModule) {
-                    jrmfExtensionModule = (JrmfExtensionModule)module;
+                    jrmfExtensionModule = (JrmfExtensionModule) module;
                     continue;
                 }
 
                 if (module instanceof RecognizeExtensionModule) {
-                    recognizeExtensionModule = (RecognizeExtensionModule)module;
+                    recognizeExtensionModule = (RecognizeExtensionModule) module;
                     continue;
                 }
 
                 if (module instanceof ContactCardExtensionModule) {
-                    contactCardExtensionModule = (ContactCardExtensionModule)module;
+                    contactCardExtensionModule = (ContactCardExtensionModule) module;
                 }
 
             }

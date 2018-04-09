@@ -8,7 +8,6 @@ import io.rong.imkit.emoticon.IEmoticonTab;
 import io.rong.imkit.plugin.CombineLocationPlugin;
 import io.rong.imkit.plugin.IPluginModule;
 import io.rong.imkit.plugin.ImagePlugin;
-import io.rong.imkit.widget.provider.LocationPlugin;
 import io.rong.imlib.model.Conversation;
 
 /**
@@ -16,11 +15,11 @@ import io.rong.imlib.model.Conversation;
  * Email chenhm4444@gmail.com
  */
 
-public class MyExtensionModule extends DefaultExtensionModule {
+public class MyBetExtensionModule extends DefaultExtensionModule {
 
     private MyPlugin myPlugin;
 
-    public MyExtensionModule() {
+    public MyBetExtensionModule() {
 
     }
 
@@ -33,7 +32,7 @@ public class MyExtensionModule extends DefaultExtensionModule {
 
         pluginModules.add(imagePlugin);
         pluginModules.add(locationPlugin);
-//        pluginModules.add(new MyPlugin());
+        pluginModules.add(new MyPlugin());
 
         return pluginModules;
     }
