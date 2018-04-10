@@ -1,8 +1,6 @@
 package cn.chenhuamou.im.ui.activity;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,31 +19,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
 import cn.chenhuamou.im.R;
-import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
-import cn.chenhuamou.im.db.Friend;
-import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.BaseAction;
-import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.http.HttpException;
-import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
 import cn.chenhuamou.im.server.response.GetTokenResponse;
-import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoResponse;
 import cn.chenhuamou.im.server.response.LoginResponse;
 import cn.chenhuamou.im.server.utils.CommonUtils;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
-import cn.chenhuamou.im.server.utils.RongGenerate;
 import cn.chenhuamou.im.server.widget.ClearWriteEditText;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import io.rong.imkit.RongIM;
@@ -251,20 +239,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     if (loginResponse.getResult() == 0) {
                         loginToken = loginResponse.getToken();
                         editor.putString(SealConst.TOKEN, loginToken);
-                        editor.commit();
-                        SealUserInfoManager.getInstance().openDB();
-                        // 登录成功，获取融云 token
-                        request(GET_RONG_TOKEN);
+
                         // 当前登录用户信息
                         editor.putString(SealConst.SEALTALK_LOGIN_ID, phoneString);
                         editor.putString(SealConst.SEALTALK_LOGIN_NAME, phoneString);
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                         editor.commit();
+                        // 登录成功，获取融云 token
+                        request(GET_RONG_TOKEN);
+                        SealUserInfoManager.getInstance().openDB();
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(phoneString, phoneString, Uri.parse("")));
-
-                        // 把自己当成一个好友保存到数据库，主要是为了给自己发送消息的时候用到
-                        SealUserInfoManager.getInstance().addFriend(new Friend(phoneString, phoneString, Uri.parse("")));
-
                     } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, loginResponse.getError());
@@ -274,17 +258,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                 case SYNC_USER_INFO:
                     GetUserInfoResponse userInfoByIdResponse = (GetUserInfoResponse) result;
-//                    if (userInfoByIdResponse.getCode() == 200) {
-//                        if (TextUtils.isEmpty(userInfoByIdResponse.getResult().getPortraitUri())) {
-//                            userInfoByIdResponse.getResult().setPortraitUri(RongGenerate.generateDefaultAvatar(userInfoByIdResponse.getResult().getNickname(), userInfoByIdResponse.getResult().getId()));
-//                        }
-//                        String nickName = userInfoByIdResponse.getValue().getUserName();
-//                        String portraitUri = userInfoByIdResponse.getValue().getHeadimg();
-//                        editor.putString(SealConst.SEALTALK_LOGIN_NAME, nickName);
-//                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
-//                        editor.commit();
-//                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(connectResultId, nickName, Uri.parse(portraitUri)));
-//                    }
                     //不继续在login界面同步好友,群组,群组成员信息
                     SealUserInfoManager.getInstance().getAllUserInfo();
                     goToMain();

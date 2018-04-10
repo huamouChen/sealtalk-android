@@ -14,7 +14,6 @@ import com.facebook.stetho.dumpapp.DumperPlugin;
 import com.facebook.stetho.inspector.database.DefaultDatabaseConnectionProvider;
 import com.facebook.stetho.inspector.protocol.ChromeDevtoolsDomain;
 import com.jrmf360.rylib.modules.JrmfExtensionModule;
-import com.melink.bqmmplugin.rc.BQMMExtensionModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,6 @@ import io.rong.imkit.DefaultExtensionModule;
 import io.rong.imkit.IExtensionModule;
 import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
-import io.rong.imkit.widget.provider.LocationPlugin;
 import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
 import io.rong.imlib.ipc.RongExceptionHandler;
 import io.rong.imlib.model.UserInfo;
@@ -178,7 +176,6 @@ public class App extends MultiDexApplication {
 
             // 自定义自己的plugin
 //            setMyExtensionModule();
-
         }
     }
 

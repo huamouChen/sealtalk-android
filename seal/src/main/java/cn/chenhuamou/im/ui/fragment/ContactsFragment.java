@@ -57,11 +57,7 @@ import io.rong.imlib.model.UserInfo;
  * tab 2 通讯录的 Fragment
  * Created by Bob on 2015/1/25.
  */
-public class ContactsFragment extends Fragment implements View.OnClickListener, OnDataListener {
-
-    private static final int GET_RONG_GROUPS = 700;
-    private static final int GET_RONG_GROUP_MEMBERS = 800;
-    private static final int GET_RONG_FRIEND_LIST = 900;
+public class ContactsFragment extends Fragment implements View.OnClickListener {
 
     private SelectableRoundedImageView mSelectableRoundedImageView;
     private TextView mNameTextView;
@@ -72,13 +68,6 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     private ListView mListView;
     private PinyinComparator mPinyinComparator;
     private SideBar mSidBar;
-
-    private SealAction action;
-    private AsyncTaskManager mAsyncTaskManager;
-    private List<Friend> friendList = new ArrayList<>();
-    private List<Friend> friendListFilter = new ArrayList<>(); // 用来判断是否添加过了
-    private String groupId = "";
-    private String userName = "";
 
     /**
      * 中部展示的字母提示
@@ -165,13 +154,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void initData() {
-        SharedPreferences sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-        userName = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
-
-        mAsyncTaskManager = AsyncTaskManager.getInstance(getContext());
-        action = new SealAction(getContext());
         mFriendList = new ArrayList<>();
-
         FriendListAdapter adapter = new FriendListAdapter(getActivity(), mFriendList);
         mListView.setAdapter(adapter);
         mFilteredFriendList = new ArrayList<>();
@@ -290,144 +273,19 @@ public class ContactsFragment extends Fragment implements View.OnClickListener, 
     // 获取好友数据
     private void updateUI() {
         // 从网络获取好友列表
-//        SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
-//            @Override
-//            public void onSuccess(List<Friend> friendsList) {
-//                updateFriendsList(friendsList);
-//            }
-//
-//            @Override
-//            public void onError(String errString) {
-//                updateFriendsList(null);
-//            }
-//        });
-//        updateFriendsList(list);
+        SealUserInfoManager.getInstance().getFriends(new SealUserInfoManager.ResultCallback<List<Friend>>() {
+            @Override
+            public void onSuccess(List<Friend> friendsList) {
+                updateFriendsList(friendsList);
+            }
 
-
-//        mAsyncTaskManager.request(GET_RONG_GROUPS, this);
-
-        mAsyncTaskManager.request(GET_RONG_FRIEND_LIST, this);
-
+            @Override
+            public void onError(String errString) {
+                updateFriendsList(null);
+            }
+        });
     }
 
-    @Override
-    public Object doInBackground(int requestCode, String parameter) throws HttpException {
-        switch (requestCode) {
-            case GET_RONG_GROUPS:
-                return action.getRongGroups(userName);
-            case GET_RONG_GROUP_MEMBERS:
-                return action.getRongGroupMembers(groupId);
-            case GET_RONG_FRIEND_LIST:
-                return action.getFriendList();
-        }
-        return null;
-
-    }
-
-    @Override
-    public void onSuccess(int requestCode, Object result) {
-        switch (requestCode) {
-
-            case GET_RONG_FRIEND_LIST:
-                GetRongFriendListResponse getRongFriendListResponse = (GetRongFriendListResponse) result;
-                List<GetRongFriendListResponse.ValueEntity> membersList =  getRongFriendListResponse.getValue();
-                for (int i = 0; i < membersList.size(); i++) {
-                    GetRongFriendListResponse.ValueEntity groups = membersList.get(i);
-                    String userID = groups.getUserName();
-                    // 是当前用户，就不添加了
-                    if (userID.equals(userName)) continue;
-
-                    // 已经添加过了，就不重复添加了，因为不同的群组可能会有相同的人
-                    boolean isHave = false;
-                    for (Friend item : friendListFilter) {
-                        if (item.getName().equals(userID)) {isHave = true; break;}
-                    }
-                    if (isHave) continue;
-                    Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
-                    // 设置这两个属性主要是为了通讯录界面进行排序
-                    friend.setDisplayName(groups.getUserName());
-                    friend.setDisplayNameSpelling(groups.getUserName());
-                    friendList.add(friend);
-                }
-                // 先清空之前的，再添加所有的
-                friendListFilter.clear();
-                friendListFilter.addAll(friendList);
-                updateFriendsList(friendList);
-                // 把好友写入到数据库
-                addFrientToDataBase(friendList);
-                break;
-
-            case GET_RONG_GROUPS:
-                GetRongGroupResponse getRongGroupResponse = (GetRongGroupResponse) result;
-                // token 失效，返回登录界面
-                if (getRongGroupResponse.getCode().getCodeId().equals("401")) {
-                    NToast.shortToast(getContext(), getString(R.string.token_not_available));
-                    BroadcastManager.getInstance(getContext()).sendBroadcast(SealConst.EXIT);
-                    return;
-                }
-                List<Groups> list = getRongGroupResponse.getValue();
-                for (int i = 0; i < list.size(); i++) {
-                    Groups groups = list.get(i);
-                    groupId = groups.getGroupId();
-                    mAsyncTaskManager.request(GET_RONG_GROUP_MEMBERS, this);
-                    // 循环完才会执行，所以拿到的ID 都是最后的,所以让线程睡一下，再去获取数据，但是这样并不能完美的解决这个问题，后续需要再修改
-                    try {
-                        Thread.sleep(3);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-                break;
-            case GET_RONG_GROUP_MEMBERS:
-                GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
-                // token 失效，返回登录界面
-                if (getRongGroupMembersResponse.getCode().getCodeId().equals("401")) {
-                    NToast.shortToast(getContext(), getString(R.string.token_not_available));
-                    BroadcastManager.getInstance(getContext()).sendBroadcast(SealConst.EXIT);
-                    return;
-                }
-                List<Groups> membersList2 = getRongGroupMembersResponse.getValue();
-                for (int i = 0; i < membersList2.size(); i++) {
-                    Groups groups = membersList2.get(i);
-                    String userID = groups.getUserName();
-                    // 是当前用户，就不添加了
-                    if (userID.equals(userName)) continue;
-
-                    // 已经添加过了，就不重复添加了，因为不同的群组可能会有相同的人
-                    boolean isHave = false;
-                    for (Friend item : friendListFilter) {
-                        if (item.getName().equals(userID)) {isHave = true; break;}
-                    }
-                    if (isHave) continue;
-                    Friend friend = new Friend(groups.getUserName(), groups.getUserName(), Uri.parse(""));
-                    // 设置这两个属性主要是为了通讯录界面进行排序
-                    friend.setDisplayName(groups.getUserName());
-                    friend.setDisplayNameSpelling(groups.getUserName());
-                    friendList.add(friend);
-                }
-                // 先清空之前的，再添加所有的
-                friendListFilter.clear();
-                friendListFilter.addAll(friendList);
-                updateFriendsList(friendList);
-                // 把好友写入到数据库
-                addFrientToDataBase(friendList);
-                break;
-        }
-    }
-
-    // 把好友写进
-    private void addFrientToDataBase(List<Friend> list) {
-        for (Friend item : list) {
-            SealUserInfoManager.getInstance().addFriend(item);
-        }
-
-    }
-
-    @Override
-    public void onFailure(int requestCode, int state, Object result) {
-
-    }
 
     private void updateFriendsList(List<Friend> friendsList) {
         //updateUI fragment初始化和好友信息更新时都会调用,isReloadList表示是否是好友更新时调用

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.smartarmenia:dotnetcoresignalrclientjava-1.10">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/dotnetcoresignalrclientjava-1.10.aar/286d5233fdb1d0c66167a9aad5a6bb0d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/dotnetcoresignalrclientjava-1.10.aar/286d5233fdb1d0c66167a9aad5a6bb0d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/dotnetcoresignalrclientjava-1.10.aar/d71fb6fc3f998273421f342856268996/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/dotnetcoresignalrclientjava-1.10.aar/d71fb6fc3f998273421f342856268996/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

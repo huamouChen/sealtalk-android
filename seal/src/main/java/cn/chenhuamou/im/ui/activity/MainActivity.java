@@ -88,12 +88,6 @@ public class MainActivity extends FragmentActivity implements
     private DragPointView mUnreadNumView;
     private ImageView mSearchImageView;
 
-
-    // 网络请求
-    public AsyncTaskManager mAsyncTaskManager;
-    protected SealAction action;
-
-
     /**
      * 会话列表的fragment
      */
@@ -102,37 +96,27 @@ public class MainActivity extends FragmentActivity implements
     private Context mContext;
     private Conversation.ConversationType[] mConversationsTypes = null;
 
+    // 网络请求
+    public AsyncTaskManager mAsyncTaskManager;
+    protected SealAction action;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
         isDebug = getSharedPreferences("config", MODE_PRIVATE).getBoolean("isDebug", false);
-
-        mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
-        // Activity管理
-        action = new SealAction(mContext);
-
         initViews();
         changeTextViewColor();
         changeSelectedTabState(0);
         initMainViewPager();
         registerHomeKeyReceiver(this);
 
-        refreshUserInfoCache();
-
+        mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
+        // Activity管理
+        action = new SealAction(mContext);
         mAsyncTaskManager.request(RONG_ALIVE, this);
-    }
-
-
-    // 刷新个人信息
-    private void refreshUserInfoCache() {
-        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-        String userId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
-        RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId, userId, Uri.parse("")));
-
-        // 把自己当成一个好友保存到数据库，主要是为了给自己发送消息的时候用到
-        SealUserInfoManager.getInstance().addFriend(new Friend(userId, userId, Uri.parse("")));
     }
 
     private void initViews() {

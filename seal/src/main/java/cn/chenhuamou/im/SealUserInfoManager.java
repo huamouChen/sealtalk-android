@@ -962,13 +962,14 @@ public class SealUserInfoManager implements OnDataListener {
             public void run() {
                 List<Friend> friendsList;
                 if (!doingGetAllUserInfo && !hasGetFriends()) {
+                    // 没有网络
                     if (!isNetworkConnected()) {
                         onCallBackFail(callback);
                         return;
                     }
                     try {
                         friendsList = pullFriends();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                     } catch (HttpException e) {
                         onCallBackFail(callback);
                         NLog.d(TAG, "getFriends occurs HttpException e=" + e.toString() + "mGetAllUserInfoState=" + mGetAllUserInfoState);
@@ -992,7 +993,7 @@ public class SealUserInfoManager implements OnDataListener {
             }
             try {
                 friendsList = pullFriends();
-                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
             } catch (HttpException e) {
                 NLog.d(TAG, "getFriends occurs HttpException e=" + e.toString() + "mGetAllUserInfoState=" + mGetAllUserInfoState);
             }
@@ -1026,20 +1027,21 @@ public class SealUserInfoManager implements OnDataListener {
             public void run() {
                 List<Groups> groupsList;
                 if (!doingGetAllUserInfo && !hasGetGroups()) {
-                    if (!isNetworkConnected()) {
-                        onCallBackFail(callback);
-                    }
+                    // 没有网络
+                    if (!isNetworkConnected()) {  onCallBackFail(callback); }
                     try {
                         groupsList = pullGroups();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                     } catch (HttpException e) {
                         onCallBackFail(callback);
                         NLog.d(TAG, "getGroups occurs HttpException e=" + e.toString() + "mGetAllUserInfoState=" + mGetAllUserInfoState);
                         return;
                     }
+
                 } else {
                     groupsList = getGroups();
                 }
+
                 if (callback != null) {
                     callback.onCallback(groupsList);
                 }
