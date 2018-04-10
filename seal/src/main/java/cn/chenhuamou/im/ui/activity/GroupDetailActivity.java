@@ -256,12 +256,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 //            isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
-            mGroupNotice.setVisibility(View.VISIBLE);
+//            mGroupNotice.setVisibility(View.VISIBLE);
         } else {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
             mDismissBtn.setVisibility(View.VISIBLE);
             mQuitBtn.setVisibility(View.GONE);
-            mGroupNotice.setVisibility(View.VISIBLE);
+//            mGroupNotice.setVisibility(View.VISIBLE);
         }
         if (CommonUtils.isNetworkConnected(mContext)) {
             request(CHECKGROUPURL);
