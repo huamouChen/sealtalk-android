@@ -150,8 +150,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
          * 后两个操作全都根据异步操作推后
          */
         initData();
-
-
     }
 
     // 添加群组成员 或者  删除群组成员
@@ -639,7 +637,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                             groupMember.setGroupId(groupId);
                             deleteGroupMemberList.add(groupMember);
                         }
-                        fillSourceDataListForDeleteGroupMember();
+//                        fillSourceDataListForDeleteGroupMember();
                     }
                     break;
             }

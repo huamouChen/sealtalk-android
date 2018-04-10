@@ -1102,7 +1102,7 @@ public class SealUserInfoManager implements OnDataListener {
             mWorkHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    List<GroupMember> groupMembersList;
+                    List<GroupMember> groupMembersList = new ArrayList<>();
                     if (!doingGetAllUserInfo && (!hasGetAllGroupMembers() || hasGetPartGroupMembers())) {
                         if (!isNetworkConnected()) {
                             onCallBackFail(callback);
@@ -1110,14 +1110,19 @@ public class SealUserInfoManager implements OnDataListener {
                         }
                         try {
                             groupMembersList = pullGroupMembers(groupID);
-                            sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                            sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                         } catch (HttpException e) {
                             onCallBackFail(callback);
                             NLog.d(TAG, "getGroupMembers occurs HttpException e=" + e.toString() + "mGetAllUserInfoState=" + mGetAllUserInfoState);
                             return;
                         }
                     } else {
-                        groupMembersList = getGroupMembers(groupID);
+                        try {
+                            groupMembersList = pullGroupMembers(groupID);
+                        } catch (HttpException e) {
+                            e.printStackTrace();
+                        }
+//                        groupMembersList = getGroupMembers(groupID);
                     }
                     if (callback != null) {
                         callback.onCallback(groupMembersList);
