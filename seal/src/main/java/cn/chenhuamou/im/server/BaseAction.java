@@ -15,7 +15,8 @@ import cn.chenhuamou.im.server.utils.json.JsonMananger;
 public class BaseAction {
 
 //    private static final String DOMAIN = "http://api.sealtalk.im";
-    public static final String DOMAIN = "http://192.168.1.88:8003";
+//    public static final String DOMAIN = "http://192.168.1.88:8003";
+    public static final String DOMAIN = "http://im.xxx8.cn";
 
 
     protected Context mContext;

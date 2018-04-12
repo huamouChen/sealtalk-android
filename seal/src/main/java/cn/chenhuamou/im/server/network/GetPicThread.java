@@ -58,6 +58,8 @@ public class GetPicThread implements Runnable {
                 msg.what = 0x0001;
                 msg.obj = bm;
                 hander.sendMessage(msg);
+            } else {
+                int responseCode = conn.getResponseCode();
             }
 
             //9.释放资源

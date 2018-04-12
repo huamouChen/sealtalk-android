@@ -161,11 +161,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     return;
                 }
 
-                if (TextUtils.isEmpty(validateCodeString)) {
-                    NToast.shortToast(mContext, R.string.validate_code_is_null);
-                    mValidateCodeEdit.setShakeAnimation();
-                    return;
-                }
+//                if (TextUtils.isEmpty(validateCodeString)) {
+//                    NToast.shortToast(mContext, R.string.validate_code_is_null);
+//                    mValidateCodeEdit.setShakeAnimation();
+//                    return;
+//                }
 
                 LoadDialog.show(mContext);
                 editor.putBoolean("exit", false);

@@ -15,6 +15,8 @@
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <!--如果是安卓8.0，应用编译配置的targetSdkVersion>=26，请务必添加以下权限 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- 查看 Wi-Fi 状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -457,6 +459,31 @@
         <meta-data
             android:name="com.huawei.hms.client.appid"
             android:value="100237793" />
+        <!-- BridgeActivity定义了HMS-SDK中一些跳转所需要的透明页面-->
+        <activity
+            android:name="com.huawei.hms.activity.BridgeActivity"
+            android:configChanges="orientation|locale|screenSize|layoutDirection|fontScale"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" >
+            <meta-data
+                android:name="hwc-theme"
+                android:value="androidhwext:style/Theme.Emui.Translucent" />
+        </activity>
+
+        <!--&lt;!&ndash; 解决华为移动服务升级问题的透明界面（必须声明）&ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name="com.huawei.android.hms.agent.common.HMSAgentActivity"-->
+            <!--android:configChanges="orientation|locale|screenSize|layoutDirection|fontScale"-->
+            <!--android:excludeFromRecents="true"-->
+            <!--android:exported="false"-->
+            <!--android:hardwareAccelerated="true"-->
+            <!--android:theme="@android:style/Theme.Translucent" >-->
+            <!--<meta-data-->
+                <!--android:name="hwc-theme"-->
+                <!--android:value="androidhwext:style/Theme.Emui.Translucent" />-->
+        <!--</activity>-->
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
             android:authorities="cn.chenhuamou.im.hms.update.provider"
