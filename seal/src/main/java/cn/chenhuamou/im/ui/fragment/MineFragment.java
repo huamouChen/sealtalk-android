@@ -167,7 +167,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 if (!TextUtils.isEmpty(url)) {
                     intent.putExtra("url", url);
                 }
-                startActivity(intent);
+//                startActivity(intent);
                 break;
             case R.id.my_wallet:
                 JrmfClient.intentWallet(getActivity());

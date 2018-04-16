@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyIM</string>
+    <string name="app_name">MiniChat</string>
     <string name="add_contacts">Add Contacts</string>
 
     <string name="token_not_available">Token Invalid</string>
@@ -17,7 +17,7 @@
     <string name="sync_group_api_fail">sync group api fail</string>
     <string name="login_success">login success</string>
     <string name="phone_or_psw_error">phone number or password mistake</string>
-    <string name="phone_number_is_null">Mobile phone number cannot be empty</string>
+    <string name="phone_number_is_null">Account cannot be empty</string>
     <string name="Illegal_phone_number">Illegal phone number</string>
     <string name="password_is_null">Password cannot be empty</string>
     <string name="validate_code_is_null">Validate Code cannot be empty</string>

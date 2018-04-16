@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.chenhuamou.im.R;
+import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.response.KqwfPcddResponse;
+import cn.chenhuamou.im.server.utils.NToast;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.IRongCallback;
 import io.rong.imlib.RongIMClient;
@@ -36,6 +41,8 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
 
     private String targetId;
     private String conversationType;
+
+    private static final int Bet = 1000;
 
 
     private Button btn_confirm;
@@ -90,15 +97,58 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
         }
     };
 
+    @Override
+    public Object doInBackground(int requestCode, String id) throws HttpException {
+        String betString = String.format("#%s|%s#", playString, moneyString);
+        return action.postKQWFPCDD(betString, targetId);
+    }
+
+    @Override
+    public void onSuccess(int requestCode, Object result) {
+        switch (requestCode) {
+            case Bet:
+                KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
+
+                if (kqwfPcddResponse.isResult()) {
+                    BroadcastManager.getInstance(mContext).sendBroadcast("Bet", "投注成功");
+                } else {
+                    BroadcastManager.getInstance(mContext).sendBroadcast("Bet", kqwfPcddResponse.getError());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(int requestCode, int state, Object result) {
+        switch (requestCode) {
+            case Bet:
+                NToast.shortToast(mContext, "KQWF-PCDD失败");
+                break;
+        }
+    }
+
 
     // 点击事件
     @Override
     public void onClick(View v) {
         // 只有是群聊的时候才发送消息或者指定的群才发送消息
         if (conversationType.equals("group")) {
+            if (TextUtils.isEmpty(playString)) {
+                NToast.shortToast(mContext, "玩法不能为空");
+                return;
+            }
+
+            if (TextUtils.isEmpty(moneyString)) {
+                NToast.shortToast(mContext, "金额不能为空");
+                return;
+            }
+
             // 发送消息
-            String betString = String.format("玩法：%s\n单号：123456677\n期号：123454566\n金额：%s", playString, moneyString);
-//            TextMessage mTextMessage = TextMessage.obtain("玩法：大小单双-豹子\n单号：123456677\n期号：123454566\n金额：￥1000.00");
+//            String betString = String.format("玩法：%s\n单号：123456677\n期号：123454566\n金额：%s", playString, moneyString);
+            String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
+            // 调用PC蛋蛋接口
+            request(Bet);
+
             TextMessage mTextMessage = TextMessage.obtain(betString);
             io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
             RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
@@ -123,7 +173,6 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
                 }
             });
         }
-
 
         finish();
     }
@@ -250,6 +299,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
         money_list.add("100元");
         money_list.add("500元");
         money_list.add("1000元");
+
         money_adapter = new HZAdapter(money_list);
         money_adapter.setmBetItemClickListner(new HZAdapter.BetItemClickInterface() {
             @Override
@@ -258,6 +308,7 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
                     position = -1;
                 }
                 moneyString = position != -1 ? money_list.get(position) : "";
+                moneyString = moneyString.length() > 0 ? moneyString.substring(0, moneyString.length() - 1) : moneyString;
                 money_adapter.refreshData(position);
                 // 清空输入框
                 mEditText.setText("");

@@ -1,6 +1,7 @@
 package cn.chenhuamou.im.ui.activity;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.GroupMember;
+import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.KqwfPcddResponse;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -233,6 +235,16 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         setMyExtensionModule();
 
 
+        // BetActivity 下注接口回调
+        BroadcastManager.getInstance(mContext).addAction("Bet", new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String string = intent.getStringExtra("String");
+                NToast.shortToast(mContext, string);
+            }
+        });
+
+
     }
 
     // 自定义插件区域的插件
@@ -250,17 +262,17 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                 }
 
                 if (module instanceof JrmfExtensionModule) {
-                    jrmfExtensionModule = (JrmfExtensionModule)module;
+                    jrmfExtensionModule = (JrmfExtensionModule) module;
                     continue;
                 }
 
                 if (module instanceof RecognizeExtensionModule) {
-                    recognizeExtensionModule = (RecognizeExtensionModule)module;
+                    recognizeExtensionModule = (RecognizeExtensionModule) module;
                     continue;
                 }
 
                 if (module instanceof ContactCardExtensionModule) {
-                    contactCardExtensionModule = (ContactCardExtensionModule)module;
+                    contactCardExtensionModule = (ContactCardExtensionModule) module;
                 }
 
             }
@@ -654,9 +666,12 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         RongCallKit.setGroupMemberProvider(null);
         //CallKit end 3
 
+
+        BroadcastManager.getInstance(mContext).destroy("Bet");
         RongIMClient.setTypingStatusListener(null);
         SealAppContext.getInstance().popActivity(this);
         super.onDestroy();
+
 
         msgListener = null;
     }
@@ -790,7 +805,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                 KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
 
                 if (kqwfPcddResponse.isResult()) {
-                    NToast.shortToast(mContext, "KQWF-PCDD成功");
+                    NToast.shortToast(mContext, "投注成功");
                 } else {
                     NToast.shortToast(mContext, kqwfPcddResponse.getError());
                 }

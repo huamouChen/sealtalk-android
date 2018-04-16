@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyIM</string>
+    <string name="app_name">微小信</string>
     <string name="action_settings">Settings</string>
 
 
@@ -85,7 +85,7 @@
     <string name="get_group_members_api_fail">获取群组成员请求接口失败</string>
     <string name="sync_group_api_fail">同步群组信息请求接口失败</string>
     <string name="phone_or_psw_error">手机或者密码错误</string>
-    <string name="phone_number_is_null">手机号不能为空</string>
+    <string name="phone_number_is_null">账号不能为空</string>
     <string name="Illegal_phone_number">非法手机号</string>
     <string name="password_is_null">密码不能为空</string>
     <string name="validate_code_is_null">验证码不能为空</string>

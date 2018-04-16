@@ -89,7 +89,7 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
         }
         switch (v.getId()) {
             case R.id.def_chatroom1:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getId(), "聊天室 I");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getId(), "聊天室 I");
                 break;
             case R.id.def_chatroom2:
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getId(), "聊天室 II");

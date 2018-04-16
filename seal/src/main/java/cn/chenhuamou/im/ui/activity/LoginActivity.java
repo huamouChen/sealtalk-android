@@ -54,10 +54,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private static final int SYNC_USER_INFO = 9;
 
     private ImageView mImg_Background;
-    private ClearWriteEditText mPhoneEdit, mPasswordEdit, mValidateCodeEdit;
+    private ClearWriteEditText mPhoneEdit, mPasswordEdit;
     private String phoneString;
     private String passwordString;
-    private String validateCodeString;
     private String connectResultId;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -84,25 +83,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         sp = getSharedPreferences("config", MODE_PRIVATE);
         editor = sp.edit();
         initView();
-
-        // 获取验证码，验证码一分钟失效
-//        getValidateImg();
     }
 
     private void initView() {
         mPhoneEdit = (ClearWriteEditText) findViewById(R.id.de_login_phone);
         mPasswordEdit = (ClearWriteEditText) findViewById(R.id.de_login_password);
-        mValidateCodeEdit = (ClearWriteEditText) findViewById(R.id.de_login_validcode);
-        mValidCodeImg = (ImageView) findViewById(R.id.login_validcode_img);
+
 
         Button mConfirm = (Button) findViewById(R.id.de_login_sign);
-        Button mGetValiaCode = (Button) findViewById(R.id.btn_valid_code);
         TextView mRegister = (TextView) findViewById(R.id.de_login_register);
         TextView forgetPassword = (TextView) findViewById(R.id.de_login_forgot);
         forgetPassword.setOnClickListener(this);
         mConfirm.setOnClickListener(this);
         mRegister.setOnClickListener(this);
-        mGetValiaCode.setOnClickListener(this);
         mImg_Background = (ImageView) findViewById(R.id.de_img_backgroud);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -142,7 +135,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.de_login_sign:
                 phoneString = mPhoneEdit.getText().toString().trim();
                 passwordString = mPasswordEdit.getText().toString().trim();
-                validateCodeString = mValidateCodeEdit.getText().toString().trim();
 
                 if (TextUtils.isEmpty(phoneString)) {
                     NToast.shortToast(mContext, R.string.phone_number_is_null);
@@ -160,13 +152,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     mPasswordEdit.setShakeAnimation();
                     return;
                 }
-
-//                if (TextUtils.isEmpty(validateCodeString)) {
-//                    NToast.shortToast(mContext, R.string.validate_code_is_null);
-//                    mValidateCodeEdit.setShakeAnimation();
-//                    return;
-//                }
-
                 LoadDialog.show(mContext);
                 editor.putBoolean("exit", false);
                 editor.commit();
@@ -178,9 +163,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.de_login_forgot:
                 startActivityForResult(new Intent(this, ForgetPasswordActivity.class), 2);
-                break;
-            case R.id.btn_valid_code:
-                getValidateImg();
                 break;
         }
     }
@@ -215,7 +197,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case LOGIN:
-                return action.login(phoneString, passwordString, getCurrentTime(), false, validateCodeString);
+                return action.login(phoneString, passwordString, getCurrentTime(), false, "");
             case GET_TOKEN:
                 return action.getToken();
             case SYNC_USER_INFO:
