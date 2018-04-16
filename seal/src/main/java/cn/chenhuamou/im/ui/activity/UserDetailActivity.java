@@ -60,6 +60,8 @@ import io.rong.imlib.model.UserOnlineStatusInfo;
 
 public class UserDetailActivity extends BaseActivity implements View.OnClickListener {
 
+    private boolean isFromGroup = false;
+
     private static final int SYNC_FRIEND_INFO = 129;
     private ImageView mUserPortrait;
     private TextView mUserNickName;
@@ -114,6 +116,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         if (mType == CLICK_CONVERSATION_USER_PORTRAIT) {
             SealAppContext.getInstance().pushActivity(this);
         }
+        isFromGroup = getIntent().getBooleanExtra(SealConst.IsFromGroup, false);
         mGroupName = getIntent().getStringExtra("groupName");
         mFriend = getIntent().getParcelableExtra("friend");
 
@@ -172,6 +175,11 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
             if (mIsFriendsRelationship) {
                 mChatButtonGroupLinearLayout.setVisibility(View.VISIBLE);
                 mAddFriendButton.setVisibility(View.GONE);
+            } else if (isFromGroup) {
+                mAddFriendButton.setText("不是好友，无法查看");
+                mAddFriendButton.setVisibility(View.VISIBLE);
+                mChatButtonGroupLinearLayout.setVisibility(View.GONE);
+                mNoteNameLinearLayout.setVisibility(View.GONE);
             } else {
                 mAddFriendButton.setVisibility(View.VISIBLE);
                 mChatButtonGroupLinearLayout.setVisibility(View.GONE);
@@ -296,32 +304,36 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ac_bt_add_friend:
-                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.confirm), new DialogWithYesOrNoUtils.DialogCallBack() {
-                    @Override
-                    public void executeEvent() {
+                if (isFromGroup) {
+                    NToast.shortToast(mContext, "不是好友关系，无法进行操作");
+                } else {
+                    DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.confirm), new DialogWithYesOrNoUtils.DialogCallBack() {
+                        @Override
+                        public void executeEvent() {
 
-                    }
-
-                    @Override
-                    public void executeEditEvent(String editText) {
-                        if (TextUtils.isEmpty(editText)) {
-                            if (mGroupName != null && !TextUtils.isEmpty(mGroupName)) {
-                                addMessage = "我是" + mGroupName + "群的" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
-                            } else {
-                                addMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
-                            }
-                        } else {
-                            addMessage = editText;
                         }
-                        LoadDialog.show(mContext);
-                        request(ADD_FRIEND, true);
-                    }
 
-                    @Override
-                    public void updatePassword(String oldPassword, String newPassword) {
+                        @Override
+                        public void executeEditEvent(String editText) {
+                            if (TextUtils.isEmpty(editText)) {
+                                if (mGroupName != null && !TextUtils.isEmpty(mGroupName)) {
+                                    addMessage = "我是" + mGroupName + "群的" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+                                } else {
+                                    addMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+                                }
+                            } else {
+                                addMessage = editText;
+                            }
+                            LoadDialog.show(mContext);
+                            request(ADD_FRIEND, true);
+                        }
 
-                    }
-                });
+                        @Override
+                        public void updatePassword(String oldPassword, String newPassword) {
+
+                        }
+                    });
+                }
                 break;
             case R.id.contact_phone:
                 if (!TextUtils.isEmpty(mPhoneString)) {

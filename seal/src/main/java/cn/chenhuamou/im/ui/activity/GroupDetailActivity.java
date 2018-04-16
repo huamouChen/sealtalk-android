@@ -329,7 +329,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                         mGroup = new Groups(groupId, groupName, "");
                         initGroupData();
                         String userId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-                        isCreated =  groupOwer.equals(userId);
+                        isCreated = groupOwer.equals(userId);
                     }
                     break;
 
@@ -765,6 +765,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                         //Groups not Serializable,just need group name
                         intent.putExtra("groupName", mGroup.getName());
                         intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
+                        // 群组不允许互相添加好友，传个参数过去判断是否是由群组点开的
+                        intent.putExtra(SealConst.IsFromGroup, true);
                         context.startActivity(intent);
                     }
 

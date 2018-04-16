@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--背景-->
     <FrameLayout
         android:id="@+id/de_frm_backgroud"
         android:layout_width="match_parent"
@@ -30,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="91dip"
-            android:src="@drawable/seal_logo" />
+            android:src="@drawable/seal_logo"
+            android:visibility="gone"/>
 
 
         <LinearLayout

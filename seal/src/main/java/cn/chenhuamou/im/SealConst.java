@@ -20,6 +20,9 @@ public class SealConst {
     public static final String SEALTALK_LOGING_PHONE = "loginphone";
     public static final String SEALTALK_LOGING_PASSWORD = "loginpassword";
 
+    // 是否是由群组点开查看用户信息
+    public static final String IsFromGroup = "isFromGroup";
+
 
 
 
