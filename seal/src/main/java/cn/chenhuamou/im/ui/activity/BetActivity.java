@@ -1,5 +1,7 @@
 package cn.chenhuamou.im.ui.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,7 +26,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.chenhuamou.im.R;
+import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
+import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.KqwfPcddResponse;
 import cn.chenhuamou.im.server.utils.NToast;
@@ -37,13 +43,20 @@ import io.rong.message.TextMessage;
  * Created by Rex on 2018/4/8.
  * Email chenhm4444@gmail.com
  */
-public class BetActivity extends BaseActivity implements View.OnClickListener {
+public class BetActivity extends Activity implements View.OnClickListener, OnDataListener {
+
+
+    protected Context mContext;
+    public AsyncTaskManager mAsyncTaskManager;
+    protected SealAction action;
 
     private String targetId;
     private String conversationType;
 
     private static final int Bet = 1000;
 
+
+    private LinearLayout linear_mask;
 
     private Button btn_confirm;
     private RecyclerView rv_history;     // 历史记录  RecyclerView
@@ -131,60 +144,75 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
     // 点击事件
     @Override
     public void onClick(View v) {
-        // 只有是群聊的时候才发送消息或者指定的群才发送消息
-        if (conversationType.equals("group")) {
-            if (TextUtils.isEmpty(playString)) {
-                NToast.shortToast(mContext, "玩法不能为空");
-                return;
-            }
 
-            if (TextUtils.isEmpty(moneyString)) {
-                NToast.shortToast(mContext, "金额不能为空");
-                return;
-            }
+        switch (v.getId()) {
+            case R.id.linear_mask:
+                finish();
+                break;
 
-            // 发送消息
+            case R.id.btn_confirm: {
+                // 只有是群聊的时候才发送消息或者指定的群才发送消息
+                if (conversationType.equals("group")) {
+                    if (TextUtils.isEmpty(playString)) {
+                        NToast.shortToast(mContext, "玩法不能为空");
+                        return;
+                    }
+
+                    if (TextUtils.isEmpty(moneyString)) {
+                        NToast.shortToast(mContext, "金额不能为空");
+                        return;
+                    }
+
+                    // 发送消息
 //            String betString = String.format("玩法：%s\n单号：123456677\n期号：123454566\n金额：%s", playString, moneyString);
-            String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
-            // 调用PC蛋蛋接口
-            request(Bet);
+                    String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
+                    // 调用PC蛋蛋接口
+                    mAsyncTaskManager.request(Bet, this);
 
-            TextMessage mTextMessage = TextMessage.obtain(betString);
-            io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
-            RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
-                @Override
-                public void onProgress(io.rong.imlib.model.Message message, int i) {
+                    TextMessage mTextMessage = TextMessage.obtain(betString);
+                    io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
+                    RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
+                        @Override
+                        public void onProgress(io.rong.imlib.model.Message message, int i) {
+                        }
+
+                        @Override
+                        public void onCanceled(io.rong.imlib.model.Message message) {
+                        }
+
+                        @Override
+                        public void onAttached(io.rong.imlib.model.Message message) {
+                        }
+
+                        @Override
+                        public void onSuccess(io.rong.imlib.model.Message message) {
+                        }
+
+                        @Override
+                        public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
+                        }
+                    });
                 }
 
-                @Override
-                public void onCanceled(io.rong.imlib.model.Message message) {
-                }
-
-                @Override
-                public void onAttached(io.rong.imlib.model.Message message) {
-                }
-
-                @Override
-                public void onSuccess(io.rong.imlib.model.Message message) {
-                }
-
-                @Override
-                public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
-                }
-            });
+                finish();
+            }
+            break;
         }
 
-        finish();
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bet);
+        mContext = this;
 
+        mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
+        // Activity管理
+        action = new SealAction(mContext);
 
         initView();
-
         initData();
     }
 
@@ -198,7 +226,8 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
 
     // 初始化 view
     private void initView() {
-        setTitle("玩法选择");
+        linear_mask = (LinearLayout) findViewById(R.id.linear_mask);
+        linear_mask.setOnClickListener(this);
 
         mProgressBar = (ProgressBar) findViewById(R.id.pb_horizontial);
         mEditText = (EditText) findViewById(R.id.et_money);

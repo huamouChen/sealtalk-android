@@ -79,7 +79,8 @@
         </activity>
 
         <!--玩法选择-->
-        <activity android:name=".ui.activity.BetActivity" />
+        <activity android:name=".ui.activity.BetActivity"
+            android:theme="@style/myTransparent"  />
 
         <!--登录页面-->
         <activity

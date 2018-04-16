@@ -1,158 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-    <!--开奖期号，倒计时-->
+    <LinearLayout
+        android:id="@+id/linear_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"/>
+
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="#4D000000"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_current_num"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="10dp"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:text="当前期号：20180408002"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
-
-        <TextView
-            android:id="@+id/tv_pre_num"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:text="第20180408002开奖号码：3,6,8,5,0"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="#f1f1f1">
 
 
-        <ProgressBar
-            android:id="@+id/pb_horizontial"
-            style="?android:progressBarStyleHorizontal"
+        <!--开奖期号，倒计时-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#4D000000"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_current_num"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:text="当前期号：20180408002"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tv_pre_num"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:text="第20180408002开奖号码：3,6,8,5,0"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+
+            <ProgressBar
+                android:id="@+id/pb_horizontial"
+                style="?android:progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-7dp"
+                android:max="100"
+                android:progress="70" />
+
+
+        </RelativeLayout>
+
+        <!--历史记录-->
+        <LinearLayout
+            android:id="@+id/linear_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@id/linear_play"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/bet_item_title"
+                android:text="历史记录" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_history"
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+        </LinearLayout>
+
+        <!--玩法选择-->
+        <LinearLayout
+            android:id="@+id/linear_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/linear_hz"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/bet_item_title"
+                android:text="玩法选择" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_play"
+                android:layout_width="match_parent"
+                android:layout_height="140dp" />
+
+        </LinearLayout>
+
+        <!--和值-->
+        <LinearLayout
+            android:id="@+id/linear_hz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/linear_bet"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/bet_item_title"
+                android:text="和值" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_hz"
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_separator2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/linear_bet"
+            android:background="@color/color_80b5b5b5" />
+
+
+        <!--金额输入界面-->
+        <RelativeLayout
+            android:id="@+id/linear_bet"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_above="@id/btn_confirm"
+            >
+
+            <EditText
+                android:id="@+id/et_money"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:background="@drawable/bg_white"
+                android:gravity="center"
+                android:hint="输入金额"
+                android:inputType="number"
+                android:textColorHint="@color/text_hint_color"
+                android:textColor="@color/black_textview"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/et_money"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+
+        <!--确定按钮-->
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-7dp"
-            android:max="100"
-            android:progress="70" />
+            android:layout_margin="20dp"
+            android:background="@drawable/rs_select_btn_blue"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
 
 
     </RelativeLayout>
 
-    <!--历史记录-->
-    <LinearLayout
-        android:id="@+id/linear_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linear_play"
-        android:orientation="vertical"
-        android:visibility="gone">
 
-        <TextView
-            style="@style/bet_item_title"
-            android:text="历史记录" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_history"
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
-
-    </LinearLayout>
-
-    <!--玩法选择-->
-    <LinearLayout
-        android:id="@+id/linear_play"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linear_hz"
-        android:orientation="vertical">
-
-        <TextView
-            style="@style/bet_item_title"
-            android:text="玩法选择" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_play"
-            android:layout_width="match_parent"
-            android:layout_height="140dp" />
-
-    </LinearLayout>
-
-    <!--和值-->
-    <LinearLayout
-        android:id="@+id/linear_hz"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linear_bet"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/bet_item_title"
-            android:text="和值" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_hz"
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/view_separator2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/linear_bet"
-        android:background="@color/color_80b5b5b5" />
-
-
-    <!--金额输入界面-->
-    <RelativeLayout
-        android:id="@+id/linear_bet"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_above="@id/btn_confirm"
-        android:padding="2.5dp">
-
-        <EditText
-            android:id="@+id/et_money"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:hint="输入金额"
-            android:inputType="number"
-            android:maxLines="1"
-            android:textSize="14sp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_money"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_toRightOf="@+id/et_money" />
-
-    </RelativeLayout>
-
-
-    <!--确定按钮-->
-    <Button
-        android:id="@+id/btn_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:background="@drawable/rs_select_btn_blue"
-        android:text="确定"
-        android:textColor="@color/white"
-        android:textSize="16dp" />
-
-</RelativeLayout>
+</LinearLayout>
