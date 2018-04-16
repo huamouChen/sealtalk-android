@@ -48,7 +48,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public static final String SHOW_RED = "SHOW_RED";
     private SharedPreferences sp;
     private SelectableRoundedImageView imageView;
-    private TextView mName;
+    private TextView mName, mCurrent_version;
     private ImageView mNewVersionView;
     private boolean isHasNewVersion;
     private String url;
@@ -118,6 +118,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private void initViews(View mView) {
         mNewVersionView = (ImageView) mView.findViewById(R.id.new_version_icon);
+        mCurrent_version = (TextView) mView.findViewById(R.id.tv_current_version);
+        mCurrent_version.setText("当前版本 " + getVersionInfo()[1]);
         imageView = (SelectableRoundedImageView) mView.findViewById(R.id.mine_header);
         mName = (TextView) mView.findViewById(R.id.mine_name);
         LinearLayout mUserProfile = (LinearLayout) mView.findViewById(R.id.start_user_profile);
@@ -125,9 +127,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         LinearLayout mMineService = (LinearLayout) mView.findViewById(R.id.mine_service);
         LinearLayout mMineXN = (LinearLayout) mView.findViewById(R.id.mine_xiaoneng);
         LinearLayout mMineAbout = (LinearLayout) mView.findViewById(R.id.mine_about);
-        if(isDebug){
+        if (isDebug) {
             mMineXN.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mMineXN.setVisibility(View.GONE);
         }
         mUserProfile.setOnClickListener(this);
@@ -160,7 +162,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 builder1.city("北京");
                 RongIM.getInstance().startCustomerServiceChat(getActivity(), "zf_1000_1481459114694", "在线客服", builder1.build());
                 break;
-            case R.id.mine_about:
+            case R.id.mine_about:  // 当前版本
                 mNewVersionView.setVisibility(View.GONE);
                 Intent intent = new Intent(getActivity(), AboutRongCloudActivity.class);
                 intent.putExtra("isHasNewVersion", isHasNewVersion);
@@ -187,7 +189,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mName.setText(username);
         if (!TextUtils.isEmpty(userId)) {
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri
-                                 (new UserInfo(userId, username, Uri.parse(userPortrait)));
+                    (new UserInfo(userId, username, Uri.parse(userPortrait)));
             ImageLoader.getInstance().displayImage(portraitUri, imageView, App.getOptions());
         }
     }
@@ -208,4 +210,5 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
         return version;
     }
+
 }
