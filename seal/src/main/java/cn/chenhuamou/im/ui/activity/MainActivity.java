@@ -54,6 +54,7 @@ import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.adapter.ConversationListAdapterEx;
 import cn.chenhuamou.im.ui.fragment.ContactsFragment;
+import cn.chenhuamou.im.ui.fragment.DiscoverFragment;
 import cn.chenhuamou.im.ui.fragment.MineFragment;
 import cn.chenhuamou.im.ui.widget.DragPointView;
 import cn.chenhuamou.im.ui.widget.MorePopWindow;
@@ -169,7 +170,7 @@ public class MainActivity extends FragmentActivity implements
         // 添加底部的 tab item
         mFragment.add(conversationList);
         mFragment.add(new ContactsFragment());
-//        mFragment.add(new DiscoverFragment());
+        mFragment.add(new DiscoverFragment());
         mFragment.add(new MineFragment());
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -268,11 +269,11 @@ public class MainActivity extends FragmentActivity implements
                 mTextContact.setTextColor(Color.parseColor("#0099ff"));
                 mImageContact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_contacts_hover));
                 break;
-//            case 2:
-//                mTextFind.setTextColor(Color.parseColor("#0099ff"));
-//                mImageFind.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_found_hover));
-//                break;
             case 2:
+                mTextFind.setTextColor(Color.parseColor("#0099ff"));
+                mImageFind.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_found_hover));
+                break;
+            case 3:
                 mTextMe.setTextColor(Color.parseColor("#0099ff"));
                 mImageMe.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_me_hover));
                 break;
@@ -312,11 +313,11 @@ public class MainActivity extends FragmentActivity implements
             case R.id.seal_contact_list:
                 mViewPager.setCurrentItem(1, false);
                 break;
-//            case R.id.seal_find:
-//                mViewPager.setCurrentItem(2, false);
-//                break;
-            case R.id.seal_me:
+            case R.id.seal_find:
                 mViewPager.setCurrentItem(2, false);
+                break;
+            case R.id.seal_me:
+                mViewPager.setCurrentItem(3, false);
                 mMineRed.setVisibility(View.GONE);
                 break;
             case R.id.seal_more:

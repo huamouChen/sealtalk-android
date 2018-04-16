@@ -211,7 +211,7 @@
     <string name="portrait_update_success">头像更新成功</string>
     <string name="chat">会话</string>
     <string name="contacts">通讯录</string>
-    <string name="discover">发现</string>
+    <string name="discover">聊天室</string>
     <string name="me">我</string>
     <string name="mine_about">关于 SealTalk</string>
     <string name="my_wallet">我的钱包</string>

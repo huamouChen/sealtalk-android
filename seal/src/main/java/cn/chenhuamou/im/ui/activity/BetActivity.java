@@ -97,7 +97,9 @@ public class BetActivity extends BaseActivity implements View.OnClickListener {
         // 只有是群聊的时候才发送消息或者指定的群才发送消息
         if (conversationType.equals("group")) {
             // 发送消息
-            TextMessage mTextMessage = TextMessage.obtain("玩法：大小单双-豹子\n单号：123456677\n期号：123454566\n金额：￥1000.00");
+            String betString = String.format("玩法：%s\n单号：123456677\n期号：123454566\n金额：%s", playString, moneyString);
+//            TextMessage mTextMessage = TextMessage.obtain("玩法：大小单双-豹子\n单号：123456677\n期号：123454566\n金额：￥1000.00");
+            TextMessage mTextMessage = TextMessage.obtain(betString);
             io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
             RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
                 @Override

@@ -45,7 +45,8 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
         chatroomItem2.setOnClickListener(this);
         chatroomItem3.setOnClickListener(this);
         chatroomItem4.setOnClickListener(this);
-        //回调时的线程并不是UI线程，不能在回调中直接操作UI
+
+        //回调时的线程并不是UI线程，不能在回调中直接操作UI 聊天室状态监听 加入中  已经加入 离开 错误
         RongIMClient.getInstance().setChatRoomActionListener(new RongIMClient.ChatRoomActionListener() {
             @Override
             public void onJoining(String chatRoomId) {
@@ -63,7 +64,7 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
             }
 
             @Override
-            public void onError(String chatRoomId,final RongIMClient.ErrorCode code) {
+            public void onError(String chatRoomId, final RongIMClient.ErrorCode code) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -76,6 +77,8 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
                 });
             }
         });
+
+        initChatRoomData();
     }
 
     @Override
@@ -86,7 +89,7 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
         }
         switch (v.getId()) {
             case R.id.def_chatroom1:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getId(), "聊天室 I");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getId(), "聊天室 I");
                 break;
             case R.id.def_chatroom2:
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getId(), "聊天室 II");
@@ -108,28 +111,64 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
     @Override
     @SuppressWarnings("unchecked")
     public void onSuccess(int requestCode, Object result) {
-        DefaultConversationResponse response = (DefaultConversationResponse) result;
-        if (response.getCode() == 200) {
-            ArrayList<DefaultConversationResponse.ResultEntity> resultEntityArrayList = new ArrayList();
-            chatroomList = new ArrayList();
-            if (response.getResult().size() > 0) {
-                resultEntityArrayList.clear();
-                chatroomList.clear();
-                for (DefaultConversationResponse.ResultEntity d : response.getResult()) {
-                    if (d.getType().equals("group")) {
-                        resultEntityArrayList.add(d);
-                    } else {
-                        chatroomList.add(d);
-                    }
-                }
-            }
-        }
+        initChatRoomData();
+//        DefaultConversationResponse response = (DefaultConversationResponse) result;
+//        if (response.getCode() == 200) {
+//            ArrayList<DefaultConversationResponse.ResultEntity> resultEntityArrayList = new ArrayList();
+//            chatroomList = new ArrayList();
+//            if (response.getResult().size() > 0) {
+//                resultEntityArrayList.clear();
+//                chatroomList.clear();
+//                for (DefaultConversationResponse.ResultEntity d : response.getResult()) {
+//                    if (d.getType().equals("group")) {
+//                        resultEntityArrayList.add(d);
+//                    } else {
+//                        chatroomList.add(d);
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override
     public void onFailure(int requestCode, int state, Object result) {
-
+        initChatRoomData();
     }
 
 
+    /*
+    * 初始化聊天室的列表数据
+    * */
+    private void initChatRoomData() {
+        chatroomList = new ArrayList();
+        chatroomList.clear();
+
+        DefaultConversationResponse.ResultEntity chatroom1 = new DefaultConversationResponse.ResultEntity();
+        chatroom1.setId("CHM001Room1");
+        chatroom1.setName("CHM001Room1");
+        chatroom1.setType("chatroom");
+        chatroom1.setMaxMemberCount(0);
+        chatroomList.add(chatroom1);
+
+        DefaultConversationResponse.ResultEntity chatroom2 = new DefaultConversationResponse.ResultEntity();
+        chatroom2.setId("CHM001Room2");
+        chatroom2.setName("CHM001Room2");
+        chatroom2.setType("chatroom");
+        chatroom2.setMaxMemberCount(0);
+        chatroomList.add(chatroom2);
+
+        DefaultConversationResponse.ResultEntity chatroom3 = new DefaultConversationResponse.ResultEntity();
+        chatroom3.setId("CHM001Room3");
+        chatroom3.setName("CHM001Room3");
+        chatroom3.setType("chatroom");
+        chatroom3.setMaxMemberCount(0);
+        chatroomList.add(chatroom3);
+
+        DefaultConversationResponse.ResultEntity chatroom4 = new DefaultConversationResponse.ResultEntity();
+        chatroom4.setId("CHM001Room4");
+        chatroom4.setName("CHM001Room4");
+        chatroom4.setType("chatroom");
+        chatroom4.setMaxMemberCount(0);
+        chatroomList.add(chatroom4);
+    }
 }
