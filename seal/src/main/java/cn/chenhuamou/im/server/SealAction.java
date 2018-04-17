@@ -288,7 +288,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public SetNameResponse setName(String nickname) throws HttpException {
-        String url = getURL("user/set_nickname");
+        String url = getURL("api/User/SetNickName");
         String json = JsonMananger.beanToJson(new SetNameRequest(nickname));
         StringEntity entity = null;
         try {
@@ -312,7 +312,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public SetPortraitResponse setPortrait(String portraitUri) throws HttpException {
-        String url = getURL("user/set_portrait_uri");
+        String url = getURL("/api/User/SetHeadimg");
         String json = JsonMananger.beanToJson(new SetPortraitRequest(portraitUri));
         StringEntity entity = null;
         try {
@@ -1276,8 +1276,6 @@ public class SealAction extends BaseAction {
      */
     public QuitMyGroupResponse quitMyGroup(String groupId) throws HttpException {
         String url = getURL("api/Im/QuitGroup");
-
-
         String json = JsonMananger.beanToJson(new JoinGroupRequest(groupId));
         StringEntity entity = null;
         try {
@@ -1373,6 +1371,22 @@ public class SealAction extends BaseAction {
             NLog.e("LotteryOpenNumResponse", result);
             response = jsonToList(result, LotteryOpenNumResponse.class);
 
+        }
+        return response;
+    }
+
+    /**
+     * 绑定手机号码
+     *
+     * @throws HttpException
+     */
+    public SetNameResponse bindPhone(String phone) throws HttpException {
+        String url = getURL("api/User/BindPhoneNum");
+        String result = httpManager.post(mContext, url, new RequestParams("PhoneNum", phone));
+        SetNameResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("SetNameResponse", result);
+            response = jsonToBean(result, SetNameResponse.class);
         }
         return response;
     }

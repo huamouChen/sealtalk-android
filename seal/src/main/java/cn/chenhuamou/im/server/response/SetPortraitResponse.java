@@ -7,16 +7,42 @@ package cn.chenhuamou.im.server.response;
 public class SetPortraitResponse {
 
     /**
-     * code : 200
+     * Error : string
+     * Parameter : string
+     * Result : true
      */
 
-    private int code;
+    private String Error;
+    private String Parameter;
+    private boolean Result;
 
-    public void setCode(int code) {
-        this.code = code;
+    public SetPortraitResponse(String error, String parameter, boolean result) {
+        Error = error;
+        Parameter = parameter;
+        Result = result;
     }
 
-    public int getCode() {
-        return code;
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String Error) {
+        this.Error = Error;
+    }
+
+    public String getParameter() {
+        return Parameter;
+    }
+
+    public void setParameter(String Parameter) {
+        this.Parameter = Parameter;
+    }
+
+    public boolean isResult() {
+        return Result;
+    }
+
+    public void setResult(boolean Result) {
+        this.Result = Result;
     }
 }

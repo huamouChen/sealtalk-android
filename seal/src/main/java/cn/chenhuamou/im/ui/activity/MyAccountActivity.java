@@ -73,18 +73,20 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initView() {
-        TextView mPhone = (TextView) findViewById(R.id.tv_my_phone);
+        final TextView mPhone = (TextView) findViewById(R.id.tv_my_phone);
         RelativeLayout portraitItem = (RelativeLayout) findViewById(R.id.rl_my_portrait);
         RelativeLayout nameItem = (RelativeLayout) findViewById(R.id.rl_my_username);
+        RelativeLayout phoneItem = (RelativeLayout) findViewById(R.id.rl_my_telephone);
         mImageView = (SelectableRoundedImageView) findViewById(R.id.img_my_portrait);
         mName = (TextView) findViewById(R.id.tv_my_username);
         portraitItem.setOnClickListener(this);
         nameItem.setOnClickListener(this);
+        phoneItem.setOnClickListener(this);
         String cacheName = sp.getString(SealConst.SEALTALK_LOGIN_NAME, "");
         String cachePortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
-        String cachePhone = sp.getString(SealConst.SEALTALK_LOGING_PHONE, "");
+        String cachePhone = sp.getString(SealConst.Bind_Phone, "");
+        // 设置手机号码
         if (!TextUtils.isEmpty(cachePhone)) {
-//            mPhone.setText("+86 " + cachePhone);
             mPhone.setText(cachePhone);
         }
         if (!TextUtils.isEmpty(cacheName)) {
@@ -95,12 +97,22 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             ImageLoader.getInstance().displayImage(portraitUri, mImageView, App.getOptions());
         }
         setPortraitChangeListener();
+        // 更新昵称
         BroadcastManager.getInstance(mContext).addAction(SealConst.CHANGEINFO, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mName.setText(sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""));
             }
         });
+
+        // 绑定手机
+        BroadcastManager.getInstance(mContext).addAction(SealConst.Bind_Phone, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mPhone.setText(sp.getString(SealConst.Bind_Phone, ""));
+            }
+        });
+
     }
 
     private void setPortraitChangeListener() {
@@ -131,10 +143,17 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_my_portrait:
-//                showPhotoDialog();
+                showPhotoDialog();
                 break;
             case R.id.rl_my_username:
-                startActivity(new Intent(this, UpdateNameActivity.class));
+                Intent intent = new Intent(this, UpdateNameActivity.class);
+                intent.putExtra("isUpdateName" , true);
+                startActivity(intent);
+                break;
+            case R.id.rl_my_telephone:
+                Intent intent2 = new Intent(this, UpdateNameActivity.class);
+                intent2.putExtra("isUpdateName" , false);
+                startActivity(intent2);
                 break;
         }
     }
@@ -157,16 +176,16 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             switch (requestCode) {
                 case UP_LOAD_PORTRAIT:
                     SetPortraitResponse spRes = (SetPortraitResponse) result;
-                    if (spRes.getCode() == 200) {
-                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
-                        editor.commit();
-                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
-                        if (RongIM.getInstance() != null) {
-                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""), Uri.parse(imageUrl)));
-                        }
-                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
-                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
-                    }
+//                    if (spRes.getCode() == 200) {
+//                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
+//                        editor.commit();
+//                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
+//                        if (RongIM.getInstance() != null) {
+//                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""), Uri.parse(imageUrl)));
+//                        }
+//                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
+//                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
+//                    }
                     LoadDialog.dismiss(mContext);
                     break;
                 case GET_QI_NIU_TOKEN:

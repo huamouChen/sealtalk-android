@@ -5,13 +5,38 @@ package cn.chenhuamou.im.server.response;
  * Company RongCloud
  */
 public class SetNameResponse {
-    private int code;
 
-    public int getCode() {
-        return code;
+    /**
+     * Error : string
+     * Parameter : string
+     * Result : true
+     */
+
+    private String Error;
+    private String Parameter;
+    private boolean Result;
+
+    public String getError() {
+        return Error;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setError(String Error) {
+        this.Error = Error;
+    }
+
+    public String getParameter() {
+        return Parameter;
+    }
+
+    public void setParameter(String Parameter) {
+        this.Parameter = Parameter;
+    }
+
+    public boolean isResult() {
+        return Result;
+    }
+
+    public void setResult(boolean Result) {
+        this.Result = Result;
     }
 }

@@ -101,7 +101,7 @@
     <string name="new_user">新用户</string>
     <string name="Login">登录</string>
     <string name="Refresh">获取验证码</string>
-    <string name="phone_number">用户名</string>
+    <string name="phone_number">手机号</string>
     <string name="password">密码</string>
     <string name="validcode">验证码</string>
     <string name="nickname">昵称</string>
@@ -271,6 +271,7 @@
     <string name="other_devices_text">您的账号在别的设备上登录，您被迫下线!</string>
     <string name="i_know">知道了</string>
     <string name="update_name">昵称更改</string>
+    <string name="bind_phone">手机绑定</string>
     <string name="ac_search_no_result_pre">没有搜到</string>
     <string name="ac_search_no_result_suffix">相关的信息</string>
     <string name="ac_search_chat_title">聊天记录</string>

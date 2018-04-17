@@ -6,18 +6,18 @@ package cn.chenhuamou.im.server.request;
  */
 public class SetNameRequest {
 
-    private String nickname;
+    private String NickName;
 
-    public SetNameRequest(String nickname) {
-        this.nickname = nickname;
+
+    public SetNameRequest(String nickName) {
+        NickName = nickName;
     }
 
-
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return NickName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickName(String nickName) {
+        NickName = nickName;
     }
 }
