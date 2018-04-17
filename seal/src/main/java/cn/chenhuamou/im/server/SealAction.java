@@ -9,6 +9,7 @@ import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.chenhuamou.im.server.network.http.HttpException;
@@ -78,6 +79,8 @@ import cn.chenhuamou.im.server.response.JoinMyGroupResponse;
 import cn.chenhuamou.im.server.response.KickMyGroupResponse;
 import cn.chenhuamou.im.server.response.KqwfPcddResponse;
 import cn.chenhuamou.im.server.response.LoginResponse;
+import cn.chenhuamou.im.server.response.LotteryInfoResponse;
+import cn.chenhuamou.im.server.response.LotteryOpenNumResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.QuitGroupResponse;
 import cn.chenhuamou.im.server.response.QuitMyGroupResponse;
@@ -105,7 +108,7 @@ import cn.chenhuamou.im.server.utils.json.JsonMananger;
  */
 @SuppressWarnings("deprecation")
 public class SealAction extends BaseAction {
-//    private final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    //    private final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private final String CONTENT_TYPE = "application/json";
     private final String ENCODING = "utf-8";
 
@@ -234,8 +237,8 @@ public class SealAction extends BaseAction {
     /**
      * 登录: 登录成功后，会设置 Cookie，后续接口调用需要登录的权限都依赖于 Cookie。
      *
-     * @param name          用户名
-     * @param password      密码
+     * @param name         用户名
+     * @param password     密码
      * @param time
      * @param rememberme
      * @param validatecode
@@ -243,7 +246,7 @@ public class SealAction extends BaseAction {
      */
     public LoginResponse login(String name, String password, String time, boolean rememberme, String validatecode) throws HttpException {
         String uri = getURL("api/Log/Login");
-        String json = JsonMananger.beanToJson(new LoginRequest(name, password, time, rememberme, validatecode));
+        String json = JsonMananger.beanToJson(new LoginRequest(name, password, time, rememberme, "imlogin"));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);
@@ -1025,7 +1028,7 @@ public class SealAction extends BaseAction {
 
 
 
-/*--------------------------------自己的接口----------------------------------------------------------------*/
+    /*--------------------------------自己的接口----------------------------------------------------------------*/
 
 
     /**
@@ -1095,7 +1098,6 @@ public class SealAction extends BaseAction {
     }
 
 
-
     /**
      * 获取 用户所有群组
      *
@@ -1153,7 +1155,7 @@ public class SealAction extends BaseAction {
      */
     public ApplyFriendResponse applyFriend(String userId) throws HttpException {
         String url = getURL("api/Im/ApplyFriend");
-        String result = httpManager.post(mContext, url,  new RequestParams("toUser", userId));
+        String result = httpManager.post(mContext, url, new RequestParams("toUser", userId));
         ApplyFriendResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("ApplyFriendResponse", result);
@@ -1169,7 +1171,7 @@ public class SealAction extends BaseAction {
      */
     public AgreeFriendApplyResponse agreeFriend(String applyId) throws HttpException {
         String url = getURL("api/Im/AgreeFirendApply");
-        String result = httpManager.post(mContext, url,  new RequestParams("ApplyId", applyId));
+        String result = httpManager.post(mContext, url, new RequestParams("ApplyId", applyId));
         AgreeFriendApplyResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("AgreeFriendApplyResponse", result);
@@ -1185,7 +1187,7 @@ public class SealAction extends BaseAction {
      */
     public RefuseFriendApplyResponse refuseFriend(String applyId) throws HttpException {
         String url = getURL("api/Im/ApplyFriend");
-        String result = httpManager.post(mContext, url,  new RequestParams("applyId", applyId));
+        String result = httpManager.post(mContext, url, new RequestParams("applyId", applyId));
         RefuseFriendApplyResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("RefuseFriendApplyResponse", result);
@@ -1267,7 +1269,6 @@ public class SealAction extends BaseAction {
     }
 
 
-
     /**
      * 离开群组
      *
@@ -1298,7 +1299,6 @@ public class SealAction extends BaseAction {
     }
 
 
-
     /**
      * 群组踢人
      *
@@ -1321,7 +1321,6 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
-
 
 
     /**
@@ -1347,4 +1346,35 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
+
+
+    /*
+     * 获取当前期号、上期期号、当前期号结束剩余时间
+     * */
+    public LotteryInfoResponse getLotteryInfo(String lotteryCode) throws HttpException {
+        String url = getURL("api/Lottery/GetIssue");
+        String result = httpManager.get(mContext, url, new RequestParams("lotteryCode", lotteryCode));
+        LotteryInfoResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("LotteryInfoResponse", result);
+            response = jsonToBean(result, LotteryInfoResponse.class);
+        }
+        return response;
+    }
+
+    /*
+     * 获取彩票开奖历史信息
+     * */
+    public List<LotteryOpenNumResponse> getLotteryOpenNumber(String lotteryCode) throws HttpException {
+        String url = getURL("api/Lottery/GetHistory");
+        String result = httpManager.get(mContext, url, new RequestParams("lotteryCode", lotteryCode));
+        List<LotteryOpenNumResponse> response = new ArrayList<>();
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("LotteryOpenNumResponse", result);
+            response = jsonToList(result, LotteryOpenNumResponse.class);
+
+        }
+        return response;
+    }
+
 }

@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,11 +52,58 @@
                 android:textSize="14sp" />
         </RelativeLayout>
 
+
+        <!--开奖期号，倒计时-->
+        <RelativeLayout
+            android:id="@+id/rl_lottery_info"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#b1b1b1"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_current_num"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="当前期号："
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tv_pre_num"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+
+            <ProgressBar
+                android:id="@+id/pb_horizontial"
+                style="?android:progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-7dp"
+                android:background="@android:color/transparent" />
+
+
+        </RelativeLayout>
+
+
+
+
         <FrameLayout
             android:id="@+id/rong_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"/>
+            android:background="@color/white" />
     </LinearLayout>
 
     <ImageView

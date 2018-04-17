@@ -1,8 +1,6 @@
 package cn.chenhuamou.im.server.request;
 
 
-import cn.chenhuamou.im.server.response.LoginResponse;
-
 /**
  * Created by AMing on 15/12/24.
  * Company RongCloud
@@ -13,7 +11,7 @@ public class LoginRequest {
     private String Pwd;
     private String Time;
     private boolean RememberMe;
-    private String ValidateCode;
+    private String loginType;
 
 
     private String region;
@@ -26,12 +24,12 @@ public class LoginRequest {
         this.password = password;
     }
 
-    public LoginRequest(String name, String password, String time, boolean rememberme, String validateCode) {
+    public LoginRequest(String name, String password, String time, boolean rememberme, String loginType) {
         this.Name = name;
         this.Pwd = password;
         this.Time = time;
         this.RememberMe = rememberme;
-        this.ValidateCode = validateCode;
+        this.loginType = loginType;
     }
 
 
@@ -92,11 +90,11 @@ public class LoginRequest {
         RememberMe = rememberMe;
     }
 
-    public String getValidateCode() {
-        return ValidateCode;
+    public String getLoginType() {
+        return loginType;
     }
 
-    public void setValidateCode(String validateCode) {
-        ValidateCode = validateCode;
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
     }
 }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cn.chenhuamou.contactcard.ContactCardExtensionModule;
 import cn.chenhuamou.im.R;
@@ -36,6 +39,8 @@ import cn.chenhuamou.im.db.GroupMember;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.KqwfPcddResponse;
+import cn.chenhuamou.im.server.response.LotteryInfoResponse;
+import cn.chenhuamou.im.server.response.LotteryOpenNumResponse;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.ui.fragment.ConversationFragmentEx;
@@ -102,7 +107,26 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     private String betNum = "";
 
 
+    // 投注
     private static final int Bet = 1000;
+    // 当前期号 上期期号 当前期号剩余时间
+    private static final int LotteryInfo = 2000;
+    // 获取开奖历史
+    private static final int LotteryNum = 3000;
+
+    private RelativeLayout relativeLayout_lottery_info;
+    private TextView tv_current_num, tv_pre_num;
+    private ProgressBar progressBar_lottery_time;
+    private String pre_num; // 上期开奖号码
+    public static final int Update_ProgressBar = 0x111, Update_Lottery_Info = 0x222, Start_Timer = 0x333;
+
+
+    // 定时器
+    private long progress = 0;  // 进度 时间的进度
+    private int total_time = 5 * 60; //开奖时间  PC蛋蛋是5分钟
+    public static final int schedule = 1;  // 双星间隔
+    private Timer mTimer;
+
     private RongIM.OnSendMessageListener msgListener;
 
     public static final int SET_TEXT_TYPING_TITLE = 1;
@@ -178,6 +202,15 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                     case SET_TARGET_ID_TITLE:
                         setActionBarTitle(mConversationType, mTargetId);
                         break;
+                    case Update_ProgressBar:
+                        progressBar_lottery_time.setProgress((int) progress);
+                        break;
+                    case Update_Lottery_Info:
+                        request(LotteryInfo);  // 时间到了之后，重新获取期号信息
+                        break;
+                    case Start_Timer:
+                        startTimer();
+                        break;
                     default:
                         break;
                 }
@@ -244,7 +277,10 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
+        initView();
 
+        // 获取当前期号 上期期号 剩余时间
+        initData();
     }
 
     // 自定义插件区域的插件
@@ -666,11 +702,17 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         RongCallKit.setGroupMemberProvider(null);
         //CallKit end 3
 
+        // 取消定时器
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+
 
         BroadcastManager.getInstance(mContext).destroy("Bet");
         RongIMClient.setTypingStatusListener(null);
         SealAppContext.getInstance().popActivity(this);
         super.onDestroy();
+
 
 
         msgListener = null;
@@ -793,9 +835,60 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     }
 
 
+    /*
+     * 绑定控件
+     * */
+    private void initView() {
+        relativeLayout_lottery_info = (RelativeLayout) findViewById(R.id.rl_lottery_info);
+
+        tv_current_num = (TextView) findViewById(R.id.tv_current_num);
+        tv_pre_num = (TextView) findViewById(R.id.tv_pre_num);
+        progressBar_lottery_time = (ProgressBar) findViewById(R.id.pb_horizontial);
+        progressBar_lottery_time.setMax(total_time);
+    }
+
+
+    // 获取彩种信息
+    private void initData() {
+        request(LotteryInfo);
+    }
+
+    /*
+     * 开始计时
+     * */
+    private void startTimer() {
+        // 计时器
+        mTimer = new Timer();
+        // 计时器任务
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (progress < total_time) {  // 时间没走完，持续更新进度，当前是每5秒更新一次
+                    progress += schedule;
+                    mHandler.sendEmptyMessage(Update_ProgressBar);
+                } else {
+                    mHandler.sendEmptyMessage(Update_Lottery_Info);
+                    mTimer.cancel();
+
+                }
+            }
+        };
+        // 开始任务
+        mTimer.schedule(timerTask, 0, schedule *1000);
+    }
+
+
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return action.postKQWFPCDD(betNum, mTargetId);
+        switch (requestCode) {
+            case Bet:
+                return action.postKQWFPCDD(betNum, mTargetId);
+            case LotteryInfo:
+                return action.getLotteryInfo("90002");
+            case LotteryNum:
+                return action.getLotteryOpenNumber("90002");
+        }
+        return null;
     }
 
     @Override
@@ -803,12 +896,27 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         switch (requestCode) {
             case Bet:
                 KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
-
                 if (kqwfPcddResponse.isResult()) {
                     NToast.shortToast(mContext, "投注成功");
                 } else {
                     NToast.shortToast(mContext, kqwfPcddResponse.getError());
                 }
+                break;
+            case LotteryInfo:
+                LotteryInfoResponse lotteryInfoResponse = (LotteryInfoResponse) result;
+                tv_current_num.setText("当前期号：" + lotteryInfoResponse.getCurrentIssueNo());
+                pre_num = lotteryInfoResponse.getPreviewIssueNo();
+                progress = total_time - lotteryInfoResponse.getRemainTime() / 1000;  // 这是剩余的时间
+                progressBar_lottery_time.setProgress(total_time - (int) progress); // 用总的时间减去剩余时间才是当前的进度
+                // 开始倒计时
+                mHandler.sendEmptyMessage(Start_Timer);
+                // 获取开奖号码
+                request(LotteryNum);
+                break;
+            case LotteryNum:
+                List<LotteryOpenNumResponse> lotteryList = (List<LotteryOpenNumResponse>) result;
+                tv_pre_num.setText("第" + pre_num + "期开奖号码：" + lotteryList.get(0).getLotteryOpenNo());
+                relativeLayout_lottery_info.setVisibility(View.VISIBLE); // 显示开
                 break;
         }
     }
@@ -817,7 +925,13 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     public void onFailure(int requestCode, int state, Object result) {
         switch (requestCode) {
             case Bet:
-                NToast.shortToast(mContext, "KQWF-PCDD失败");
+                NToast.shortToast(mContext, "投注失败");
+                break;
+            case LotteryInfo:
+                NToast.shortToast(mContext, "获取彩种信息失败");
+                break;
+            case LotteryNum:
+                NToast.shortToast(mContext, "获取上期开奖号码失败");
                 break;
         }
     }
