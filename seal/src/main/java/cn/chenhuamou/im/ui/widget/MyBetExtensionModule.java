@@ -30,9 +30,10 @@ public class MyBetExtensionModule extends DefaultExtensionModule {
         CombineLocationPlugin locationPlugin =  new CombineLocationPlugin();
         ImagePlugin imagePlugin = new ImagePlugin();
 
+        pluginModules.add(new MyPlugin());
         pluginModules.add(imagePlugin);
         pluginModules.add(locationPlugin);
-        pluginModules.add(new MyPlugin());
+
 
         return pluginModules;
     }

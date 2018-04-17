@@ -1,5 +1,6 @@
 package cn.chenhuamou.im.server.network;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -13,18 +14,25 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cn.chenhuamou.im.SealConst;
+import cn.chenhuamou.im.server.utils.NLog;
+
 /**
  * Created by Rex on 2018/3/21.
  * Email chenhm4444@gmail.com
  */
 
 public class GetPicThread implements Runnable {
+
+    private Context mContext;
+
     private String path = null;
     //handler --用于将数据放送到主线程中
     private Handler hander = null;
 
-    public GetPicThread(String path, Handler hander) {
+    public GetPicThread(Context context, String path, Handler hander) {
         super();
+        mContext = context;
         this.path = path;
         this.hander = hander;
     }
@@ -45,6 +53,7 @@ public class GetPicThread implements Runnable {
             //4.设置超时时间
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
+            conn.setRequestProperty("Authorization", "Bearer " + mContext.getSharedPreferences("config", Context.MODE_PRIVATE).getString(SealConst.TOKEN, ""));
             //5.判断响应码200
             if (conn.getResponseCode() ==
                     HttpURLConnection.HTTP_OK) {
@@ -60,6 +69,7 @@ public class GetPicThread implements Runnable {
                 hander.sendMessage(msg);
             } else {
                 int responseCode = conn.getResponseCode();
+                NLog.d("getUserAvator", responseCode + "");
             }
 
             //9.释放资源

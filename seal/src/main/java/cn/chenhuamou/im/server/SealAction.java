@@ -308,21 +308,21 @@ public class SealAction extends BaseAction {
     /**
      * 设置用户头像
      *
-     * @param portraitUri 头像 path
+     * @param ImgStream 头像 path
      * @throws HttpException
      */
-    public SetPortraitResponse setPortrait(String portraitUri) throws HttpException {
-        String url = getURL("/api/User/SetHeadimg");
-        String json = JsonMananger.beanToJson(new SetPortraitRequest(portraitUri));
-        StringEntity entity = null;
-        try {
-            entity = new StringEntity(json, ENCODING);
-            entity.setContentType(CONTENT_TYPE);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+    public SetPortraitResponse setPortrait(byte[] ImgStream) throws HttpException {
+        String url = getURL("api/User/SetHeadimg");
+//        String json = JsonMananger.beanToJson(new SetPortraitRequest(ImgStream));
+//        StringEntity entity = null;
+//        try {
+//            entity = new StringEntity(json, ENCODING);
+//            entity.setContentType(CONTENT_TYPE);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
         SetPortraitResponse response = null;
-        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        String result = httpManager.post(mContext, url, new RequestParams("ImgStream", ImgStream));
         if (!TextUtils.isEmpty(result)) {
             response = jsonToBean(result, SetPortraitResponse.class);
         }

@@ -69,8 +69,8 @@ public class UpdateNameActivity extends BaseActivity implements View.OnClickList
             mNameEditText.setSelection(sp.getString(SealConst.SEALTALK_LOGIN_NAME, "").length());
             editor = sp.edit();
         } else {
-            mNameEditText.setText(sp.getString(SealConst.SEALTALK_LOGING_PHONE, ""));
-            mNameEditText.setSelection(sp.getString(SealConst.SEALTALK_LOGING_PHONE, "").length());
+            mNameEditText.setText(sp.getString(SealConst.Bind_Phone, ""));
+            mNameEditText.setSelection(sp.getString(SealConst.Bind_Phone, "").length());
             editor = sp.edit();
         }
 

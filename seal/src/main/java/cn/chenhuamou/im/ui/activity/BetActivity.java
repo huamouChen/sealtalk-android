@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,13 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.server.SealAction;
@@ -33,11 +28,6 @@ import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.KqwfPcddResponse;
 import cn.chenhuamou.im.server.utils.NToast;
-import io.rong.imkit.RongIM;
-import io.rong.imlib.IRongCallback;
-import io.rong.imlib.RongIMClient;
-import io.rong.imlib.model.Conversation;
-import io.rong.message.TextMessage;
 
 /**
  * Created by Rex on 2018/4/8.
@@ -77,38 +67,6 @@ public class BetActivity extends Activity implements View.OnClickListener, OnDat
     private String playString;   // 玩法
     private String moneyString;  // 下注金额
 
-    private ProgressBar mProgressBar;
-    // 定时器
-    private int progress = 0;  // 进度 时间的进度
-    private Timer mTimer = new Timer();
-    private TimerTask mTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            if (progress < 100) {
-                progress += 5;
-                mHandler.sendEmptyMessage(0x111);
-            } else {
-                mHandler.sendEmptyMessage(0x222);
-                mTimerTask.cancel();
-                mTimer.cancel();
-            }
-
-        }
-    };
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0x111:
-                    mProgressBar.setProgress(progress);
-                    break;
-                case 0x222:
-                    break;
-            }
-        }
-    };
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
@@ -163,35 +121,11 @@ public class BetActivity extends Activity implements View.OnClickListener, OnDat
                         return;
                     }
 
-                    // 发送消息
-//            String betString = String.format("玩法：%s\n单号：123456677\n期号：123454566\n金额：%s", playString, moneyString);
-                    String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
                     // 调用PC蛋蛋接口
                     mAsyncTaskManager.request(Bet, this);
-
-                    TextMessage mTextMessage = TextMessage.obtain(betString);
-                    io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(targetId, Conversation.ConversationType.GROUP, mTextMessage);
-                    RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
-                        @Override
-                        public void onProgress(io.rong.imlib.model.Message message, int i) {
-                        }
-
-                        @Override
-                        public void onCanceled(io.rong.imlib.model.Message message) {
-                        }
-
-                        @Override
-                        public void onAttached(io.rong.imlib.model.Message message) {
-                        }
-
-                        @Override
-                        public void onSuccess(io.rong.imlib.model.Message message) {
-                        }
-
-                        @Override
-                        public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
-                        }
-                    });
+                    // 发送消息
+                    String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
+                    BroadcastManager.getInstance(mContext).sendBroadcast("SendBetMessage", betString);
                 }
 
                 finish();
@@ -221,7 +155,6 @@ public class BetActivity extends Activity implements View.OnClickListener, OnDat
         Intent intent = getIntent();
         targetId = intent.getStringExtra("targetId");
         conversationType = intent.getStringExtra("conversationType");
-        mTimer.schedule(mTimerTask, 0, 1000);
     }
 
     // 初始化 view
@@ -229,7 +162,6 @@ public class BetActivity extends Activity implements View.OnClickListener, OnDat
         linear_mask = (LinearLayout) findViewById(R.id.linear_mask);
         linear_mask.setOnClickListener(this);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_horizontial);
         mEditText = (EditText) findViewById(R.id.et_money);
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override

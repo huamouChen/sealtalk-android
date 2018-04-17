@@ -100,10 +100,8 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case SEARCH_PHONE:
-//                return action.getUserInfoFromPhone("86", mPhone);
                 return action.getUserInfo(mPhone);
             case ADD_FRIEND:
-//                return action.sendFriendInvitation(mFriendId, addFriendMessage);
                 return action.applyFriend(mPhone);
         }
         return super.doInBackground(requestCode, id);

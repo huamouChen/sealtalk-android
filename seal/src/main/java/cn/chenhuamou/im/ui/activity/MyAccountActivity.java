@@ -10,9 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,13 +31,17 @@ import com.qiniu.android.storage.UploadManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+
 
 import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.SetPortraitResponse;
@@ -43,7 +51,6 @@ import cn.chenhuamou.im.server.widget.BottomMenuDialog;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import io.rong.imageloader.core.ImageLoader;
-import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
 
@@ -61,6 +68,19 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     private String imageUrl;
     private Uri selectUri;
 
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0x0001) {
+                Bitmap bm = (Bitmap) msg.obj;
+                mImageView.setImageBitmap(bm);
+            }
+            return false;
+        }
+    });
+
+    private byte[] avatorBytes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +90,9 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         sp = getSharedPreferences("config", MODE_PRIVATE);
         editor = sp.edit();
         initView();
+
+        // 获取头像
+        getAvator();
     }
 
     private void initView() {
@@ -122,7 +145,24 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                 if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
                     selectUri = uri;
                     LoadDialog.show(mContext);
-                    request(GET_QI_NIU_TOKEN);
+
+                    File file = new File(selectUri.getPath());
+                    if (file.exists()) {
+                        Bitmap bm = BitmapFactory.decodeFile(selectUri.getPath());
+                        if (bm != null) {
+                            avatorBytes =  bitMap2StringBase64(bm);
+                            mImageView.setImageBitmap(bm);
+                            request(UP_LOAD_PORTRAIT);
+                        } else {
+                            LoadDialog.dismiss(mContext);
+                            NToast.shortToast(mContext, "设置头像请求失败");
+                        }
+
+                    }
+
+
+
+
                 }
             }
 
@@ -132,6 +172,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             }
         });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,15 +188,25 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.rl_my_username:
                 Intent intent = new Intent(this, UpdateNameActivity.class);
-                intent.putExtra("isUpdateName" , true);
+                intent.putExtra("isUpdateName", true);
                 startActivity(intent);
                 break;
             case R.id.rl_my_telephone:
                 Intent intent2 = new Intent(this, UpdateNameActivity.class);
-                intent2.putExtra("isUpdateName" , false);
+                intent2.putExtra("isUpdateName", false);
                 startActivity(intent2);
                 break;
         }
+    }
+
+
+    /*
+     * 前台处理图片
+     * */
+    private byte[] bitMap2StringBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);
+        return bos.toByteArray();
     }
 
 
@@ -163,7 +214,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case UP_LOAD_PORTRAIT:
-                return action.setPortrait(imageUrl);
+                return action.setPortrait(avatorBytes);
             case GET_QI_NIU_TOKEN:
                 return action.getQiNiuToken();
         }
@@ -176,7 +227,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             switch (requestCode) {
                 case UP_LOAD_PORTRAIT:
                     SetPortraitResponse spRes = (SetPortraitResponse) result;
-//                    if (spRes.getCode() == 200) {
+                    if (spRes.isResult()) {
 //                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
 //                        editor.commit();
 //                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
@@ -185,7 +236,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
 //                        }
 //                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
 //                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
-//                    }
+                    }
                     LoadDialog.dismiss(mContext);
                     break;
                 case GET_QI_NIU_TOKEN:
@@ -276,6 +327,16 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     }
 
 
+    // 获取头像
+    private void getAvator() {
+        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
+        //创建一个线程对象
+        GetPicThread gpt = new GetPicThread(mContext, path, handler);
+        Thread t = new Thread(gpt);
+        t.start();
+    }
+
+
     public void uploadImage(final String domain, String imageToken, Uri imagePath) {
         if (TextUtils.isEmpty(domain) && TextUtils.isEmpty(imageToken) && TextUtils.isEmpty(imagePath.toString())) {
             throw new RuntimeException("upload parameter is null!");
@@ -307,4 +368,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             }
         }, null);
     }
+
+
+
 }

@@ -55,6 +55,7 @@ import io.rong.imkit.RongIM;
 import io.rong.imkit.RongKitIntent;
 import io.rong.imkit.fragment.UriFragment;
 import io.rong.imkit.userInfoCache.RongUserInfoManager;
+import io.rong.imlib.IRongCallback;
 import io.rong.imlib.MessageTag;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.TypingMessage.TypingStatus;
@@ -117,7 +118,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     private RelativeLayout relativeLayout_lottery_info;
     private TextView tv_current_num, tv_pre_num;
     private ProgressBar progressBar_lottery_time;
-    private String pre_num; // 上期开奖号码
+    private String pre_num, current_num; // 上期开奖号码  当前开奖期号
     public static final int Update_ProgressBar = 0x111, Update_Lottery_Info = 0x222, Start_Timer = 0x333;
 
 
@@ -257,10 +258,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
-
-        //CallKit end 2
-
-
         // 发送消息的监听
         sendMessageListener();
 
@@ -274,6 +271,39 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             public void onReceive(Context context, Intent intent) {
                 String string = intent.getStringExtra("String");
                 NToast.shortToast(mContext, string);
+            }
+        });
+
+
+        // BetActivity 下注发送消息
+        BroadcastManager.getInstance(mContext).addAction("SendBetMessage", new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String betString = intent.getStringExtra("String");
+                betString += "\n期号：" + current_num;
+                TextMessage mTextMessage = TextMessage.obtain(betString);
+                io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(mTargetId, Conversation.ConversationType.GROUP, mTextMessage);
+                RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {
+                    @Override
+                    public void onProgress(io.rong.imlib.model.Message message, int i) {
+                    }
+
+                    @Override
+                    public void onCanceled(io.rong.imlib.model.Message message) {
+                    }
+
+                    @Override
+                    public void onAttached(io.rong.imlib.model.Message message) {
+                    }
+
+                    @Override
+                    public void onSuccess(io.rong.imlib.model.Message message) {
+                    }
+
+                    @Override
+                    public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
+                    }
+                });
             }
         });
 
@@ -709,6 +739,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
 
         BroadcastManager.getInstance(mContext).destroy("Bet");
+        BroadcastManager.getInstance(mContext).destroy("SendBetMessage");
         RongIMClient.setTypingStatusListener(null);
         SealAppContext.getInstance().popActivity(this);
         super.onDestroy();
@@ -909,6 +940,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             case LotteryInfo:
                 LotteryInfoResponse lotteryInfoResponse = (LotteryInfoResponse) result;
                 tv_current_num.setText("当前期号：" + lotteryInfoResponse.getCurrentIssueNo());
+                current_num = lotteryInfoResponse.getCurrentIssueNo();
                 pre_num = lotteryInfoResponse.getPreviewIssueNo();
                 progress = total_time - lotteryInfoResponse.getRemainTime() / 1000;  // 这是剩余的时间
                 progressBar_lottery_time.setProgress(total_time - (int) progress); // 用总的时间减去剩余时间才是当前的进度
@@ -932,10 +964,10 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                 NToast.shortToast(mContext, "投注失败");
                 break;
             case LotteryInfo:
-                NToast.shortToast(mContext, "获取彩种信息失败");
+                NToast.shortToast(mContext, "获取彩种信息失败，请重新进入群聊");
                 break;
             case LotteryNum:
-                NToast.shortToast(mContext, "获取上期开奖号码失败");
+                NToast.shortToast(mContext, "获取上期开奖号码失败，请重新进入群聊");
                 break;
         }
     }

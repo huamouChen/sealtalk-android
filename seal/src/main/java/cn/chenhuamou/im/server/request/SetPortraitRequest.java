@@ -6,18 +6,18 @@ package cn.chenhuamou.im.server.request;
  */
 public class SetPortraitRequest {
 
-    private String portraitUri;
+    private byte[] ImgStream;
 
 
-    public SetPortraitRequest(String portraitUri) {
-        this.portraitUri = portraitUri;
+    public SetPortraitRequest(byte[] portraitUri) {
+        this.ImgStream = portraitUri;
     }
 
-    public String getPortraitUri() {
-        return portraitUri;
+    public byte[] getImgStream() {
+        return ImgStream;
     }
 
-    public void setPortraitUri(String portraitUri) {
-        this.portraitUri = portraitUri;
+    public void setImgStream(byte[] imgStream) {
+        this.ImgStream = imgStream;
     }
 }

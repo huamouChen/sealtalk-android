@@ -52,7 +52,7 @@ Step 1 的 Login 请求接口结果码为 200 时, 会返回 connect 融云服�
 
 ```
 示例数据:
-result : [{"role":0,"group":{"id":"pG4lQsHkY","name":"我的群","portraitUri":"","creatorId":"7w0UxC8IB","memberCount":7}},{"role":0,"group":{"id":"lzKDPFE3i","name":"我的"......}]
+result : [{"role":0,"group":{"id":"pG4lQsHkY","name":"我的群","imgStream":"","creatorId":"7w0UxC8IB","memberCount":7}},{"role":0,"group":{"id":"lzKDPFE3i","name":"我的"......}]
 ```
 
 数据获取下来后解析 Json 数据，将数据存储至 Groups 表。同理同步好友 或者 其他数据也是上面的流程。
@@ -99,7 +99,7 @@ result : [{"role":0,"group":{"id":"pG4lQsHkY","name":"我的群","portraitUri":"
             user =             {
                 id = Uz6Sw8GXx;
                 nickname = "\U90d1\U82f1\U541b";
-                portraitUri = "http://7xogjk.com1.z0.glb.clouddn.com/Uz6Sw8GXx1472469920221231934";
+                imgStream = "http://7xogjk.com1.z0.glb.clouddn.com/Uz6Sw8GXx1472469920221231934";
             };
         }
 }
@@ -139,7 +139,7 @@ Tips：由于这个功能没有对应的接口，需要使用通过手机号查�
     result =     {
         id = ozB1VNeh5;
         nickname = joseph;
-        portraitUri = "http://7xogjk.com1.z0.glb.clouddn.com/ozB1VNeh51466786331272350098";
+        imgStream = "http://7xogjk.com1.z0.glb.clouddn.com/ozB1VNeh51466786331272350098";
     };
 }
 ```
@@ -206,13 +206,13 @@ NSDictionary *params = @{
 ## 移动端 群组表 & 群组成员表
 Group table Column:
 
-| groupId | name | portraitUri |displayName|role|timestamp|
+| groupId | name | imgStream |displayName|role|timestamp|
 |---
 
 <br>
 GroupMember table Column:
 
-|groupId|userId|name|portraitUri|displayName|
+|groupId|userId|name|imgStream|displayName|
 |---
 
 
@@ -373,7 +373,7 @@ code : 200
 请求参数 : 
 
 - groupId 群组 Id
-- portraitUri     群组头像的 Url
+- imgStream     群组头像的 Url
 
 返回数据:
 
@@ -405,7 +405,7 @@ code : 200
 
 ```
 code : 200
-result : [{"displayName":"","role":1,"createdAt":"2016-01-26T08:50:57.000Z","user":{"id":"6nx4DGtCu","nickname":"超时分辨率","portraitUri"......}]
+result : [{"displayName":"","role":1,"createdAt":"2016-01-26T08:50:57.000Z","user":{"id":"6nx4DGtCu","nickname":"超时分辨率","imgStream"......}]
 ```
 
 > 此接口适用于点击群组详情页检查该群成员是否有数据变更, 如果有数据变更则更新 GroupMember 数据库
@@ -427,7 +427,7 @@ result : [{"displayName":"","role":1,"createdAt":"2016-01-26T08:50:57.000Z","use
 
 ```
   code : 200
-  result : {"version":1234567894,"user":{"id":"sdf9sd0df98","nickname":"Tom","portraitUri":"http://test.com/user/abc123.jpg","timestamp":1234567891},"blacklist":[{"friendId":"sdf9sd0df98","status":true,"timestamp":1234567891}],"friends":[{"friendId":"sdf9sd0df98","displayName":"Jerry","status":20,"timestamp":1234567892}],"groups":[{"displayName":"Ironman","role":1,"isDeleted":true,"group":{"id":"sdf9sd0df98","name":"Team 1","portraitUri":"http://test.com/group/abc123.jpg","timestamp":1234567893}}],"group_members":[{"groupId":"cvx989vxc9","memberId":"sdf9sd0df98","displayName":"Ironman","role":1,"isDeleted":true,"timestamp":1234567893,"user":{"nickname":"Tom","portraitUri":"http://test.com/user/abc123.jpg"}}]}
+  result : {"version":1234567894,"user":{"id":"sdf9sd0df98","nickname":"Tom","imgStream":"http://test.com/user/abc123.jpg","timestamp":1234567891},"blacklist":[{"friendId":"sdf9sd0df98","status":true,"timestamp":1234567891}],"friends":[{"friendId":"sdf9sd0df98","displayName":"Jerry","status":20,"timestamp":1234567892}],"groups":[{"displayName":"Ironman","role":1,"isDeleted":true,"group":{"id":"sdf9sd0df98","name":"Team 1","imgStream":"http://test.com/group/abc123.jpg","timestamp":1234567893}}],"group_members":[{"groupId":"cvx989vxc9","memberId":"sdf9sd0df98","displayName":"Ironman","role":1,"isDeleted":true,"timestamp":1234567893,"user":{"nickname":"Tom","imgStream":"http://test.com/user/abc123.jpg"}}]}
 ```
 
 > 此接口适用于登录同步数据 和 检查数据变更，数据内包含 个人数据，好友数据，黑名单数据，群组数据，群组成员数据。此处获取到群组成员数据可插入 GroupMember 供后续 UI 展示调用
@@ -448,7 +448,7 @@ result : [{"displayName":"","role":1,"createdAt":"2016-01-26T08:50:57.000Z","use
 
 ```
  code : 200
- result : [{"role":0,"group":{"id":"pG4lQsHkY","name":"我的群","portraitUri":"","creatorId":"7w0UxC8IB","memberCount":7}}]
+ result : [{"role":0,"group":{"id":"pG4lQsHkY","name":"我的群","imgStream":"","creatorId":"7w0UxC8IB","memberCount":7}}]
 ```
 
 > 此接口适用于登录的时候预加载群组数据至本地 Groups 数据库, 数据提供给 UI 界面展示调用。此接口可使用  七: 群组成员 当中的 sync 接口替代。

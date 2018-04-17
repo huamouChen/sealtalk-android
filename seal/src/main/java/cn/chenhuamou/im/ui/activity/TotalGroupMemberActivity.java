@@ -77,8 +77,8 @@ public class TotalGroupMemberActivity extends BaseActivity {
 //                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                            GroupMember bean = (GroupMember) adapter.getItem(position);
 //                            UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getName(),
-//                                    TextUtils.isEmpty(bean.getPortraitUri().toString())
-//                                            ? Uri.parse(RongGenerate.generateDefaultAvatar(bean.getName(), bean.getUserId())) : bean.getPortraitUri());
+//                                    TextUtils.isEmpty(bean.getImgStream().toString())
+//                                            ? Uri.parse(RongGenerate.generateDefaultAvatar(bean.getName(), bean.getUserId())) : bean.getImgStream());
 //                            Intent intent = new Intent(mContext, UserDetailActivity.class);
 //                            Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
 //                            intent.putExtra("friend", friend);

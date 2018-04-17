@@ -377,9 +377,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             mPhoneEdit.setShakeAnimation();
             return;
         }
-        String path = BaseAction.DOMAIN + "/Api/Auth/ValidateCode?id=" + mPhoneEdit.getText().toString();
+        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
         //创建一个线程对象
-        GetPicThread gpt = new GetPicThread(path, handler);
+        GetPicThread gpt = new GetPicThread(mContext, path, handler);
         Thread t = new Thread(gpt);
         t.start();
     }
