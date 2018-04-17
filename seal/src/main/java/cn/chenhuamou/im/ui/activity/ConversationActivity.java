@@ -714,7 +714,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         super.onDestroy();
 
 
-
         msgListener = null;
     }
 
@@ -845,12 +844,17 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         tv_pre_num = (TextView) findViewById(R.id.tv_pre_num);
         progressBar_lottery_time = (ProgressBar) findViewById(R.id.pb_horizontial);
         progressBar_lottery_time.setMax(total_time);
+
+
     }
 
 
     // 获取彩种信息
     private void initData() {
-        request(LotteryInfo);
+        if (mConversationType == Conversation.ConversationType.GROUP) {
+            request(LotteryInfo);
+        }
+
     }
 
     /*
@@ -874,7 +878,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             }
         };
         // 开始任务
-        mTimer.schedule(timerTask, 0, schedule *1000);
+        mTimer.schedule(timerTask, 0, schedule * 1000);
     }
 
 
