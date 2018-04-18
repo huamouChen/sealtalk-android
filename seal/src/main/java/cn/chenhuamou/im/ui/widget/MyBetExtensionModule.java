@@ -17,7 +17,6 @@ import io.rong.imlib.model.Conversation;
 
 public class MyBetExtensionModule extends DefaultExtensionModule {
 
-    private MyPlugin myPlugin;
 
     public MyBetExtensionModule() {
 
@@ -27,14 +26,16 @@ public class MyBetExtensionModule extends DefaultExtensionModule {
     public List<IPluginModule> getPluginModules(Conversation.ConversationType conversationType) {
         List<IPluginModule> pluginModules = new ArrayList<>();
 
-        CombineLocationPlugin locationPlugin =  new CombineLocationPlugin();
-        ImagePlugin imagePlugin = new ImagePlugin();
+//        CombineLocationPlugin locationPlugin =  new CombineLocationPlugin();
+//        ImagePlugin imagePlugin = new ImagePlugin();
+
 
         pluginModules.add(new MyPlugin());
-        pluginModules.add(imagePlugin);
-        pluginModules.add(locationPlugin);
+//        pluginModules.add(imagePlugin);
+//        pluginModules.add(locationPlugin);
 
-
+        List<IPluginModule> defaultList = super.getPluginModules(conversationType);
+        pluginModules.addAll(defaultList);
         return pluginModules;
     }
 

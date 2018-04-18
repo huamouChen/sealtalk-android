@@ -28,13 +28,13 @@ public class MyExtensionModule extends DefaultExtensionModule {
     public List<IPluginModule> getPluginModules(Conversation.ConversationType conversationType) {
         List<IPluginModule> pluginModules = new ArrayList<>();
 
-        CombineLocationPlugin locationPlugin =  new CombineLocationPlugin();
-        ImagePlugin imagePlugin = new ImagePlugin();
+//        CombineLocationPlugin locationPlugin =  new CombineLocationPlugin();
+//        ImagePlugin imagePlugin = new ImagePlugin();
+//
+//        pluginModules.add(imagePlugin);
+//        pluginModules.add(locationPlugin);
 
-        pluginModules.add(imagePlugin);
-        pluginModules.add(locationPlugin);
-
-        return pluginModules;
+        return super.getPluginModules(conversationType);
     }
 
     @Override

@@ -326,35 +326,22 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                     defaultModule = module;
                     continue;
                 }
-
                 if (module instanceof JrmfExtensionModule) {
                     jrmfExtensionModule = (JrmfExtensionModule) module;
-                    continue;
                 }
-
-                if (module instanceof RecognizeExtensionModule) {
-                    recognizeExtensionModule = (RecognizeExtensionModule) module;
-                    continue;
-                }
-
-                if (module instanceof ContactCardExtensionModule) {
-                    contactCardExtensionModule = (ContactCardExtensionModule) module;
-                }
-
             }
+
 
             if (defaultModule != null) {
                 RongExtensionManager.getInstance().unregisterExtensionModule(defaultModule);
                 RongExtensionManager.getInstance().unregisterExtensionModule(jrmfExtensionModule);
-                RongExtensionManager.getInstance().unregisterExtensionModule(recognizeExtensionModule);
-                RongExtensionManager.getInstance().unregisterExtensionModule(contactCardExtensionModule);
+
                 // 群聊才显示下注的插件，之后也可以改为指定群，或者从后台获取是否显示
                 if (mConversationType == Conversation.ConversationType.GROUP) {
                     RongExtensionManager.getInstance().registerExtensionModule(new MyBetExtensionModule());
                 } else {
                     RongExtensionManager.getInstance().registerExtensionModule(new MyExtensionModule());
                 }
-
             }
         }
     }
