@@ -15,7 +15,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/btn_list_item_bg"
         android:clickable="true"
-        android:visibility="gone">
+        >
 
         <TextView
             android:layout_width="wrap_content"

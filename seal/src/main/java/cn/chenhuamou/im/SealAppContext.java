@@ -581,6 +581,7 @@ public class SealAppContext implements RongIM.ConversationListBehaviorListener,
         }
         editor.putString("loginToken", "");
         editor.putString(SealConst.SEALTALK_LOGIN_ID, "");
+        editor.putString(SealConst.Nick_Name, "");
         editor.putString(SealConst.Bind_Phone, "");
         editor.putInt("getAllUserInfoState", 0);
         editor.apply();
