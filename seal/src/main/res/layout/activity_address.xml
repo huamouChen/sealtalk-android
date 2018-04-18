@@ -28,16 +28,29 @@
         android:background="#dfdfdd"
         android:visibility="gone"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
         <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:divider="@null"/>
+            android:layout_height="wrap_content"
+            android:divider="@null"
+          />
+
+        <TextView
+            android:id="@+id/show_no_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/No_friends"
+            android:textColor="@color/group_list_gray"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/listview"
+            />
 
         <TextView
             android:id="@+id/group_dialog"
@@ -46,6 +59,7 @@
             android:layout_gravity="center"
             android:background="@drawable/rc_bg_toast"
             android:gravity="center"
+            android:layout_centerInParent="true"
             android:textColor="#ffffffff"
             android:textSize="30.0dip"
             android:visibility="invisible" />
@@ -55,15 +69,8 @@
             android:layout_width="20.0dip"
             android:layout_height="fill_parent"
             android:layout_gravity="right|center"
+            android:layout_alignParentRight="true"
             android:visibility="gone"/>
-    </FrameLayout>
-    <TextView
-        android:id="@+id/show_no_friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:text="@string/No_friends"
-        android:textColor="@color/group_list_gray"
-        android:visibility="gone" />
+    </RelativeLayout>
+
 </LinearLayout>

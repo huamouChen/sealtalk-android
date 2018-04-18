@@ -29,20 +29,10 @@ import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
-import cn.chenhuamou.im.db.Groups;
-import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
-import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
-import cn.chenhuamou.im.server.network.async.OnDataListener;
-import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.pinyin.PinyinComparator;
 import cn.chenhuamou.im.server.pinyin.SideBar;
-import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
-import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
-import cn.chenhuamou.im.server.response.GetRongGroupResponse;
-import cn.chenhuamou.im.server.utils.NLog;
-import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import cn.chenhuamou.im.ui.activity.GroupListActivity;
 import cn.chenhuamou.im.ui.activity.NewFriendListActivity;
@@ -291,7 +281,7 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
         //updateUI fragment初始化和好友信息更新时都会调用,isReloadList表示是否是好友更新时调用
         boolean isReloadList = false;
         if (mFriendList != null && mFriendList.size() > 0) {
-//            mFriendList.clear();
+            mFriendList.clear();
             isReloadList = true;
         }
 
