@@ -7,28 +7,33 @@ package cn.chenhuamou.im.server.request;
  */
 public class ChangePasswordRequest {
 
-    private String oldPassword;
 
-    private String newPassword;
-
-    public ChangePasswordRequest(String oldPassword, String newPassword) {
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
+    public ChangePasswordRequest(String oldPwd, String newPwd) {
+        OldPwd = oldPwd;
+        NewPwd = newPwd;
     }
 
-    public String getOldPassword() {
-        return oldPassword;
+    /**
+     * OldPwd : string
+     * NewPwd : string
+     */
+
+    private String OldPwd;
+    private String NewPwd;
+
+    public String getOldPwd() {
+        return OldPwd;
     }
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
+    public void setOldPwd(String OldPwd) {
+        this.OldPwd = OldPwd;
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getNewPwd() {
+        return NewPwd;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setNewPwd(String NewPwd) {
+        this.NewPwd = NewPwd;
     }
 }

@@ -324,7 +324,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void goToMain() {
         // 要保存的是融云的 token
-        editor.putString("loginToken", rong_token);
+        editor.putString(SealConst.Rong_Token, rong_token);
         editor.putString(SealConst.SEALTALK_LOGING_PHONE, phoneString);
         editor.putString(SealConst.SEALTALK_LOGING_PASSWORD, passwordString);
         editor.commit();

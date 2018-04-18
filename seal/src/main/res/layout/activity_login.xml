@@ -58,7 +58,7 @@
                     android:background="@drawable/rc_ed_public_service_search_selector"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:hint="@string/phone_number"
+                    android:hint="@string/account_number"
                     android:maxLines="1"
                     android:maxLength="11"
                     android:textColor="#FFFFFF"

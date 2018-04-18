@@ -167,16 +167,18 @@ public class UpdatePasswordActivity extends BaseActivity implements View.OnClick
     @Override
     public void onSuccess(int requestCode, Object result) {
         ChangePasswordResponse cpRes = (ChangePasswordResponse) result;
-        if (cpRes.getCode() == 200) {
+        if (cpRes.isResult()) {
             editor.putString(SealConst.SEALTALK_LOGING_PASSWORD, newPasswordEdit.getText().toString().trim());
             editor.commit();
             NToast.shortToast(mContext, getString(R.string.update_success));
             LoadDialog.dismiss(mContext);
             finish();
-        } else if (cpRes.getCode() == 1000) {
-            NToast.shortToast(mContext, getString(R.string.original_password_mistake));
-            LoadDialog.dismiss(mContext);
-        } else {
+        }
+//        else if (cpRes.getCode() == 1000) {
+//            NToast.shortToast(mContext, getString(R.string.original_password_mistake));
+//            LoadDialog.dismiss(mContext);
+//        }
+        else {
             NToast.shortToast(mContext, "修改密码失败:" + cpRes.getCode());
             LoadDialog.dismiss(mContext);
         }
