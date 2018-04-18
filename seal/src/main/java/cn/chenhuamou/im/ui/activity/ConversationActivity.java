@@ -34,6 +34,7 @@ import java.util.TimerTask;
 import cn.chenhuamou.contactcard.ContactCardExtensionModule;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealAppContext;
+import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.GroupMember;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
@@ -456,7 +457,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
      */
     private void enterActivity() {
 
-        String token = sp.getString("loginToken", "");
+        String token = sp.getString(SealConst.Rong_Token, "");
 
         if (token.equals("default")) {
             NLog.e("ConversationActivity push", "push2");

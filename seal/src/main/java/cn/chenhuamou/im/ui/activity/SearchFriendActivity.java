@@ -25,6 +25,7 @@ import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.ApplyFriendResponse;
+import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByPhoneResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoResponse;
@@ -100,9 +101,9 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case SEARCH_PHONE:
-                return action.getUserInfo(mPhone);
+                return action.getUserInfo();
             case ADD_FRIEND:
-                return action.applyFriend(mPhone);
+                return action.applyFriend(mPhone, addFriendMessage);
         }
         return super.doInBackground(requestCode, id);
     }
@@ -113,56 +114,59 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
             switch (requestCode) {
                 case SEARCH_PHONE:
                     LoadDialog.dismiss(mContext);
+                        // TODO: 这里还要改
+//                    FindUserInfoResponse findUserInfoResponse = (FindUserInfoResponse) result;
+
                      GetUserInfoResponse getUserInfoResponse = (GetUserInfoResponse) result;
-                    if (getUserInfoResponse != null) {
-//                        LoadDialog.dismiss(mContext);
-//                        NToast.shortToast(mContext, "fail");
-//
-//                        mFriendId = tv_id.getText().toString();
-//                        searchItem.setVisibility(View.VISIBLE);
-//                        searchName.setText(tv_id.getText().toString());
-//                        searchItem.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                if (isFriendOrSelf(mFriendId)) {
-//                                    Intent intent = new Intent(SearchFriendActivity.this, UserDetailActivity.class);
-//                                    intent.putExtra("friend", mFriend);
-//                                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
-//                                    startActivity(intent);
-//                                    SealAppContext.getInstance().pushActivity(SearchFriendActivity.this);
-//                                    return;
-//                                }
-//                                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.add_friend), new DialogWithYesOrNoUtils.DialogCallBack() {
-//                                    @Override
-//                                    public void executeEvent() {
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void updatePassword(String oldPassword, String newPassword) {
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void executeEditEvent(String editText) {
-//                                        if (!CommonUtils.isNetworkConnected(mContext)) {
-//                                            NToast.shortToast(mContext, R.string.network_not_available);
-//                                            return;
-//                                        }
-//                                        addFriendMessage = editText;
-//                                        if (TextUtils.isEmpty(editText)) {
-//                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
-//                                        }
-//                                        if (!TextUtils.isEmpty(mFriendId)) {
-//                                            LoadDialog.show(mContext);
-//                                            request(ADD_FRIEND);
-//                                        } else {
-//                                            NToast.shortToast(mContext, "id is null");
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        });
+                    if (getUserInfoResponse.getUserName() != null) {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, "fail");
+
+                        mFriendId = tv_id.getText().toString();
+                        searchItem.setVisibility(View.VISIBLE);
+                        searchName.setText(tv_id.getText().toString());
+                        searchItem.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (isFriendOrSelf(mFriendId)) {
+                                    Intent intent = new Intent(SearchFriendActivity.this, UserDetailActivity.class);
+                                    intent.putExtra("friend", mFriend);
+                                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
+                                    startActivity(intent);
+                                    SealAppContext.getInstance().pushActivity(SearchFriendActivity.this);
+                                    return;
+                                }
+                                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.add_friend), new DialogWithYesOrNoUtils.DialogCallBack() {
+                                    @Override
+                                    public void executeEvent() {
+
+                                    }
+
+                                    @Override
+                                    public void updatePassword(String oldPassword, String newPassword) {
+
+                                    }
+
+                                    @Override
+                                    public void executeEditEvent(String editText) {
+                                        if (!CommonUtils.isNetworkConnected(mContext)) {
+                                            NToast.shortToast(mContext, R.string.network_not_available);
+                                            return;
+                                        }
+                                        addFriendMessage = editText;
+                                        if (TextUtils.isEmpty(editText)) {
+                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Nick_Name, "");
+                                        }
+                                        if (!TextUtils.isEmpty(mFriendId)) {
+                                            LoadDialog.show(mContext);
+                                            request(ADD_FRIEND);
+                                        } else {
+                                            NToast.shortToast(mContext, "id is null");
+                                        }
+                                    }
+                                });
+                            }
+                        });
 
                     } else {
                         LoadDialog.dismiss(mContext);
@@ -212,8 +216,6 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
                             }
                         });
                     }
-
-
 
                     break;
                 case ADD_FRIEND:
@@ -271,7 +273,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
         if (inputPhoneNumber != null) {
             if (inputPhoneNumber.equals(selfPhoneNumber)) {
                 mFriend = new Friend(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""),
-                        sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""),
+                        sp.getString(SealConst.Nick_Name, ""),
                         Uri.parse(sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "")));
                 return true;
             } else {

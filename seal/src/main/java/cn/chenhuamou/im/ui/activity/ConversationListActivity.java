@@ -10,6 +10,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.utils.NLog;
@@ -89,7 +90,7 @@ public class ConversationListActivity extends BaseActivity {
      * MainActivity 页面，而不是直接退回到 桌面。
      */
     private void enterActivity() {
-        String token = sp.getString("loginToken", "");
+        String token = sp.getString(SealConst.Rong_Token, "");
         if (token.equals("default")) {
             startActivity(new Intent(ConversationListActivity.this, LoginActivity.class));
             finish();

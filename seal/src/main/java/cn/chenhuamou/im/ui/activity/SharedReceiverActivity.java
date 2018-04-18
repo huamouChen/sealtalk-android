@@ -27,6 +27,7 @@ import java.util.List;
 
 import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
+import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.db.Groups;
@@ -118,7 +119,7 @@ public class SharedReceiverActivity extends BaseActivity {
         if (RongIM.getInstance().getCurrentConnectionStatus().equals(RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)) {
             getConversations();
         } else {
-            String cacheToken = getSharedPreferences("config", MODE_PRIVATE).getString("loginToken", "");
+            String cacheToken = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Rong_Token, "");
             if (!TextUtils.isEmpty(cacheToken)) {
                 RongIM.connect(cacheToken, new RongIMClient.ConnectCallback() {
                     @Override

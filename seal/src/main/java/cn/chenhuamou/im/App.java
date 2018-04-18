@@ -185,7 +185,7 @@ public class App extends MultiDexApplication {
 
     private void openSealDBIfHasCachedToken() {
         SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-        String cachedToken = sp.getString("loginToken", "");
+        String cachedToken = sp.getString(SealConst.Rong_Token, "");
         if (!TextUtils.isEmpty(cachedToken)) {
             String current = getCurProcessName(this);
             String mainProcessName = getPackageName();

@@ -395,6 +395,7 @@ public class SealUserInfoManager implements OnDataListener {
             List<GetRongFriendListResponse.ValueEntity> list = userRelationshipResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteFriends();
+
                 friendsList = addFriends(list);
             }
             mGetAllUserInfoState |= FRIEND;
@@ -800,7 +801,6 @@ public class SealUserInfoManager implements OnDataListener {
         if (list != null && list.size() > 0) {
             List<Friend> friendsList = new ArrayList<>();
             for (GetRongFriendListResponse.ValueEntity resultEntity : list) {
-//                if (resultEntity.getStatus() == 20) {
                     Friend friend = new Friend(
                             resultEntity.getUserName(),
                             resultEntity.getUserName(),
@@ -815,8 +815,8 @@ public class SealUserInfoManager implements OnDataListener {
                             friend.setPortraitUri(Uri.parse(getPortrait(friend)));
                         }
                     }
+
                     friendsList.add(friend);
-//                }
             }
             if (friendsList.size() > 0) {
                 if (mFriendDao != null) {
@@ -1532,7 +1532,7 @@ public class SealUserInfoManager implements OnDataListener {
                 if (tokenResponse.getCode() == 200) {
                     String token = tokenResponse.getResult().getToken();
                     SharedPreferences sp = mContext.getSharedPreferences("config", Context.MODE_PRIVATE);
-                    sp.edit().putString("loginToken", token).commit();
+                    sp.edit().putString(SealConst.Rong_Token, token).commit();
                     if (!TextUtils.isEmpty(token)) {
                         RongIM.connect(token, new RongIMClient.ConnectCallback() {
                             @Override

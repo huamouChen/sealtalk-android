@@ -185,6 +185,9 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
 //                                request(SET_GROUP_PORTRAIT_URI);
 //                            }
 //                        }
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, getString(R.string.group_create_api_fail));
                     }
                     break;
                 case SET_GROUP_PORTRAIT_URI:

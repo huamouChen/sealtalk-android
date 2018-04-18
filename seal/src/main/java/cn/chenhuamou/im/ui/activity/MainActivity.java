@@ -394,7 +394,7 @@ public class MainActivity extends FragmentActivity implements
             String path = intent.getData().getPath();
             if (path.contains("push_message")) {
                 SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-                String cacheToken = sharedPreferences.getString("loginToken", "");
+                String cacheToken = sharedPreferences.getString(SealConst.Rong_Token, "");
                 if (TextUtils.isEmpty(cacheToken)) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 } else {

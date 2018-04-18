@@ -44,7 +44,7 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
         context = this;
         SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-        String cacheToken = sp.getString("loginToken", "");
+        String cacheToken = sp.getString(SealConst.Rong_Token, "");
         if (!TextUtils.isEmpty(cacheToken)) {
             RongIM.connect(cacheToken, SealAppContext.getInstance().getConnectCallback());
             handler.postDelayed(new Runnable() {

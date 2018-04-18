@@ -201,7 +201,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case GET_TOKEN:
                 return action.getToken();
             case SYNC_USER_INFO:
-                return action.getUserInfo(phoneString);
+                return action.getUserInfo();
             case GET_RONG_TOKEN:
                 return action.getRongToken();
             case GET_RONG_GROUPS:
@@ -220,8 +220,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     final LoginResponse loginResponse = (LoginResponse) result;
                     if (loginResponse.getResult() == 0) {
                         loginToken = loginResponse.getToken();
+                        editor.putString(SealConst.SEALTALK_LOGIN_ID, phoneString);
                         editor.putString(SealConst.TOKEN, loginToken);
                         editor.commit();
+                        // 打开数据库
+                        SealUserInfoManager.getInstance().openDB();
                         // 登录成功，获取融云 token
                         request(GET_RONG_TOKEN);
                     } else {
@@ -233,14 +236,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 case SYNC_USER_INFO:
                     GetUserInfoResponse userInfoByIdResponse = (GetUserInfoResponse) result;
                     if (userInfoByIdResponse.getUserName() != null) {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, R.string.login_success);
                         String nickName = userInfoByIdResponse.getNickName();
                         String phone = userInfoByIdResponse.getPhoneNum();
                         editor.putString(SealConst.Nick_Name, nickName.isEmpty() ? phoneString : nickName);
                         editor.putString(SealConst.Bind_Phone, phone);
                         editor.commit();
-                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phone, nickName, Uri.parse("")));
                         goToMain();
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phone, nickName, Uri.parse("")));
                     } else {
+                        LoadDialog.dismiss(mContext);
                         NLog.e("GetUserInfoResponse", "获取用户信息失败，无法登录");
                     }
 
@@ -250,6 +256,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     final GetRongTokenResponse rongTokenResponse = (GetRongTokenResponse) result;
                     if (rongTokenResponse.getValue() == null) {
                         LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, R.string.get_token_api_fail);
                     }
                     rong_token = rongTokenResponse.getValue().getRongToken();
                     editor.putString(SealConst.Rong_Token, rong_token);
@@ -265,8 +272,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                             @Override
                             public void onSuccess(String s) {
-                                // 打开数据库
-                                SealUserInfoManager.getInstance().openDB();
                                 connectResultId = s;
                                 editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
                                 editor.putString(SealConst.Rong_Token, rong_token);

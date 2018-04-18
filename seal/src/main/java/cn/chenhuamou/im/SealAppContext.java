@@ -579,7 +579,7 @@ public class SealAppContext implements RongIM.ConversationListBehaviorListener,
         if (!isKicked) {
             editor.putBoolean("exit", true);
         }
-        editor.putString("loginToken", "");
+        editor.putString(SealConst.Rong_Token, "");
         editor.putString(SealConst.SEALTALK_LOGIN_ID, "");
         editor.putString(SealConst.Nick_Name, "");
         editor.putString(SealConst.Bind_Phone, "");

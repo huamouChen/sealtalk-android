@@ -18,6 +18,7 @@ import cn.chenhuamou.im.server.request.AddGroupMemberRequest;
 import cn.chenhuamou.im.server.request.AddToBlackListRequest;
 import cn.chenhuamou.im.server.request.AgreeFriendsRequest;
 import cn.chenhuamou.im.server.request.AgreeMyFriendRequest;
+import cn.chenhuamou.im.server.request.ApplyFriendRequest;
 import cn.chenhuamou.im.server.request.BettingRequest;
 import cn.chenhuamou.im.server.request.ChangePasswordRequest;
 import cn.chenhuamou.im.server.request.CheckPhoneRequest;
@@ -57,6 +58,7 @@ import cn.chenhuamou.im.server.response.DefaultConversationResponse;
 import cn.chenhuamou.im.server.response.DeleteFriendResponse;
 import cn.chenhuamou.im.server.response.DeleteGroupMemberResponse;
 import cn.chenhuamou.im.server.response.DismissGroupResponse;
+import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
 import cn.chenhuamou.im.server.response.GetBlackListResponse;
 import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
@@ -108,6 +110,7 @@ import cn.chenhuamou.im.server.utils.json.JsonMananger;
  */
 @SuppressWarnings("deprecation")
 public class SealAction extends BaseAction {
+
     //    private final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private final String CONTENT_TYPE = "application/json";
     private final String ENCODING = "utf-8";
@@ -395,24 +398,6 @@ public class SealAction extends BaseAction {
         GetUserInfoByIdResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             response = jsonToBean(result, GetUserInfoByIdResponse.class);
-        }
-        return response;
-    }
-
-
-    /**
-     * 通过国家码和手机号查询用户信息
-     *
-     * @param region 国家码
-     * @param phone  手机号
-     * @throws HttpException
-     */
-    public GetUserInfoByPhoneResponse getUserInfoFromPhone(String region, String phone) throws HttpException {
-        String url = getURL("user/find/" + region + "/" + phone);
-        String result = httpManager.get(url);
-        GetUserInfoByPhoneResponse response = null;
-        if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, GetUserInfoByPhoneResponse.class);
         }
         return response;
     }
@@ -1005,27 +990,6 @@ public class SealAction extends BaseAction {
         return response;
     }
 
-//    /**
-//     * 根据userId去服务器查询好友信息
-//     *
-//     * @throws HttpException
-//     */
-//    public GetFriendInfoByIDResponse getFriendInfoByID(String userid) throws HttpException {
-//        String url = getURL("friendship/" + userid + "/profile");
-//        String result = httpManager.get(url);
-//        GetFriendInfoByIDResponse response = null;
-//        if (!TextUtils.isEmpty(result)) {
-//            response = jsonToBean(result, GetFriendInfoByIDResponse.class);
-//        }
-//        return response;
-//    }
-    /**
-     //     * 根据userId去服务器查询好友信息
-     //     *
-     //     * @throws HttpException
-     //     */
-
-
 
 
     /*--------------------------------自己的接口----------------------------------------------------------------*/
@@ -1076,6 +1040,23 @@ public class SealAction extends BaseAction {
         if (!TextUtils.isEmpty(result)) {
             NLog.e("GetRongGroupMembersResponse", result);
             response = jsonToBean(result, GetRongFriendListResponse.class);
+
+            // 处理重复添加的，后台没有给接口，只能暴力判断
+            List<GetRongFriendListResponse.ValueEntity> list = response.getValue();
+            List<GetRongFriendListResponse.ValueEntity> resultList = new ArrayList<>();
+            for (GetRongFriendListResponse.ValueEntity item : list) {
+                boolean isContainer = false;
+                for (GetRongFriendListResponse.ValueEntity newItem : resultList) {
+                    if (item.getUserName().equals(newItem.getUserName())) {
+                        isContainer = true;
+                        break;
+                    }
+                }
+                if (isContainer) continue;
+                resultList.add(item);
+            }
+            response.setValue(resultList);
+
         }
         return response;
     }
@@ -1132,11 +1113,11 @@ public class SealAction extends BaseAction {
 
 
     /**
-     * 查询用户信息
+     * 查询当前登录用户的信息
      *
      * @throws HttpException
      */
-    public GetUserInfoResponse getUserInfo(String userId) throws HttpException {
+    public GetUserInfoResponse getUserInfo() throws HttpException {
         String url = getURL("api/User/GetUserInfo");
         String result = httpManager.get(mContext, url);
         GetUserInfoResponse response = null;
@@ -1147,15 +1128,39 @@ public class SealAction extends BaseAction {
         return response;
     }
 
+    /**
+     * 查询指定用户信息
+     *
+     * @throws HttpException
+     */
+    public FindUserInfoResponse findUserInfoByUserId(String userId) throws HttpException {
+        String url = getURL("/api/Im/FindUser");
+        String result = httpManager.get(mContext, url, new RequestParams("toUser", userId));
+        FindUserInfoResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("FindUserInfoResponse", result);
+            response = jsonToBean(result, FindUserInfoResponse.class);
+        }
+        return response;
+    }
+
 
     /**
      * 添加好友
      *
      * @throws HttpException
      */
-    public ApplyFriendResponse applyFriend(String userId) throws HttpException {
+    public ApplyFriendResponse applyFriend(String userId, String message) throws HttpException {
         String url = getURL("api/Im/ApplyFriend");
-        String result = httpManager.post(mContext, url, new RequestParams("toUser", userId));
+        String json = JsonMananger.beanToJson(new ApplyFriendRequest(userId, message));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
         ApplyFriendResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("ApplyFriendResponse", result);
