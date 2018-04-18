@@ -85,6 +85,51 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void addEditTextListener() {
+        mPhoneEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 3 && mPasswordEdit.getText().length() > 5 && mComfirmPasswordEdit.getText().length() > 0) {
+                    mConfirm.setClickable(true);
+                    mConfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
+                } else {
+                    mConfirm.setClickable(false);
+                    mConfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mPasswordEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 5 && mComfirmPasswordEdit.getText().length() > 0 && mPhoneEdit.getText().length() > 0) {
+                    mConfirm.setClickable(true);
+                    mConfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
+                } else {
+                    mConfirm.setClickable(false);
+                    mConfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         mComfirmPasswordEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
