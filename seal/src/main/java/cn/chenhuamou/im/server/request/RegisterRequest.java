@@ -8,39 +8,54 @@ package cn.chenhuamou.im.server.request;
 public class RegisterRequest {
 
 
-    private String nickname;
-
-    private String password;
-
-    private String verification_token;
-
-    public RegisterRequest(String nickname, String password, String verification_token) {
-        this.nickname = nickname;
-        this.password = password;
-        this.verification_token = verification_token;
+    public RegisterRequest(String userName, float bonus, String userType, String userPassword) {
+        UserName = userName;
+        Bonus = bonus;
+        UserType = userType;
+        UserPassword = userPassword;
     }
 
-    public String getNickname() {
-        return nickname;
+    /**
+     * UserName : string
+     * Bonus : 0
+     * UserType : string
+     * UserPassword : string
+     */
+
+    private String UserName;
+    private float Bonus;
+    private String UserType;
+    private String UserPassword;
+
+    public String getUserName() {
+        return UserName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setUserName(String UserName) {
+        this.UserName = UserName;
     }
 
-    public String getPassword() {
-        return password;
+    public float getBonus() {
+        return Bonus;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setBonus(float Bonus) {
+        this.Bonus = Bonus;
     }
 
-    public String getVerification_token() {
-        return verification_token;
+    public String getUserType() {
+        return UserType;
     }
 
-    public void setVerification_token(String verification_token) {
-        this.verification_token = verification_token;
+    public void setUserType(String UserType) {
+        this.UserType = UserType;
+    }
+
+    public String getUserPassword() {
+        return UserPassword;
+    }
+
+    public void setUserPassword(String UserPassword) {
+        this.UserPassword = UserPassword;
     }
 }

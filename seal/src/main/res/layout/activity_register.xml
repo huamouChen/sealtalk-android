@@ -27,14 +27,6 @@
         android:orientation="vertical">
 
 
-        <ImageView
-            android:id="@+id/de_login_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="61dip"
-            android:src="@drawable/seal_logo" />
-
         <cn.chenhuamou.im.server.widget.ClearWriteEditText
             android:id="@+id/reg_username"
             android:layout_width="match_parent"
@@ -52,7 +44,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#FFF"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#FFFFFF"
+            android:visibility="gone"/>
 
         <cn.chenhuamou.im.server.widget.ClearWriteEditText
             android:id="@+id/reg_phone"
@@ -63,9 +56,8 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
             android:drawablePadding="5dip"
-            android:hint="@string/phone_number"
+            android:hint="@string/account_number"
             android:maxLength="11"
-            android:inputType="phone"
             android:paddingLeft="10dip"
             android:paddingRight="10dip"
             android:maxLines="1"
@@ -79,7 +71,8 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
 
             <cn.chenhuamou.im.server.widget.ClearWriteEditText
@@ -134,6 +127,24 @@
             android:textColor="#FFF"
             android:textColorHint="#FFFFFF" />
 
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+            android:id="@+id/comfirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:drawablePadding="5dip"
+            android:hint="@string/confirm_password"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:maxLines="1"
+            android:textColor="#FFF"
+            android:textColorHint="#FFFFFF" />
+
 
         <Button
             android:id="@+id/reg_button"
@@ -160,7 +171,8 @@
         android:padding="15dp"
         android:text="@string/forgot_password"
         android:textColor="#999999"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone"/>
 
 
     <TextView

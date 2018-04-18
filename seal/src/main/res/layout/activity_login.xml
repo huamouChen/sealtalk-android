@@ -159,7 +159,6 @@
         android:padding="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="@string/new_user"
-        android:visibility="gone"/>
+        android:text="@string/new_user" />
 
 </RelativeLayout>

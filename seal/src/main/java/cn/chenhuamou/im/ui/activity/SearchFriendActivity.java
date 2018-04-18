@@ -79,6 +79,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
                     searchBtn.setVisibility(View.VISIBLE);
+                    searchItem.setVisibility(View.GONE);
                     mPhone = s.toString().trim();
                     tv_id.setText(s);
                 } else {
@@ -101,7 +102,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case SEARCH_PHONE:
-                return action.getUserInfo();
+                return action.findUserInfoByUserId(mPhone);
             case ADD_FRIEND:
                 return action.applyFriend(mPhone, addFriendMessage);
         }
@@ -114,60 +115,12 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
             switch (requestCode) {
                 case SEARCH_PHONE:
                     LoadDialog.dismiss(mContext);
-                        // TODO: 这里还要改
-//                    FindUserInfoResponse findUserInfoResponse = (FindUserInfoResponse) result;
-
-                     GetUserInfoResponse getUserInfoResponse = (GetUserInfoResponse) result;
-                    if (getUserInfoResponse.getUserName() != null) {
+                    // TODO: 这里还要改
+                    FindUserInfoResponse findUserInfoResponse = (FindUserInfoResponse) result;
+                    if (findUserInfoResponse.getCode().getCodeId().equals("100") && !findUserInfoResponse.getValue().isExist()) {
                         LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, "fail");
-
-                        mFriendId = tv_id.getText().toString();
-                        searchItem.setVisibility(View.VISIBLE);
-                        searchName.setText(tv_id.getText().toString());
-                        searchItem.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (isFriendOrSelf(mFriendId)) {
-                                    Intent intent = new Intent(SearchFriendActivity.this, UserDetailActivity.class);
-                                    intent.putExtra("friend", mFriend);
-                                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
-                                    startActivity(intent);
-                                    SealAppContext.getInstance().pushActivity(SearchFriendActivity.this);
-                                    return;
-                                }
-                                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.add_friend), new DialogWithYesOrNoUtils.DialogCallBack() {
-                                    @Override
-                                    public void executeEvent() {
-
-                                    }
-
-                                    @Override
-                                    public void updatePassword(String oldPassword, String newPassword) {
-
-                                    }
-
-                                    @Override
-                                    public void executeEditEvent(String editText) {
-                                        if (!CommonUtils.isNetworkConnected(mContext)) {
-                                            NToast.shortToast(mContext, R.string.network_not_available);
-                                            return;
-                                        }
-                                        addFriendMessage = editText;
-                                        if (TextUtils.isEmpty(editText)) {
-                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Nick_Name, "");
-                                        }
-                                        if (!TextUtils.isEmpty(mFriendId)) {
-                                            LoadDialog.show(mContext);
-                                            request(ADD_FRIEND);
-                                        } else {
-                                            NToast.shortToast(mContext, "id is null");
-                                        }
-                                    }
-                                });
-                            }
-                        });
-
+                        NToast.shortToast(mContext, "不存在此用户");
+                        searchItem.setVisibility(View.GONE);
                     } else {
                         LoadDialog.dismiss(mContext);
                         mFriendId = tv_id.getText().toString();
@@ -216,7 +169,6 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
                             }
                         });
                     }
-
                     break;
                 case ADD_FRIEND:
                     ApplyFriendResponse applyFriendResponse = (ApplyFriendResponse) result;

@@ -88,6 +88,7 @@
     <string name="phone_number_is_null">账号不能为空</string>
     <string name="Illegal_phone_number">非法手机号</string>
     <string name="password_is_null">密码不能为空</string>
+    <string name="comfirm_password_is_null">密码确认不能为空</string>
     <string name="validate_code_is_null">验证码不能为空</string>
     <string name="password_cannot_contain_spaces">密码不能包含空格</string>
     <string name="phone_number_available">手机号可用</string>

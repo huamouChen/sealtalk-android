@@ -40,9 +40,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private static final int REGISTER = 4;
     private static final int REGISTER_BACK = 1001;
     private ImageView mImgBackground;
-    private ClearWriteEditText mPhoneEdit, mCodeEdit, mNickEdit, mPasswordEdit;
+    private ClearWriteEditText mPhoneEdit, mCodeEdit, mNickEdit, mPasswordEdit, mComfirmPasswordEdit;
     private Button mGetCode, mConfirm;
-    private String mPhone, mCode, mNickName, mPassword, mCodeToken;
+    private String mPhone, mCode, mNickName, mPassword, mComfirmPassword, mCodeToken;
     private boolean isRequestCode = false;
 
     @Override
@@ -58,6 +58,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mCodeEdit = (ClearWriteEditText) findViewById(R.id.reg_code);
         mNickEdit = (ClearWriteEditText) findViewById(R.id.reg_username);
         mPasswordEdit = (ClearWriteEditText) findViewById(R.id.reg_password);
+        mComfirmPasswordEdit = (ClearWriteEditText) findViewById(R.id.comfirm_password);
         mGetCode = (Button) findViewById(R.id.reg_getcode);
         mConfirm = (Button) findViewById(R.id.reg_button);
 
@@ -84,60 +85,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void addEditTextListener() {
-        mPhoneEdit.addTextChangedListener(new TextWatcher() {
+        mComfirmPasswordEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 11 && isBright) {
-                    if (AMUtils.isMobile(s.toString().trim())) {
-                        mPhone = s.toString().trim();
-                        request(CHECK_PHONE, true);
-                        AMUtils.onInactive(mContext, mPhoneEdit);
-                    } else {
-                        Toast.makeText(mContext, R.string.Illegal_phone_number, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    mGetCode.setClickable(false);
-                    mGetCode.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mCodeEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 6) {
-                    AMUtils.onInactive(mContext, mCodeEdit);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mPasswordEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 5) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 5 && mPasswordEdit.getText().length() > 5 && mPhoneEdit.getText().length() > 0) {
                     mConfirm.setClickable(true);
                     mConfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
                 } else {
@@ -147,7 +103,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
 
             }
         });
@@ -164,7 +120,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case VERIFY_CODE:
                 return action.verifyCode("86", mPhone, mCode);
             case REGISTER:
-                return action.register(mNickName, mPassword, mCodeToken);
+                return action.register(mPhone, mPassword);
         }
         return super.doInBackground(requestCode, id);
     }
@@ -222,29 +178,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     break;
 
                 case REGISTER:
-                    RegisterResponse rres = (RegisterResponse) result;
-                    switch (rres.getCode()) {
-                        case 200:
-                            LoadDialog.dismiss(mContext);
-                            NToast.shortToast(mContext, R.string.register_success);
-                            Intent data = new Intent();
-                            data.putExtra("phone", mPhone);
-                            data.putExtra("password", mPassword);
-                            data.putExtra("nickname", mNickName);
-                            data.putExtra("id", rres.getResult().getId());
-                            setResult(REGISTER_BACK, data);
-                            this.finish();
-                            break;
-                        case 400:
-                            // 错误的请求
-                            break;
-                        case 404:
-                            //token 不存在
-                            break;
-                        case 500:
-                            //应用服务端内部错误
-                            break;
+                    RegisterResponse registerResponse = (RegisterResponse) result;
+                    if (registerResponse.getCode().getCodeId().equals("100")) {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, R.string.register_success);
+                        Intent data = new Intent();
+                        data.putExtra("phone", mPhone);
+                        data.putExtra("password", mPassword);
+                        setResult(REGISTER_BACK, data);
+                        this.finish();
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, registerResponse.getParameter());
                     }
+
                     break;
             }
         }
@@ -297,30 +244,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.reg_button:
                 mPhone = mPhoneEdit.getText().toString().trim();
-                mCode = mCodeEdit.getText().toString().trim();
-                mNickName = mNickEdit.getText().toString().trim();
                 mPassword = mPasswordEdit.getText().toString().trim();
+                mComfirmPassword = mComfirmPasswordEdit.getText().toString().trim();
 
-
-                if (TextUtils.isEmpty(mNickName)) {
-                    NToast.shortToast(mContext, getString(R.string.name_is_null));
-                    mNickEdit.setShakeAnimation();
-                    return;
-                }
-                if (mNickName.contains(" ")) {
-                    NToast.shortToast(mContext, getString(R.string.name_contain_spaces));
-                    mNickEdit.setShakeAnimation();
-                    return;
-                }
 
                 if (TextUtils.isEmpty(mPhone)) {
                     NToast.shortToast(mContext, getString(R.string.phone_number_is_null));
                     mPhoneEdit.setShakeAnimation();
-                    return;
-                }
-                if (TextUtils.isEmpty(mCode)) {
-                    NToast.shortToast(mContext, getString(R.string.code_is_null));
-                    mCodeEdit.setShakeAnimation();
                     return;
                 }
                 if (TextUtils.isEmpty(mPassword)) {
@@ -333,15 +263,22 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     mPasswordEdit.setShakeAnimation();
                     return;
                 }
+                if (TextUtils.isEmpty(mComfirmPassword)) {
+                    NToast.shortToast(mContext, getString(R.string.comfirm_password_is_null));
+                    mPasswordEdit.setShakeAnimation();
+                    return;
+                }
 
-                if (!isRequestCode) {
-                    NToast.shortToast(mContext, getString(R.string.not_send_code));
+
+                if (!mPassword.equals(mComfirmPassword)) {
+                    NToast.shortToast(mContext, "两次密码不一致");
+                    mPasswordEdit.setShakeAnimation();
+                    mComfirmPasswordEdit.setShakeAnimation();
                     return;
                 }
 
                 LoadDialog.show(mContext);
-                request(VERIFY_CODE, true);
-
+                request(REGISTER);
                 break;
         }
     }

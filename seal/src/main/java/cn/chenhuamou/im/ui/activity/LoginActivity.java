@@ -237,7 +237,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     GetUserInfoResponse userInfoByIdResponse = (GetUserInfoResponse) result;
                     if (userInfoByIdResponse.getUserName() != null) {
                         LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, R.string.login_success);
                         String nickName = userInfoByIdResponse.getNickName();
                         String phone = userInfoByIdResponse.getPhoneNum();
                         editor.putString(SealConst.Nick_Name, nickName.isEmpty() ? phoneString : nickName);

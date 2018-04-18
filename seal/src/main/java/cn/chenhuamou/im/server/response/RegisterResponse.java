@@ -8,35 +8,73 @@ package cn.chenhuamou.im.server.response;
 public class RegisterResponse  {
 
 
-    private int code;
+    /**
+     * Error : string
+     * Parameter : string
+     * Result : true
+     * Code : {"CodeId":"string","Description":"string"}
+     */
 
-    private ResultEntity result;
+    private String Error;
+    private String Parameter;
+    private boolean Result;
+    private CodeBean Code;
 
-    public int getCode() {
-        return code;
+    public String getError() {
+        return Error;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setError(String Error) {
+        this.Error = Error;
     }
 
-    public ResultEntity getResult() {
-        return result;
+    public String getParameter() {
+        return Parameter;
     }
 
-    public void setResult(ResultEntity result) {
-        this.result = result;
+    public void setParameter(String Parameter) {
+        this.Parameter = Parameter;
     }
 
-    public static class ResultEntity {
-        private String id;
+    public boolean isResult() {
+        return Result;
+    }
 
-        public String getId() {
-            return id;
+    public void setResult(boolean Result) {
+        this.Result = Result;
+    }
+
+    public CodeBean getCode() {
+        return Code;
+    }
+
+    public void setCode(CodeBean Code) {
+        this.Code = Code;
+    }
+
+    public static class CodeBean {
+        /**
+         * CodeId : string
+         * Description : string
+         */
+
+        private String CodeId;
+        private String Description;
+
+        public String getCodeId() {
+            return CodeId;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setCodeId(String CodeId) {
+            this.CodeId = CodeId;
+        }
+
+        public String getDescription() {
+            return Description;
+        }
+
+        public void setDescription(String Description) {
+            this.Description = Description;
         }
     }
 }

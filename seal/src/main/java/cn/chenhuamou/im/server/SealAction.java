@@ -215,16 +215,15 @@ public class SealAction extends BaseAction {
     /**
      * 注册
      *
-     * @param nickname           昵称
+     * @param userName           账号
      * @param password           密码
-     * @param verification_token 验证码
      * @throws HttpException
      */
-    public RegisterResponse register(String nickname, String password, String verification_token) throws HttpException {
-        String url = getURL("user/register");
+    public RegisterResponse register(String userName, String password) throws HttpException {
+        String url = getURL("Api/Team/AddUser");
         StringEntity entity = null;
         try {
-            entity = new StringEntity(JsonMananger.beanToJson(new RegisterRequest(nickname, password, verification_token)), ENCODING);
+            entity = new StringEntity(JsonMananger.beanToJson(new RegisterRequest(userName, 0.7f, "0", password )), ENCODING);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
