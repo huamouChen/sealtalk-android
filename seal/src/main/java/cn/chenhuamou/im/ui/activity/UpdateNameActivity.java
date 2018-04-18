@@ -65,7 +65,7 @@ public class UpdateNameActivity extends BaseActivity implements View.OnClickList
         // 设置默认的显示项
         sp = getSharedPreferences("config", MODE_PRIVATE);
         if (isUpdateName) {
-            mNameEditText.setText(sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""));
+            mNameEditText.setText(sp.getString(SealConst.Nick_Name, ""));
             mNameEditText.setSelection(sp.getString(SealConst.SEALTALK_LOGIN_NAME, "").length());
             editor = sp.edit();
         } else {
@@ -91,7 +91,7 @@ public class UpdateNameActivity extends BaseActivity implements View.OnClickList
         switch (requestCode) {
             case UPDATE_NAME:
                 if (sRes.isResult()) {
-                    editor.putString(SealConst.SEALTALK_LOGIN_NAME, newName);
+                    editor.putString(SealConst.Nick_Name, newName);
                     editor.commit();
 
                     BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);

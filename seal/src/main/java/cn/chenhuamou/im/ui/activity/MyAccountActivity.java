@@ -102,10 +102,11 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         RelativeLayout phoneItem = (RelativeLayout) findViewById(R.id.rl_my_telephone);
         mImageView = (SelectableRoundedImageView) findViewById(R.id.img_my_portrait);
         mName = (TextView) findViewById(R.id.tv_my_username);
+
         portraitItem.setOnClickListener(this);
         nameItem.setOnClickListener(this);
         phoneItem.setOnClickListener(this);
-        String cacheName = sp.getString(SealConst.SEALTALK_LOGIN_NAME, "");
+        String cacheName = sp.getString(SealConst.Nick_Name, "");
         String cachePortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         String cachePhone = sp.getString(SealConst.Bind_Phone, "");
         // 设置手机号码
@@ -124,7 +125,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         BroadcastManager.getInstance(mContext).addAction(SealConst.CHANGEINFO, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mName.setText(sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""));
+                mName.setText(sp.getString(SealConst.Nick_Name, ""));
             }
         });
 

@@ -37,6 +37,7 @@
     <color name="text_tips_color">#666666</color>
     <color name="mine_head_color">#cccccc</color>
     <color name="text_color">#353535</color>
+    <color name="chm_text_color_blue">#4a90e2</color>
 
     <!--SWITCH-->
     <color name="ksw_md_ripple_normal">#1E000000</color>

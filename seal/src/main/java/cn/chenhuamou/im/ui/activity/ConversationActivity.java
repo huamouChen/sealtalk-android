@@ -889,7 +889,8 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                     progress += schedule;
                     mHandler.sendEmptyMessage(Update_ProgressBar);
                 } else {
-                    mHandler.sendEmptyMessage(Update_Lottery_Info);
+                    // 延迟两秒再重新获取开奖号码，获取开奖号码可能不及时，因为后台生成数据需要时间，app去拉去也需要时间，
+                    mHandler.sendEmptyMessageDelayed(LotteryInfo, 2);
                     mTimer.cancel();
 
                 }

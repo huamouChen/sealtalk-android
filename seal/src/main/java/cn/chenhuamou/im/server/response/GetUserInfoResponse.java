@@ -1,120 +1,212 @@
 package cn.chenhuamou.im.server.response;
 
-import java.util.List;
-
-import cn.chenhuamou.im.db.Groups;
-
 /**
  * Created by AMing on 15/12/24.
  * Company RongCloud
  */
 public class GetUserInfoResponse {
 
+    /**
+     * ID : 0
+     * UserName : string
+     * UserPassword : string
+     * QQ : string
+     * RegDateTime : 2018-04-18T02:20:35.337Z
+     * State : string
+     * ParentUserName : string
+     * Email : string
+     * UserType : string
+     * ParentList : string
+     * BankPassword : string
+     * Bonus : 0
+     * UserLevel : string
+     * IsOnline : string
+     * ChargeLevelCode : string
+     * BankDraState : string
+     * GASecret : string
+     * ClientIp : string
+     * NickName : string
+     * PhoneNum : string
+     */
 
-    private ValueEntity Value;
+    private int ID;
+    private String UserName;
+    private String UserPassword;
+    private String QQ;
+    private String RegDateTime;
+    private String State;
+    private String ParentUserName;
+    private String Email;
+    private String UserType;
+    private String ParentList;
+    private String BankPassword;
+    private int Bonus;
+    private String UserLevel;
+    private String IsOnline;
+    private String ChargeLevelCode;
+    private String BankDraState;
+    private String GASecret;
+    private String ClientIp;
+    private String NickName;
+    private String PhoneNum;
 
-    private ResultEntity Code;
-
-    public ValueEntity getValue() {
-        return Value;
+    public int getID() {
+        return ID;
     }
 
-    public void setValue(ValueEntity value) {
-        Value = value;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public ResultEntity getCode() {
-        return Code;
+    public String getUserName() {
+        return UserName;
     }
 
-    public void setCode(ResultEntity code) {
-        Code = code;
+    public void setUserName(String UserName) {
+        this.UserName = UserName;
     }
 
-    public class ValueEntity {
-
-
-        /**
-         * UserName : string
-         * Headimg : string
-         * Relation : 0
-         * Notes : string
-         * Exist : true
-         */
-
-        private String UserName;
-        private String Headimg;
-        private int Relation;
-        private String Notes;
-        private boolean Exist;
-
-        public String getUserName() {
-            return UserName;
-        }
-
-        public void setUserName(String UserName) {
-            this.UserName = UserName;
-        }
-
-        public String getHeadimg() {
-            return Headimg;
-        }
-
-        public void setHeadimg(String Headimg) {
-            this.Headimg = Headimg;
-        }
-
-        public int getRelation() {
-            return Relation;
-        }
-
-        public void setRelation(int Relation) {
-            this.Relation = Relation;
-        }
-
-        public String getNotes() {
-            return Notes;
-        }
-
-        public void setNotes(String Notes) {
-            this.Notes = Notes;
-        }
-
-        public boolean isExist() {
-            return Exist;
-        }
-
-        public void setExist(boolean Exist) {
-            this.Exist = Exist;
-        }
+    public String getUserPassword() {
+        return UserPassword;
     }
 
-
-
-    public static class ResultEntity {
-        /**
-         * CodeId : string
-         * Description : string
-         */
-
-        private String CodeId;
-        private String Description;
-
-        public String getCodeId() {
-            return CodeId;
-        }
-
-        public void setCodeId(String CodeId) {
-            this.CodeId = CodeId;
-        }
-
-        public String getDescription() {
-            return Description;
-        }
-
-        public void setDescription(String Description) {
-            this.Description = Description;
-        }
+    public void setUserPassword(String UserPassword) {
+        this.UserPassword = UserPassword;
     }
 
+    public String getQQ() {
+        return QQ;
+    }
+
+    public void setQQ(String QQ) {
+        this.QQ = QQ;
+    }
+
+    public String getRegDateTime() {
+        return RegDateTime;
+    }
+
+    public void setRegDateTime(String RegDateTime) {
+        this.RegDateTime = RegDateTime;
+    }
+
+    public String getState() {
+        return State;
+    }
+
+    public void setState(String State) {
+        this.State = State;
+    }
+
+    public String getParentUserName() {
+        return ParentUserName;
+    }
+
+    public void setParentUserName(String ParentUserName) {
+        this.ParentUserName = ParentUserName;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String Email) {
+        this.Email = Email;
+    }
+
+    public String getUserType() {
+        return UserType;
+    }
+
+    public void setUserType(String UserType) {
+        this.UserType = UserType;
+    }
+
+    public String getParentList() {
+        return ParentList;
+    }
+
+    public void setParentList(String ParentList) {
+        this.ParentList = ParentList;
+    }
+
+    public String getBankPassword() {
+        return BankPassword;
+    }
+
+    public void setBankPassword(String BankPassword) {
+        this.BankPassword = BankPassword;
+    }
+
+    public int getBonus() {
+        return Bonus;
+    }
+
+    public void setBonus(int Bonus) {
+        this.Bonus = Bonus;
+    }
+
+    public String getUserLevel() {
+        return UserLevel;
+    }
+
+    public void setUserLevel(String UserLevel) {
+        this.UserLevel = UserLevel;
+    }
+
+    public String getIsOnline() {
+        return IsOnline;
+    }
+
+    public void setIsOnline(String IsOnline) {
+        this.IsOnline = IsOnline;
+    }
+
+    public String getChargeLevelCode() {
+        return ChargeLevelCode;
+    }
+
+    public void setChargeLevelCode(String ChargeLevelCode) {
+        this.ChargeLevelCode = ChargeLevelCode;
+    }
+
+    public String getBankDraState() {
+        return BankDraState;
+    }
+
+    public void setBankDraState(String BankDraState) {
+        this.BankDraState = BankDraState;
+    }
+
+    public String getGASecret() {
+        return GASecret;
+    }
+
+    public void setGASecret(String GASecret) {
+        this.GASecret = GASecret;
+    }
+
+    public String getClientIp() {
+        return ClientIp;
+    }
+
+    public void setClientIp(String ClientIp) {
+        this.ClientIp = ClientIp;
+    }
+
+    public String getNickName() {
+        return NickName;
+    }
+
+    public void setNickName(String NickName) {
+        this.NickName = NickName;
+    }
+
+    public String getPhoneNum() {
+        return PhoneNum;
+    }
+
+    public void setPhoneNum(String PhoneNum) {
+        this.PhoneNum = PhoneNum;
+    }
 }

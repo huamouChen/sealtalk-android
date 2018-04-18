@@ -48,7 +48,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public static final String SHOW_RED = "SHOW_RED";
     private SharedPreferences sp;
     private SelectableRoundedImageView imageView;
-    private TextView mName, mCurrent_version;
+    private TextView mName, mCurrent_version, tv_account;
     private ImageView mNewVersionView;
     private boolean isHasNewVersion;
     private String url;
@@ -122,6 +122,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mCurrent_version.setText("当前版本 " + getVersionInfo()[1]);
         imageView = (SelectableRoundedImageView) mView.findViewById(R.id.mine_header);
         mName = (TextView) mView.findViewById(R.id.mine_name);
+        tv_account = (TextView) mView.findViewById(R.id.mine_account);
         LinearLayout mUserProfile = (LinearLayout) mView.findViewById(R.id.start_user_profile);
         LinearLayout mMineSetting = (LinearLayout) mView.findViewById(R.id.mine_setting);
         LinearLayout mMineService = (LinearLayout) mView.findViewById(R.id.mine_service);
@@ -184,9 +185,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private void updateUserInfo() {
         String userId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
-        String username = sp.getString(SealConst.SEALTALK_LOGIN_NAME, "");
+        String username = sp.getString(SealConst.Nick_Name, "");
         String userPortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         mName.setText(username);
+        tv_account.setText("iM账号：" + userId);
         if (!TextUtils.isEmpty(userId)) {
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri
                     (new UserInfo(userId, username, Uri.parse(userPortrait)));

@@ -114,55 +114,55 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
                 case SEARCH_PHONE:
                     LoadDialog.dismiss(mContext);
                      GetUserInfoResponse getUserInfoResponse = (GetUserInfoResponse) result;
-                    if (getUserInfoResponse.getCode() == null) {
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, "fail");
-
-                        mFriendId = tv_id.getText().toString();
-                        searchItem.setVisibility(View.VISIBLE);
-                        searchName.setText(tv_id.getText().toString());
-                        searchItem.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (isFriendOrSelf(mFriendId)) {
-                                    Intent intent = new Intent(SearchFriendActivity.this, UserDetailActivity.class);
-                                    intent.putExtra("friend", mFriend);
-                                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
-                                    startActivity(intent);
-                                    SealAppContext.getInstance().pushActivity(SearchFriendActivity.this);
-                                    return;
-                                }
-                                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.add_friend), new DialogWithYesOrNoUtils.DialogCallBack() {
-                                    @Override
-                                    public void executeEvent() {
-
-                                    }
-
-                                    @Override
-                                    public void updatePassword(String oldPassword, String newPassword) {
-
-                                    }
-
-                                    @Override
-                                    public void executeEditEvent(String editText) {
-                                        if (!CommonUtils.isNetworkConnected(mContext)) {
-                                            NToast.shortToast(mContext, R.string.network_not_available);
-                                            return;
-                                        }
-                                        addFriendMessage = editText;
-                                        if (TextUtils.isEmpty(editText)) {
-                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
-                                        }
-                                        if (!TextUtils.isEmpty(mFriendId)) {
-                                            LoadDialog.show(mContext);
-                                            request(ADD_FRIEND);
-                                        } else {
-                                            NToast.shortToast(mContext, "id is null");
-                                        }
-                                    }
-                                });
-                            }
-                        });
+                    if (getUserInfoResponse != null) {
+//                        LoadDialog.dismiss(mContext);
+//                        NToast.shortToast(mContext, "fail");
+//
+//                        mFriendId = tv_id.getText().toString();
+//                        searchItem.setVisibility(View.VISIBLE);
+//                        searchName.setText(tv_id.getText().toString());
+//                        searchItem.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                if (isFriendOrSelf(mFriendId)) {
+//                                    Intent intent = new Intent(SearchFriendActivity.this, UserDetailActivity.class);
+//                                    intent.putExtra("friend", mFriend);
+//                                    intent.putExtra("type", CLICK_CONVERSATION_USER_PORTRAIT);
+//                                    startActivity(intent);
+//                                    SealAppContext.getInstance().pushActivity(SearchFriendActivity.this);
+//                                    return;
+//                                }
+//                                DialogWithYesOrNoUtils.getInstance().showEditDialog(mContext, getString(R.string.add_text), getString(R.string.add_friend), new DialogWithYesOrNoUtils.DialogCallBack() {
+//                                    @Override
+//                                    public void executeEvent() {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void updatePassword(String oldPassword, String newPassword) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void executeEditEvent(String editText) {
+//                                        if (!CommonUtils.isNetworkConnected(mContext)) {
+//                                            NToast.shortToast(mContext, R.string.network_not_available);
+//                                            return;
+//                                        }
+//                                        addFriendMessage = editText;
+//                                        if (TextUtils.isEmpty(editText)) {
+//                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+//                                        }
+//                                        if (!TextUtils.isEmpty(mFriendId)) {
+//                                            LoadDialog.show(mContext);
+//                                            request(ADD_FRIEND);
+//                                        } else {
+//                                            NToast.shortToast(mContext, "id is null");
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        });
 
                     } else {
                         LoadDialog.dismiss(mContext);

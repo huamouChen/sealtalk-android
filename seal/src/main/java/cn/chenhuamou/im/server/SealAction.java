@@ -1137,8 +1137,8 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public GetUserInfoResponse getUserInfo(String userId) throws HttpException {
-        String url = getURL("api/Im/FindUser");
-        String result = httpManager.get(mContext, url, new RequestParams("toUser", userId));
+        String url = getURL("api/User/GetUserInfo");
+        String result = httpManager.get(mContext, url);
         GetUserInfoResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("GetUserInfoResponse", result);

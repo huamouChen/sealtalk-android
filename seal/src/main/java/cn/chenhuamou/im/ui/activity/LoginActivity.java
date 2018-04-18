@@ -221,57 +221,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     if (loginResponse.getResult() == 0) {
                         loginToken = loginResponse.getToken();
                         editor.putString(SealConst.TOKEN, loginToken);
-
-                        // 当前登录用户信息
-                        editor.putString(SealConst.SEALTALK_LOGIN_ID, phoneString);
-                        editor.putString(SealConst.SEALTALK_LOGIN_NAME, phoneString);
-                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
                         editor.commit();
                         // 登录成功，获取融云 token
                         request(GET_RONG_TOKEN);
-                        SealUserInfoManager.getInstance().openDB();
-                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phoneString, phoneString, Uri.parse("")));
                     } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, loginResponse.getError());
                     }
                     break;
 
-
                 case SYNC_USER_INFO:
                     GetUserInfoResponse userInfoByIdResponse = (GetUserInfoResponse) result;
-                    //不继续在login界面同步好友,群组,群组成员信息
-                    SealUserInfoManager.getInstance().getAllUserInfo();
-                    goToMain();
-                    break;
-                case GET_TOKEN:
-                    GetTokenResponse tokenResponse = (GetTokenResponse) result;
-                    if (tokenResponse.getCode() == 200) {
-                        String token = tokenResponse.getResult().getToken();
-                        if (!TextUtils.isEmpty(token)) {
-                            RongIM.connect(token, new RongIMClient.ConnectCallback() {
-                                @Override
-                                public void onTokenIncorrect() {
-                                    Log.e(TAG, "reToken Incorrect");
-                                }
-
-                                @Override
-                                public void onSuccess(String s) {
-                                    connectResultId = s;
-                                    NLog.e("connect", "onSuccess userid:" + s);
-                                    editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
-                                    editor.commit();
-                                    SealUserInfoManager.getInstance().openDB();
-                                    request(SYNC_USER_INFO, true);
-                                }
-
-                                @Override
-                                public void onError(RongIMClient.ErrorCode e) {
-
-                                }
-                            });
-                        }
+                    if (userInfoByIdResponse.getUserName() != null) {
+                        String nickName = userInfoByIdResponse.getNickName();
+                        String phone = userInfoByIdResponse.getPhoneNum();
+                        editor.putString(SealConst.Nick_Name, nickName.isEmpty() ? phoneString : nickName);
+                        editor.putString(SealConst.Bind_Phone, phone);
+                        editor.commit();
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phone, nickName, Uri.parse("")));
+                        goToMain();
+                    } else {
+                        NLog.e("GetUserInfoResponse", "获取用户信息失败，无法登录");
                     }
+
                     break;
 
                 case GET_RONG_TOKEN:
@@ -280,7 +252,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         LoadDialog.dismiss(mContext);
                     }
                     rong_token = rongTokenResponse.getValue().getRongToken();
-                    editor.putString("loginToken", rong_token);
+                    editor.putString(SealConst.Rong_Token, rong_token);
                     editor.commit();
                     // 连接 融云 服务器
                     if (!TextUtils.isEmpty(rong_token)) {
@@ -293,15 +265,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                             @Override
                             public void onSuccess(String s) {
-                                connectResultId = s;
-                                NLog.e("connect", "onSuccess userid:" + s);
-                                editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
-                                editor.commit();
+                                // 打开数据库
                                 SealUserInfoManager.getInstance().openDB();
-                                ;
-                                editor.putString("loginToken", rong_token);
+                                connectResultId = s;
+                                editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
+                                editor.putString(SealConst.Rong_Token, rong_token);
                                 editor.commit();
-                                goToMain();
+                                // 获取用户信息
+                                request(SYNC_USER_INFO, true);
                             }
 
                             @Override
