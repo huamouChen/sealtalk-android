@@ -82,6 +82,16 @@
         <activity android:name=".ui.activity.BetActivity"
             android:theme="@style/myTransparent"  />
 
+        <!--我的钱包-->
+        <activity android:name=".ui.activity.MyWallet.MyWalletActivity" />
+        <activity android:name=".ui.activity.MyWallet.AccountInfoActivity" />
+        <activity android:name=".ui.activity.MyWallet.BankSettingActivity" />
+        <activity android:name=".ui.activity.MyWallet.GetDepositActivity" />
+        <activity android:name=".ui.activity.MyWallet.RechargeActivity" />
+        <activity android:name=".ui.activity.MyWallet.SecureSettingActivity" />
+        <activity android:name=".ui.activity.MyWallet.TradeHistoryActivity" />
+        <activity android:name=".ui.activity.MyWallet.AddCardFirstActivity" />
+
         <!--登录页面-->
         <activity
             android:name=".ui.activity.LoginActivity"

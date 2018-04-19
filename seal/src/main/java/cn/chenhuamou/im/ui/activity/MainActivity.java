@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,9 +29,11 @@ import java.util.List;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
 import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
@@ -93,7 +98,7 @@ public class MainActivity extends FragmentActivity implements
         changeTextViewColor();
         changeSelectedTabState(0);
         initMainViewPager();
-        registerHomeKeyReceiver(this);
+//        registerHomeKeyReceiver(this);
 
         mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
         // Activity管理

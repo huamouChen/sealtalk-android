@@ -10,15 +10,19 @@ import org.apache.http.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.network.http.RequestParams;
+import cn.chenhuamou.im.server.request.AddBankRequest;
 import cn.chenhuamou.im.server.request.AddGroupMemberRequest;
 import cn.chenhuamou.im.server.request.AddToBlackListRequest;
 import cn.chenhuamou.im.server.request.AgreeFriendsRequest;
 import cn.chenhuamou.im.server.request.AgreeMyFriendRequest;
 import cn.chenhuamou.im.server.request.ApplyFriendRequest;
+import cn.chenhuamou.im.server.request.BankCardListRequest;
 import cn.chenhuamou.im.server.request.BettingRequest;
 import cn.chenhuamou.im.server.request.ChangePasswordRequest;
 import cn.chenhuamou.im.server.request.CheckPhoneRequest;
@@ -50,6 +54,7 @@ import cn.chenhuamou.im.server.response.AddToBlackListResponse;
 import cn.chenhuamou.im.server.response.AgreeFriendApplyResponse;
 import cn.chenhuamou.im.server.response.AgreeFriendsResponse;
 import cn.chenhuamou.im.server.response.ApplyFriendResponse;
+import cn.chenhuamou.im.server.response.BankListResponse;
 import cn.chenhuamou.im.server.response.ChangePasswordResponse;
 import cn.chenhuamou.im.server.response.CheckPhoneResponse;
 import cn.chenhuamou.im.server.response.CreateGroupResponse;
@@ -83,6 +88,7 @@ import cn.chenhuamou.im.server.response.KqwfPcddResponse;
 import cn.chenhuamou.im.server.response.LoginResponse;
 import cn.chenhuamou.im.server.response.LotteryInfoResponse;
 import cn.chenhuamou.im.server.response.LotteryOpenNumResponse;
+import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.QuitGroupResponse;
 import cn.chenhuamou.im.server.response.QuitMyGroupResponse;
@@ -1379,6 +1385,23 @@ public class SealAction extends BaseAction {
         return response;
     }
 
+
+    /*
+     * 查询用户是否绑定银行卡
+     * */
+    public String existUserBank() throws HttpException {
+        String url = getURL("api/User/ExistUserBank");
+        String result = httpManager.get(mContext, url);
+        String isHave = "false";
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("existUserBank", result);
+            isHave = jsonToBean(result, String.class);
+        }
+        return isHave;
+    }
+
+
+
     /**
      * 绑定手机号码
      *
@@ -1394,5 +1417,68 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
+
+
+
+
+
+    /**
+     * 获取用户已经绑定的银行卡
+     *
+     * @throws HttpException
+     */
+    public List<BankListResponse> getUserBanks(int pageIndex, int pageSize) throws HttpException {
+        String url = getURL("Api/User/GetUserBanks");
+        String json = JsonMananger.beanToJson(new BankCardListRequest(pageIndex, pageSize));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("pageIndex", pageIndex +"");
+        map.put("pageSize", pageSize +"");
+
+        String result = httpManager.get(mContext, url,new RequestParams(map));
+        List<BankListResponse> response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("BankListResponse", result);
+
+            response = jsonToList(result, BankListResponse.class);
+        }
+        return response;
+    }
+
+    /**
+     * 添加银行卡
+     * userName 当前登录账号
+     * bankCode 银行编码
+     * bankNum 银行卡号
+     * bankUserName 银行开户名
+     * bankUserPwd 资金密码
+     * bankNumNew 确认银行卡号
+     * @throws HttpException
+     */
+    public PublicResponse addUserBank(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew) throws HttpException {
+        String url = getURL("api/User/AddUserBank");
+        String json = JsonMananger.beanToJson(new AddBankRequest(userName, bankCode, bankNum, bankUserName, bankUserPwd, bankNumNew));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        PublicResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("PublicResponse", result);
+            response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
+
 
 }

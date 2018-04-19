@@ -62,18 +62,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private SharedPreferences.Editor editor;
     private String loginToken;
     private String rong_token;
-    private ImageView mValidCodeImg;
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == 0x0001) {
-                Bitmap bm = (Bitmap) msg.obj;
-                mValidCodeImg.setImageBitmap(bm);
-            }
-            return false;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +77,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void initView() {
         mPhoneEdit = (ClearWriteEditText) findViewById(R.id.de_login_phone);
         mPasswordEdit = (ClearWriteEditText) findViewById(R.id.de_login_password);
-
 
         Button mConfirm = (Button) findViewById(R.id.de_login_sign);
         TextView mRegister = (TextView) findViewById(R.id.de_login_register);
@@ -343,19 +331,5 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         return simpleDateFormat.format(date);
-    }
-
-    // 获取验证码图片
-    private void getValidateImg() {
-        if (TextUtils.isEmpty(mPhoneEdit.getText().toString())) {
-            NToast.shortToast(mContext, R.string.phone_number_is_null);
-            mPhoneEdit.setShakeAnimation();
-            return;
-        }
-        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
-        //创建一个线程对象
-        GetPicThread gpt = new GetPicThread(mContext, path, handler);
-        Thread t = new Thread(gpt);
-        t.start();
     }
 }

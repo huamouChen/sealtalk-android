@@ -314,6 +314,12 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         initData();
     }
 
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        startTimer();
+    }
+
     // 自定义插件区域的插件
     public void setMyExtensionModule() {
         List<IExtensionModule> moduleList = RongExtensionManager.getInstance().getExtensionModules();
@@ -891,7 +897,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                     mHandler.sendEmptyMessage(Update_ProgressBar);
                 } else {
                     // 延迟两秒再重新获取开奖号码，获取开奖号码可能不及时，因为后台生成数据需要时间，app去拉去也需要时间，
-                    mHandler.sendEmptyMessageDelayed(LotteryInfo, 2);
+                    mHandler.sendEmptyMessageDelayed(LotteryInfo, 0);
                     mTimer.cancel();
 
                 }

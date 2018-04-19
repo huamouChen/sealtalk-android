@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -24,8 +27,10 @@ import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
+import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
@@ -34,6 +39,7 @@ import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import cn.chenhuamou.im.ui.activity.AboutRongCloudActivity;
 import cn.chenhuamou.im.ui.activity.AccountSettingActivity;
 import cn.chenhuamou.im.ui.activity.MyAccountActivity;
+import cn.chenhuamou.im.ui.activity.MyWallet.MyWalletActivity;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.CSCustomServiceInfo;
@@ -53,6 +59,26 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private boolean isHasNewVersion;
     private String url;
     private boolean isDebug;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0x0001) {
+                Bitmap bm = (Bitmap) msg.obj;
+                imageView.setImageBitmap(bm);
+            }
+            return false;
+        }
+    });
+
+    // 获取用户头像图片
+    private void getHeadImg() {
+        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
+        //创建一个线程对象
+        GetPicThread gpt = new GetPicThread(getContext(), path, handler);
+        Thread t = new Thread(gpt);
+        t.start();
+    }
 
     @Nullable
     @Override
@@ -114,6 +140,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private void initData() {
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         updateUserInfo();
+
+        // 获取头像
+        getHeadImg();
     }
 
     private void initViews(View mView) {
@@ -172,7 +201,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 //                startActivity(intent);
                 break;
             case R.id.my_wallet:
-                JrmfClient.intentWallet(getActivity());
+                startActivity(new Intent(getActivity(), MyWalletActivity.class));
+//                JrmfClient.intentWallet(getActivity());
                 break;
         }
     }
