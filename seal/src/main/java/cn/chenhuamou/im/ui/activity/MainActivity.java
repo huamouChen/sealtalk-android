@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
@@ -18,30 +17,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.zsoft.signala.Connection;
-import com.zsoft.signala.ConnectionState;
-import com.zsoft.signala.SendCallback;
-import com.zsoft.signala.hubs.HubOnDataCallback;
-import com.zsoft.signala.hubs.IHubProxy;
-import com.zsoft.signala.transport.StateBase;
-import com.zsoft.signala.transport.longpolling.LongPollingTransport;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.chenhuamou.contactcard.message.ContactMessage;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
-import cn.chenhuamou.im.SealUserInfoManager;
-import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
 import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
@@ -61,15 +45,12 @@ import cn.chenhuamou.im.ui.widget.MorePopWindow;
 import io.rong.common.RLog;
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.fragment.ConversationFragment;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
-import io.rong.imlib.model.Message;
-import io.rong.imlib.model.MessageContent;
-import io.rong.imlib.model.UserInfo;
 import io.rong.message.ContactNotificationMessage;
-import io.rong.message.TextMessage;
 //import io.rong.toolkit.TestActivity;
 
 @SuppressWarnings("deprecation")
@@ -528,4 +509,5 @@ public class MainActivity extends FragmentActivity implements
     public void onFailure(int requestCode, int state, Object result) {
         NLog.d("------------------------isAlive响应失败", "------------------------isAlive响应失败");
     }
+
 }

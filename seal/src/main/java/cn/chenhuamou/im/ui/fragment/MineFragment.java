@@ -152,9 +152,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.mine_service:
                 CSCustomServiceInfo.Builder builder = new CSCustomServiceInfo.Builder();
-                builder.province("北京");
-                builder.city("北京");
-                RongIM.getInstance().startCustomerServiceChat(getActivity(), "KEFU146001495753714", "在线客服", builder.build());
+                CSCustomServiceInfo csinfo = builder.nickName("微小信").build();
+                RongIM.getInstance().startCustomerServiceChat(getActivity(), "KEFU152410101210011", "在线客服", csinfo);
                 // KEFU146001495753714 正式  KEFU145930951497220 测试  小能: zf_1000_1481459114694   zf_1000_1480591492399
                 break;
             case R.id.mine_xiaoneng:
