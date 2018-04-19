@@ -15,6 +15,7 @@ import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.DefaultConversationResponse;
+import cn.chenhuamou.im.server.response.GetChatRoomResponse;
 import cn.chenhuamou.im.server.utils.NToast;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
@@ -105,13 +106,18 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public Object doInBackground(int requestCode, String parameter) throws HttpException {
-        return new SealAction(getActivity()).getDefaultConversation();
+        return new SealAction(getActivity()).getChatRoom();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onSuccess(int requestCode, Object result) {
+        GetChatRoomResponse getChatRoomResponse = (GetChatRoomResponse) result;
+
+
         initChatRoomData();
+
+
 //        DefaultConversationResponse response = (DefaultConversationResponse) result;
 //        if (response.getCode() == 200) {
 //            ArrayList<DefaultConversationResponse.ResultEntity> resultEntityArrayList = new ArrayList();
@@ -137,8 +143,8 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
 
 
     /*
-    * 初始化聊天室的列表数据
-    * */
+     * 初始化聊天室的列表数据
+     * */
     private void initChatRoomData() {
         chatroomList = new ArrayList();
         chatroomList.clear();

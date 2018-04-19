@@ -125,7 +125,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
     // 定时器
     private long progress = 0;  // 进度 时间的进度
-    private int total_time = 5 * 60; //开奖时间  PC蛋蛋是5分钟
+    private int total_time = 5 * 60 * 1000; //开奖时间  PC蛋蛋是5分钟
     public static final int schedule = 1;  // 双星间隔
     private Timer mTimer;
 
@@ -893,7 +893,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void run() {
                 if (progress < total_time) {  // 时间没走完，持续更新进度，当前是每5秒更新一次
-                    progress += schedule;
+                    progress += (schedule * 1000);
                     mHandler.sendEmptyMessage(Update_ProgressBar);
                 } else {
                     // 延迟两秒再重新获取开奖号码，获取开奖号码可能不及时，因为后台生成数据需要时间，app去拉去也需要时间，
@@ -937,8 +937,13 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                 tv_current_num.setText("当前期号：" + lotteryInfoResponse.getCurrentIssueNo());
                 current_num = lotteryInfoResponse.getCurrentIssueNo();
                 pre_num = lotteryInfoResponse.getPreviewIssueNo();
-                progress = total_time - lotteryInfoResponse.getRemainTime() / 1000;  // 这是剩余的时间
+
+                // 剩余时间
+                System.out.println("-------------------" + lotteryInfoResponse.getRemainTime());
+                progress = total_time - lotteryInfoResponse.getRemainTime();  // 这是剩余的时间
+                System.out.println("-------------------progress" + progress);
                 progressBar_lottery_time.setProgress(total_time - (int) progress); // 用总的时间减去剩余时间才是当前的进度
+
                 // 开始倒计时
                 mHandler.sendEmptyMessage(Start_Timer);
                 // 获取开奖号码

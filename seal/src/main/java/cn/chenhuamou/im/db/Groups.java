@@ -18,8 +18,11 @@ public class Groups extends UserInfoBean {
     private String GroupOwner;
     private String AddTime;
     private String UserName;
-    private String HeadImg;
+    private String GroupImage;
     private boolean IsOnLine;
+    private boolean IsOfficial;
+    private String NickName;
+    private String HeaderImage;
 
 
 
@@ -166,12 +169,12 @@ public class Groups extends UserInfoBean {
         UserName = userName;
     }
 
-    public String getHeadImg() {
-        return HeadImg;
+    public String getGroupImage() {
+        return GroupImage;
     }
 
-    public void setHeadImg(String headImg) {
-        HeadImg = headImg;
+    public void setGroupImage(String groupImage) {
+        GroupImage = groupImage;
     }
 
     public boolean isOnLine() {
@@ -180,5 +183,29 @@ public class Groups extends UserInfoBean {
 
     public void setOnLine(boolean onLine) {
         IsOnLine = onLine;
+    }
+
+    public boolean isOfficial() {
+        return IsOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        IsOfficial = official;
+    }
+
+    public String getNickName() {
+        return NickName;
+    }
+
+    public void setNickName(String nickName) {
+        NickName = nickName;
+    }
+
+    public String getHeaderImage() {
+        return HeaderImage;
+    }
+
+    public void setHeaderImage(String headerImage) {
+        HeaderImage = headerImage;
     }
 }

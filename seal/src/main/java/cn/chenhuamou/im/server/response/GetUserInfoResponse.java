@@ -11,7 +11,7 @@ public class GetUserInfoResponse {
      * UserName : string
      * UserPassword : string
      * QQ : string
-     * RegDateTime : 2018-04-18T02:20:35.337Z
+     * RegDateTime : 2018-04-19T09:13:59.902Z
      * State : string
      * ParentUserName : string
      * Email : string
@@ -27,6 +27,7 @@ public class GetUserInfoResponse {
      * ClientIp : string
      * NickName : string
      * PhoneNum : string
+     * HeaderImage : string
      */
 
     private int ID;
@@ -49,6 +50,7 @@ public class GetUserInfoResponse {
     private String ClientIp;
     private String NickName;
     private String PhoneNum;
+    private String HeaderImage;
 
     public int getID() {
         return ID;
@@ -208,5 +210,13 @@ public class GetUserInfoResponse {
 
     public void setPhoneNum(String PhoneNum) {
         this.PhoneNum = PhoneNum;
+    }
+
+    public String getHeaderImage() {
+        return HeaderImage;
+    }
+
+    public void setHeaderImage(String HeaderImage) {
+        this.HeaderImage = HeaderImage;
     }
 }

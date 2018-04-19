@@ -1,27 +1,21 @@
 package cn.chenhuamou.im.server.response;
 
+import java.util.List;
+
 /**
  * Created by AMing on 15/12/24.
  * Company RongCloud
  */
-public class GetRongGroupInfoResponse {
+public class GetChatRoomResponse {
 
 
     /**
-     * Value : {"GroupId":"string","GroupName":"string","GroupOwner":"string","IsOfficial":true,"GroupImage":"string","AddTime":"2018-04-19T09:13:59.350Z"}
+     * Value : [{"GroupId":"string","GroupName":"string","GroupOwner":"string","IsOfficial":true,"GroupImage":"string","AddTime":"2018-04-19T09:13:59.420Z"}]
      * Code : {"CodeId":"string","Description":"string"}
      */
 
-    private ValueBean Value;
     private CodeBean Code;
-
-    public ValueBean getValue() {
-        return Value;
-    }
-
-    public void setValue(ValueBean Value) {
-        this.Value = Value;
-    }
+    private List<ValueBean> Value;
 
     public CodeBean getCode() {
         return Code;
@@ -31,6 +25,40 @@ public class GetRongGroupInfoResponse {
         this.Code = Code;
     }
 
+    public List<ValueBean> getValue() {
+        return Value;
+    }
+
+    public void setValue(List<ValueBean> Value) {
+        this.Value = Value;
+    }
+
+    public static class CodeBean {
+        /**
+         * CodeId : string
+         * Description : string
+         */
+
+        private String CodeId;
+        private String Description;
+
+        public String getCodeId() {
+            return CodeId;
+        }
+
+        public void setCodeId(String CodeId) {
+            this.CodeId = CodeId;
+        }
+
+        public String getDescription() {
+            return Description;
+        }
+
+        public void setDescription(String Description) {
+            this.Description = Description;
+        }
+    }
+
     public static class ValueBean {
         /**
          * GroupId : string
@@ -38,7 +66,7 @@ public class GetRongGroupInfoResponse {
          * GroupOwner : string
          * IsOfficial : true
          * GroupImage : string
-         * AddTime : 2018-04-19T09:13:59.350Z
+         * AddTime : 2018-04-19T09:13:59.420Z
          */
 
         private String GroupId;
@@ -94,32 +122,6 @@ public class GetRongGroupInfoResponse {
 
         public void setAddTime(String AddTime) {
             this.AddTime = AddTime;
-        }
-    }
-
-    public static class CodeBean {
-        /**
-         * CodeId : string
-         * Description : string
-         */
-
-        private String CodeId;
-        private String Description;
-
-        public String getCodeId() {
-            return CodeId;
-        }
-
-        public void setCodeId(String CodeId) {
-            this.CodeId = CodeId;
-        }
-
-        public String getDescription() {
-            return Description;
-        }
-
-        public void setDescription(String Description) {
-            this.Description = Description;
         }
     }
 }

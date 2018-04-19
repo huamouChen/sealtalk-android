@@ -2,86 +2,37 @@ package cn.chenhuamou.im.server.response;
 
 import java.util.List;
 
-import cn.chenhuamou.im.db.Groups;
-
 /**
  * Created by AMing on 15/12/24.
  * Company RongCloud
  */
 public class GetRongFriendListResponse {
 
+    /**
+     * Value : [{"UserName":"string","NickName":"string","HeadImg":"string","IsOnLine":"string"}]
+     * Code : {"CodeId":"string","Description":"string"}
+     */
 
-    private List<ValueEntity> Value;
+    private CodeBean Code;
+    private List<ValueBean> Value;
 
-    private ResultEntity Code;
-
-    public List<ValueEntity> getValue() {
-        return Value;
-    }
-
-    public void setValue(List<ValueEntity> value) {
-        Value = value;
-    }
-
-    public ResultEntity getCode() {
+    public CodeBean getCode() {
         return Code;
     }
 
-    public void setCode(ResultEntity code) {
-        Code = code;
+    public void setCode(CodeBean Code) {
+        this.Code = Code;
     }
 
-
-
-
-
-
-
-
-
-
-    public static class ValueEntity {
-
-        /**
-         * UserName : string
-         * HeadImg : string
-         * IsOnLine : true
-         */
-
-        private String UserName;
-        private String HeadImg;
-        private boolean IsOnLine;
-
-        public String getUserName() {
-            return UserName;
-        }
-
-        public void setUserName(String UserName) {
-            this.UserName = UserName;
-        }
-
-        public String getHeadImg() {
-            return HeadImg;
-        }
-
-        public void setHeadImg(String HeadImg) {
-            this.HeadImg = HeadImg;
-        }
-
-        public boolean isIsOnLine() {
-            return IsOnLine;
-        }
-
-        public void setIsOnLine(boolean IsOnLine) {
-            this.IsOnLine = IsOnLine;
-        }
+    public List<ValueBean> getValue() {
+        return Value;
     }
 
+    public void setValue(List<ValueBean> Value) {
+        this.Value = Value;
+    }
 
-
-
-
-    public static class ResultEntity {
+    public static class CodeBean {
         /**
          * CodeId : string
          * Description : string
@@ -107,4 +58,49 @@ public class GetRongFriendListResponse {
         }
     }
 
+    public static class ValueBean {
+        /**
+         * UserName : string
+         * NickName : string
+         * HeadImg : string
+         * IsOnLine : string
+         */
+
+        private String UserName;
+        private String NickName;
+        private String HeadImg;
+        private String IsOnLine;
+
+        public String getUserName() {
+            return UserName;
+        }
+
+        public void setUserName(String UserName) {
+            this.UserName = UserName;
+        }
+
+        public String getNickName() {
+            return NickName;
+        }
+
+        public void setNickName(String NickName) {
+            this.NickName = NickName;
+        }
+
+        public String getHeadImg() {
+            return HeadImg;
+        }
+
+        public void setHeadImg(String HeadImg) {
+            this.HeadImg = HeadImg;
+        }
+
+        public String getIsOnLine() {
+            return IsOnLine;
+        }
+
+        public void setIsOnLine(String IsOnLine) {
+            this.IsOnLine = IsOnLine;
+        }
+    }
 }

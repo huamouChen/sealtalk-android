@@ -392,7 +392,7 @@ public class SealUserInfoManager implements OnDataListener {
             return null;
         }
         if (userRelationshipResponse != null && userRelationshipResponse.getCode() != null) {
-            List<GetRongFriendListResponse.ValueEntity> list = userRelationshipResponse.getValue();
+            List<GetRongFriendListResponse.ValueBean> list = userRelationshipResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteFriends();
 
@@ -797,10 +797,10 @@ public class SealUserInfoManager implements OnDataListener {
      * @param list server获取的好友信息
      * @return List<Friend> 好友列表
      */
-    private List<Friend> addFriends(final List<GetRongFriendListResponse.ValueEntity> list) {
+    private List<Friend> addFriends(final List<GetRongFriendListResponse.ValueBean> list) {
         if (list != null && list.size() > 0) {
             List<Friend> friendsList = new ArrayList<>();
-            for (GetRongFriendListResponse.ValueEntity resultEntity : list) {
+            for (GetRongFriendListResponse.ValueBean resultEntity : list) {
                     Friend friend = new Friend(
                             resultEntity.getUserName(),
                             resultEntity.getUserName(),

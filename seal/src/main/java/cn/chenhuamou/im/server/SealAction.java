@@ -66,6 +66,7 @@ import cn.chenhuamou.im.server.response.DismissGroupResponse;
 import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
 import cn.chenhuamou.im.server.response.GetBlackListResponse;
+import cn.chenhuamou.im.server.response.GetChatRoomResponse;
 import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
@@ -1047,21 +1048,40 @@ public class SealAction extends BaseAction {
             response = jsonToBean(result, GetRongFriendListResponse.class);
 
             // 处理重复添加的，后台没有给接口，只能暴力判断
-            List<GetRongFriendListResponse.ValueEntity> list = response.getValue();
-            List<GetRongFriendListResponse.ValueEntity> resultList = new ArrayList<>();
-            for (GetRongFriendListResponse.ValueEntity item : list) {
-                boolean isContainer = false;
-                for (GetRongFriendListResponse.ValueEntity newItem : resultList) {
-                    if (item.getUserName().equals(newItem.getUserName())) {
-                        isContainer = true;
-                        break;
+            if (response.getValue() != null) {
+                List<GetRongFriendListResponse.ValueBean> list = response.getValue();
+                List<GetRongFriendListResponse.ValueBean> resultList = new ArrayList<>();
+                for (GetRongFriendListResponse.ValueBean item : list) {
+                    boolean isContainer = false;
+                    for (GetRongFriendListResponse.ValueBean newItem : resultList) {
+                        if (item.getUserName().equals(newItem.getUserName())) {
+                            isContainer = true;
+                            break;
+                        }
                     }
+                    if (isContainer) continue;
+                    resultList.add(item);
                 }
-                if (isContainer) continue;
-                resultList.add(item);
+                response.setValue(resultList);
             }
-            response.setValue(resultList);
 
+        }
+        return response;
+    }
+
+
+    /**
+     * 获取 用户所有群组
+     *
+     * @throws HttpException
+     */
+    public GetRongGroupResponse getRongGroups(String userName) throws HttpException {
+        String url = getURL("api/Im/ListGroups");
+        String result = httpManager.get(mContext, url);
+        GetRongGroupResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetRongGroupResponse", result);
+            response = jsonToBean(result, GetRongGroupResponse.class);
         }
         return response;
     }
@@ -1085,17 +1105,17 @@ public class SealAction extends BaseAction {
 
 
     /**
-     * 获取 用户所有群组
+     * 获取 聊天室
      *
      * @throws HttpException
      */
-    public GetRongGroupResponse getRongGroups(String userName) throws HttpException {
-        String url = getURL("api/Im/ListGroups");
+    public GetChatRoomResponse getChatRoom() throws HttpException {
+        String url = getURL("api/Im/ListChatroom");
         String result = httpManager.get(mContext, url);
-        GetRongGroupResponse response = null;
+        GetChatRoomResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            NLog.e("GetRongGroupResponse", result);
-            response = jsonToBean(result, GetRongGroupResponse.class);
+            NLog.e("GetChatRoomResponse", result);
+            response = jsonToBean(result, GetChatRoomResponse.class);
         }
         return response;
     }
