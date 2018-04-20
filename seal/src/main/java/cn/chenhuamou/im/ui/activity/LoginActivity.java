@@ -227,7 +227,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         LoadDialog.dismiss(mContext);
                         String nickName = userInfoByIdResponse.getNickName();
                         String phone = userInfoByIdResponse.getPhoneNum();
-                        String portraitUri = userInfoByIdResponse.getHeaderImage();
+                        String portraitUri = BaseAction.DOMAIN + userInfoByIdResponse.getHeaderImage();
                         editor.putString(SealConst.Nick_Name, nickName.isEmpty() ? phoneString : nickName);
                         editor.putString(SealConst.Bind_Phone, phone);
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);

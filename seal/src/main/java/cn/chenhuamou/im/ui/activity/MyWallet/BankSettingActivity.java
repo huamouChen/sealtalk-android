@@ -47,10 +47,15 @@ public class BankSettingActivity extends BaseActivity {
 
         initData();
 
-        LoadDialog.show(mContext);
-        request(Get_Exist_BankCard);
+
     }
 
+    @Override
+    protected void onResumeFragments() {
+        LoadDialog.show(mContext);
+        request(Get_Exist_BankCard);
+        super.onResumeFragments();
+    }
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {

@@ -801,10 +801,11 @@ public class SealUserInfoManager implements OnDataListener {
         if (list != null && list.size() > 0) {
             List<Friend> friendsList = new ArrayList<>();
             for (GetRongFriendListResponse.ValueBean resultEntity : list) {
+                String avatorString = resultEntity.getHeadImg() != null ? resultEntity.getHeadImg() : "";
                     Friend friend = new Friend(
                             resultEntity.getUserName(),
                             resultEntity.getUserName(),
-                            Uri.parse(resultEntity.getHeadImg()),
+                            Uri.parse(avatorString),
                             resultEntity.getUserName(),
                             null, null, null, null,
                             CharacterParser.getInstance().getSpelling(resultEntity.getUserName()),

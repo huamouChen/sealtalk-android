@@ -43,6 +43,7 @@ import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.SetPortraitResponse;
 import cn.chenhuamou.im.server.utils.NToast;
@@ -50,7 +51,9 @@ import cn.chenhuamou.im.server.utils.photo.PhotoUtils;
 import cn.chenhuamou.im.server.widget.BottomMenuDialog;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
+import cn.chenhuamou.im.utils.UploadUtils;
 import io.rong.imageloader.core.ImageLoader;
+import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
 
@@ -58,6 +61,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
 
     private static final int UP_LOAD_PORTRAIT = 8;
     private static final int GET_QI_NIU_TOKEN = 128;
+    private static final int SYNC_USER_INFO = 9;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private SelectableRoundedImageView mImageView;
@@ -67,17 +71,6 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     private UploadManager uploadManager;
     private String imageUrl;
     private Uri selectUri;
-
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == 0x0001) {
-                Bitmap bm = (Bitmap) msg.obj;
-                mImageView.setImageBitmap(bm);
-            }
-            return false;
-        }
-    });
 
     private byte[] avatorBytes;
 
@@ -91,8 +84,6 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         editor = sp.edit();
         initView();
 
-        // 获取头像
-        getAvator();
     }
 
     private void initView() {
@@ -113,7 +104,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         if (!TextUtils.isEmpty(cachePhone)) {
             mPhone.setText(cachePhone);
         }
-        if (!TextUtils.isEmpty(cacheName)) {
+        if (!TextUtils.isEmpty(cachePortrait)) {
             mName.setText(cacheName);
             String cacheId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "a");
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(new UserInfo(
@@ -147,21 +138,22 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                     selectUri = uri;
                     LoadDialog.show(mContext);
 
-                    File file = new File(selectUri.getPath());
+                    final File file = new File(selectUri.getPath());
                     if (file.exists()) {
                         Bitmap bm = BitmapFactory.decodeFile(selectUri.getPath());
                         if (bm != null) {
-                            avatorBytes =  bitMap2StringBase64(bm);
+                            avatorBytes = bitMap2StringBase64(bm);
                             mImageView.setImageBitmap(bm);
                             request(UP_LOAD_PORTRAIT);
                         } else {
                             LoadDialog.dismiss(mContext);
-                            NToast.shortToast(mContext, "设置头像请求失败");
+                            NToast.shortToast(mContext, "图片获取失败");
                         }
 
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, "文件不存在");
                     }
-
-
 
 
                 }
@@ -227,16 +219,21 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         if (result != null) {
             switch (requestCode) {
                 case UP_LOAD_PORTRAIT:
-                    SetPortraitResponse spRes = (SetPortraitResponse) result;
+                    PublicResponse spRes = (PublicResponse) result;
                     if (spRes.isResult()) {
-//                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
-//                        editor.commit();
-//                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
-//                        if (RongIM.getInstance() != null) {
-//                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""), Uri.parse(imageUrl)));
-//                        }
-//                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
-//                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
+
+                        // 更新
+                        request(SYNC_USER_INFO);
+
+
+                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
+                        editor.commit();
+                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
+                        if (RongIM.getInstance() != null) {
+                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""), Uri.parse(imageUrl)));
+                        }
+                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
+                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
                     }
                     LoadDialog.dismiss(mContext);
                     break;
@@ -255,9 +252,15 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     public void onFailure(int requestCode, int state, Object result) {
         switch (requestCode) {
             case GET_QI_NIU_TOKEN:
+                break;
             case UP_LOAD_PORTRAIT:
-                NToast.shortToast(mContext, "设置头像请求失败");
                 LoadDialog.dismiss(mContext);
+                PublicResponse publicResponse = (PublicResponse) result;
+                if (publicResponse.isResult()) {
+                    NToast.shortToast(mContext, "设置头像成功");
+                } else {
+                    NToast.shortToast(mContext, "设置头像请求失败");
+                }
                 break;
         }
     }
@@ -328,16 +331,6 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    // 获取头像
-    private void getAvator() {
-        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
-        //创建一个线程对象
-        GetPicThread gpt = new GetPicThread(mContext, path, handler);
-        Thread t = new Thread(gpt);
-        t.start();
-    }
-
-
     public void uploadImage(final String domain, String imageToken, Uri imagePath) {
         if (TextUtils.isEmpty(domain) && TextUtils.isEmpty(imageToken) && TextUtils.isEmpty(imagePath.toString())) {
             throw new RuntimeException("upload parameter is null!");
@@ -369,7 +362,6 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             }
         }, null);
     }
-
 
 
 }

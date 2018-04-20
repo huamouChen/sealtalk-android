@@ -60,25 +60,25 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private String url;
     private boolean isDebug;
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == 0x0001) {
-                Bitmap bm = (Bitmap) msg.obj;
-                imageView.setImageBitmap(bm);
-            }
-            return false;
-        }
-    });
-
-    // 获取用户头像图片
-    private void getHeadImg() {
-        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
-        //创建一个线程对象
-        GetPicThread gpt = new GetPicThread(getContext(), path, handler);
-        Thread t = new Thread(gpt);
-        t.start();
-    }
+//    private Handler handler = new Handler(new Handler.Callback() {
+//        @Override
+//        public boolean handleMessage(Message msg) {
+//            if (msg.what == 0x0001) {
+//                Bitmap bm = (Bitmap) msg.obj;
+//                imageView.setImageBitmap(bm);
+//            }
+//            return false;
+//        }
+//    });
+//
+//    // 获取用户头像图片
+//    private void getHeadImg() {
+//        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
+//        //创建一个线程对象
+//        GetPicThread gpt = new GetPicThread(getContext(), path, handler);
+//        Thread t = new Thread(gpt);
+//        t.start();
+//    }
 
     @Nullable
     @Override
@@ -140,9 +140,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private void initData() {
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         updateUserInfo();
-
-        // 获取头像
-        getHeadImg();
     }
 
     private void initViews(View mView) {
@@ -218,7 +215,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         String userPortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         mName.setText(username);
         tv_account.setText("iM账号：" + userId);
-        if (!TextUtils.isEmpty(userId)) {
+        if (!TextUtils.isEmpty(userPortrait)) {
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri
                     (new UserInfo(userId, username, Uri.parse(userPortrait)));
             ImageLoader.getInstance().displayImage(portraitUri, imageView, App.getOptions());
