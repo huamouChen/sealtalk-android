@@ -55,6 +55,8 @@ import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Group;
+import io.rong.imlib.model.UserInfo;
 import io.rong.message.ContactNotificationMessage;
 //import io.rong.toolkit.TestActivity;
 
@@ -104,6 +106,10 @@ public class MainActivity extends FragmentActivity implements
         // Activity管理
         action = new SealAction(mContext);
         mAsyncTaskManager.request(RONG_ALIVE, this);
+        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+
+        RongIM.getInstance().refreshUserInfoCache(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.Nick_Name, ""), Uri.parse(sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, ""))));
+
     }
 
     private void initViews() {

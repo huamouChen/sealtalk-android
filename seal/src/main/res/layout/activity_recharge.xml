@@ -168,8 +168,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="number"
-            android:hint="晚上18点30分请填写1830"
-            android:textSize="16sp"/>
+            android:hint="例如晚上18点30分请填写1830"
+            android:textSize="14sp"/>
 
 </LinearLayout>
 

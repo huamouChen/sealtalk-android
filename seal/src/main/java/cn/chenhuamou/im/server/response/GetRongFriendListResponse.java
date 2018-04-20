@@ -9,7 +9,7 @@ import java.util.List;
 public class GetRongFriendListResponse {
 
     /**
-     * Value : [{"UserName":"string","NickName":"string","HeadImg":"string","IsOnLine":"string"}]
+     * Value : [{"UserName":"string","NickName":"string","HeaderImage":"string","IsOnLine":"string"}]
      * Code : {"CodeId":"string","Description":"string"}
      */
 
@@ -62,13 +62,13 @@ public class GetRongFriendListResponse {
         /**
          * UserName : string
          * NickName : string
-         * HeadImg : string
+         * HeaderImage : string
          * IsOnLine : string
          */
 
         private String UserName;
         private String NickName;
-        private String HeadImg;
+        private String HeaderImage;
         private String IsOnLine;
 
         public String getUserName() {
@@ -87,12 +87,12 @@ public class GetRongFriendListResponse {
             this.NickName = NickName;
         }
 
-        public String getHeadImg() {
-            return HeadImg;
+        public String getHeaderImage() {
+            return HeaderImage;
         }
 
-        public void setHeadImg(String HeadImg) {
-            this.HeadImg = HeadImg;
+        public void setHeaderImage(String HeadImg) {
+            this.HeaderImage = HeadImg;
         }
 
         public String getIsOnLine() {

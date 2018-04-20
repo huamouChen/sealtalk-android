@@ -28,6 +28,7 @@ import cn.chenhuamou.im.db.GroupMemberDao;
 import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.db.GroupsDao;
 import cn.chenhuamou.im.db.UserInfoBean;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
@@ -36,7 +37,6 @@ import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.response.GetBlackListResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
-import cn.chenhuamou.im.server.response.GetGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
@@ -802,15 +802,16 @@ public class SealUserInfoManager implements OnDataListener {
             List<Friend> friendsList = new ArrayList<>();
             for (GetRongFriendListResponse.ValueBean resultEntity : list) {
                 // 拼接头像
-                String avatorString = resultEntity.getHeadImg() != null ? resultEntity.getHeadImg() : "";
+                String avatorString = resultEntity.getHeaderImage() != null ? (BaseAction.DOMAIN + resultEntity.getHeaderImage()) : "";
+                String nickName = (resultEntity.getNickName() != null && !resultEntity.getNickName().isEmpty()) ? resultEntity.getNickName() :resultEntity.getUserName();
                     Friend friend = new Friend(
                             resultEntity.getUserName(),
-                            resultEntity.getUserName(),
+                            nickName,
                             Uri.parse(avatorString),
-                            resultEntity.getUserName(),
+                            nickName,
                             null, null, null, null,
-                            CharacterParser.getInstance().getSpelling(resultEntity.getUserName()),
-                            CharacterParser.getInstance().getSpelling(resultEntity.getUserName()));
+                            CharacterParser.getInstance().getSpelling(nickName),
+                            CharacterParser.getInstance().getSpelling(nickName));
                     if (friend.getPortraitUri() == null || TextUtils.isEmpty(friend.getPortraitUri().toString())) {
                         String portrait = getPortrait(friend);
                         if (portrait != null) {
@@ -841,10 +842,12 @@ public class SealUserInfoManager implements OnDataListener {
         if (list != null && list.size() > 0) {
             mGroupsList = new ArrayList<>();
             for (Groups groups : list) {
-                String portrait = groups.getPortraitUri();
+                String portrait = groups.getGroupImage();
                 if (TextUtils.isEmpty(portrait)) {
                     portrait = RongGenerate.generateDefaultAvatar(groups.getName(), groups.getGroupsId() + "");
                 }
+                // 头像拼接域名
+                portrait = BaseAction.DOMAIN + portrait;
                 mGroupsList.add(new Groups(groups.getGroupsId() +"",
                         groups.getName(),
                         portrait,

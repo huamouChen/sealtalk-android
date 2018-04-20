@@ -74,7 +74,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     private String imageUrl;
     private Uri selectUri;
 
-    private byte[] avatorBytes;
+    private byte[] avatorBytes;   // 上传头像流
 
 
     @Override
@@ -156,8 +156,6 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, "文件不存在");
                     }
-
-
                 }
             }
 

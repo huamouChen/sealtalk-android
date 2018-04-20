@@ -1235,9 +1235,9 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public CreateMyGroupResponse createMyGroup(String owner, String groupName, List<String> members) throws HttpException {
+    public CreateMyGroupResponse createMyGroup(String owner, String groupName, List<String> members, byte[] GroupImgStream) throws HttpException {
         String url = getURL("api/Im/CreateGroup");
-        String json = JsonMananger.beanToJson(new CreateMyGroupRequest(owner, groupName, members));
+        String json = JsonMananger.beanToJson(new CreateMyGroupRequest(owner, groupName, GroupImgStream, members));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);

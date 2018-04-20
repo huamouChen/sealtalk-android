@@ -40,6 +40,7 @@ import cn.chenhuamou.im.db.GroupMember;
 import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.db.GroupsDao;
 import cn.chenhuamou.im.model.SealSearchConversationResult;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
@@ -338,7 +339,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     if (getRongGroupMembersResponse.getCode() != null) {
                         List<Groups> members = getRongGroupMembersResponse.getValue();
                         for (Groups item : members) {
-                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(""));
+                            String avatorString = BaseAction.DOMAIN + (item.getHeaderImage() != null ? item.getHeaderImage() : "");
+                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(avatorString));
                             mGroupMember.add(groupMember);
                         }
                         initGroupMemberData();

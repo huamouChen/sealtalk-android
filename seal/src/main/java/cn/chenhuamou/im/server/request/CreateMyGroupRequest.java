@@ -8,10 +8,10 @@ import java.util.List;
  */
 public class CreateMyGroupRequest {
 
-
-    public CreateMyGroupRequest(String owner, String groupName, List<String> members) {
+    public CreateMyGroupRequest(String owner, String groupName, byte[] groupImgStream, List<String> members) {
         Owner = owner;
         GroupName = groupName;
+        GroupImgStream = groupImgStream;
         Members = members;
     }
 
@@ -19,10 +19,12 @@ public class CreateMyGroupRequest {
      * Owner : string
      * Members : ["string"]
      * GroupName : string
+     * GroupImgStream : string
      */
 
     private String Owner;
     private String GroupName;
+    private byte[] GroupImgStream;
     private List<String> Members;
 
     public String getOwner() {
@@ -39,6 +41,14 @@ public class CreateMyGroupRequest {
 
     public void setGroupName(String GroupName) {
         this.GroupName = GroupName;
+    }
+
+    public byte[] getGroupImgStream() {
+        return GroupImgStream;
+    }
+
+    public void setGroupImgStream(byte[] GroupImgStream) {
+        this.GroupImgStream = GroupImgStream;
     }
 
     public List<String> getMembers() {

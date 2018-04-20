@@ -26,6 +26,7 @@ import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.db.GroupMember;
 import cn.chenhuamou.im.db.Groups;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
@@ -141,7 +142,8 @@ public class TotalGroupMemberActivity extends BaseActivity {
 
         for (int i = 0 ; i < list.size(); i++) {
             Groups groups = list.get(i);
-            GroupMember groupMember = new GroupMember(groups.getUserName(), groups.getUserName(), Uri.parse(""));
+            String avatorString = BaseAction.DOMAIN + (groups.getHeaderImage() != null ? groups.getHeaderImage() : "");
+            GroupMember groupMember = new GroupMember(groups.getUserName(), groups.getUserName(), Uri.parse(avatorString));
             mGroupMember.add(groupMember);
         }
 

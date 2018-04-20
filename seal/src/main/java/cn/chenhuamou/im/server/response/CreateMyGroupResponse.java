@@ -7,37 +7,40 @@ package cn.chenhuamou.im.server.response;
 public class CreateMyGroupResponse {
 
 
+    /**
+     * Value : {"GroupId":2858,"GroupName":"chmGro","GroupImage":"/Images/Group_2858_20180420180418.jpg"}
+     * Code : {"CodeId":"100","Description":"成功"}
+     */
 
+    private ValueBean Value;
+    private CodeBean Code;
 
-    private ValueEntity Value;
-
-    private CodeEntity Code;
-
-    public CodeEntity getCode() {
-        return Code;
-    }
-
-    public void setCode(CodeEntity code) {
-        Code = code;
-    }
-
-    public ValueEntity getValue() {
+    public ValueBean getValue() {
         return Value;
     }
 
-    public void setValue(ValueEntity value) {
-        Value = value;
+    public void setValue(ValueBean Value) {
+        this.Value = Value;
     }
 
-    public class ValueEntity {
+    public CodeBean getCode() {
+        return Code;
+    }
 
+    public void setCode(CodeBean Code) {
+        this.Code = Code;
+    }
+
+    public static class ValueBean {
         /**
-         * GroupId : 2839
-         * GroupName : group2
+         * GroupId : 2858
+         * GroupName : chmGro
+         * GroupImage : /Images/Group_2858_20180420180418.jpg
          */
 
         private int GroupId;
         private String GroupName;
+        private String GroupImage;
 
         public int getGroupId() {
             return GroupId;
@@ -54,13 +57,20 @@ public class CreateMyGroupResponse {
         public void setGroupName(String GroupName) {
             this.GroupName = GroupName;
         }
+
+        public String getGroupImage() {
+            return GroupImage;
+        }
+
+        public void setGroupImage(String GroupImage) {
+            this.GroupImage = GroupImage;
+        }
     }
 
-    public class CodeEntity {
-
+    public static class CodeBean {
         /**
-         * CodeId : string
-         * Description : string
+         * CodeId : 100
+         * Description : 成功
          */
 
         private String CodeId;

@@ -2,6 +2,8 @@ package cn.chenhuamou.im.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +20,7 @@ import com.qiniu.android.storage.UploadManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.db.Groups;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.CreateGroupResponse;
@@ -64,6 +68,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
     private Uri selectUri;
     private UploadManager uploadManager;
     private String imageUrl;
+    private byte[] avatorBytes;   // 上传头像流
+    private Button btn_com;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -75,7 +81,6 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
         initView();
         setPortraitChangeListener();
         if (memberList != null && memberList.size() > 0) {
-//            groupIds.add(getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, ""));
             for (Friend f : memberList) {
                 groupIds.add(f.getUserId());
             }
@@ -88,8 +93,21 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
             public void onPhotoResult(Uri uri) {
                 if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
                     selectUri = uri;
-                    LoadDialog.show(mContext);
-                    request(GET_QI_NIU_TOKEN);
+                    final File file = new File(selectUri.getPath());
+                    if (file.exists()) {
+                        Bitmap bm = BitmapFactory.decodeFile(selectUri.getPath());
+                        if (bm != null) {
+                            avatorBytes = bitMap2StringBase64(bm);
+                            asyncImageView.setImageBitmap(bm);
+                        } else {
+                            LoadDialog.dismiss(mContext);
+                            NToast.shortToast(mContext, "图片获取失败");
+                        }
+
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, "文件不存在");
+                    }
                 }
             }
 
@@ -100,12 +118,22 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
+    /*
+     * 前台处理图片
+     * */
+    private byte[] bitMap2StringBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);
+        return bos.toByteArray();
+    }
+
     private void initView() {
         asyncImageView = (AsyncImageView) findViewById(R.id.img_Group_portrait);
         asyncImageView.setOnClickListener(this);
-        Button mButton = (Button) findViewById(R.id.create_ok);
-        mButton.setOnClickListener(this);
         mGroupNameEdit = (ClearWriteEditText) findViewById(R.id.create_groupname);
+        btn_com = (Button) findViewById(R.id.create_ok);
+        btn_com.setOnClickListener(this);
+
     }
 
     @Override
@@ -122,12 +150,12 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                 }
                 if (mGroupName.length() == 1) {
                     NToast.shortToast(mContext, getString(R.string.group_name_size_is_one));
-                    return;
+                    break;
                 }
                 if (AndroidEmoji.isEmoji(mGroupName)) {
                     if (mGroupName.length() <= 2) {
                         NToast.shortToast(mContext, getString(R.string.group_name_size_is_one));
-                        return;
+                        break;
                     }
                 }
                 if (groupIds.size() > 1) {
@@ -144,8 +172,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case CREATE_GROUP:
-                String loninid= getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-                return action.createMyGroup(loninid, mGroupName, groupIds);
+                String loninid = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+                return action.createMyGroup(loninid, mGroupName, groupIds, avatorBytes);
             case SET_GROUP_PORTRAIT_URI:
                 return action.setGroupPortrait(mGroupId, imageUrl);
             case GET_QI_NIU_TOKEN:
@@ -163,7 +191,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                     if (createGroupResponse.getCode() != null && createGroupResponse.getCode().getCodeId().equals("100")) {
                         mGroupId = createGroupResponse.getValue().getGroupId() + "";
                         mGroupName = createGroupResponse.getValue().getGroupName();
-                        Groups groups = new Groups(mGroupId, mGroupName, "");
+                        imageUrl = BaseAction.DOMAIN + createGroupResponse.getValue().getGroupImage();
+                        Groups groups = new Groups(mGroupId, mGroupName, imageUrl);
                         groups.setDisplayName(mGroupName);
                         SealUserInfoManager.getInstance().addGroup(groups);
                         BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI);
@@ -185,6 +214,7 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
 //                                request(SET_GROUP_PORTRAIT_URI);
 //                            }
 //                        }
+
                     } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.group_create_api_fail));

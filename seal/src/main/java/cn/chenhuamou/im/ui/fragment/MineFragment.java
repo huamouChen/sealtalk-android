@@ -60,26 +60,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private String url;
     private boolean isDebug;
 
-//    private Handler handler = new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message msg) {
-//            if (msg.what == 0x0001) {
-//                Bitmap bm = (Bitmap) msg.obj;
-//                imageView.setImageBitmap(bm);
-//            }
-//            return false;
-//        }
-//    });
-//
-//    // 获取用户头像图片
-//    private void getHeadImg() {
-//        String path = BaseAction.DOMAIN + "api/User/GetHeadImg";
-//        //创建一个线程对象
-//        GetPicThread gpt = new GetPicThread(getContext(), path, handler);
-//        Thread t = new Thread(gpt);
-//        t.start();
-//    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

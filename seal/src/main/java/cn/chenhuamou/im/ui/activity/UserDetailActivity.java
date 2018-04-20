@@ -433,10 +433,12 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                                 if (!TextUtils.isEmpty(mFriend.getDisplayName())) {
                                     mUserNickName.setVisibility(View.VISIBLE);
                                     mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
+                                    mUserNickName.setText("iM账号：");
                                     mUserDisplayName.setText(mFriend.getDisplayName());
                                 } else if (hasNickNameChanged(nickName)) {
                                     if (mFriend.isExitsDisplayName()) {
                                         mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
+                                        mUserNickName.setText("iM账号：");
                                     } else {
                                         mUserDisplayName.setText(nickName);
                                     }
