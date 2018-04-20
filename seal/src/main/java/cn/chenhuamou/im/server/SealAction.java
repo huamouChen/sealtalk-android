@@ -105,6 +105,7 @@ import cn.chenhuamou.im.server.response.SetGroupPortraitResponse;
 import cn.chenhuamou.im.server.response.SetNameResponse;
 import cn.chenhuamou.im.server.response.SetPortraitResponse;
 import cn.chenhuamou.im.server.response.SyncTotalDataResponse;
+import cn.chenhuamou.im.server.response.UserBalanceResponse;
 import cn.chenhuamou.im.server.response.UserRelationshipResponse;
 import cn.chenhuamou.im.server.response.VerifyCodeResponse;
 import cn.chenhuamou.im.server.response.VersionResponse;
@@ -222,15 +223,15 @@ public class SealAction extends BaseAction {
     /**
      * 注册
      *
-     * @param userName           账号
-     * @param password           密码
+     * @param userName 账号
+     * @param password 密码
      * @throws HttpException
      */
     public RegisterResponse register(String userName, String password) throws HttpException {
         String url = getURL("Api/Team/AddUser");
         StringEntity entity = null;
         try {
-            entity = new StringEntity(JsonMananger.beanToJson(new RegisterRequest(userName, 0.7f, "0", password )), ENCODING);
+            entity = new StringEntity(JsonMananger.beanToJson(new RegisterRequest(userName, 0.7f, "0", password)), ENCODING);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -1422,7 +1423,6 @@ public class SealAction extends BaseAction {
     }
 
 
-
     /**
      * 绑定手机号码
      *
@@ -1438,9 +1438,6 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
-
-
-
 
 
     /**
@@ -1459,10 +1456,10 @@ public class SealAction extends BaseAction {
             e.printStackTrace();
         }
         Map<String, String> map = new HashMap<String, String>();
-        map.put("pageIndex", pageIndex +"");
-        map.put("pageSize", pageSize +"");
+        map.put("pageIndex", pageIndex + "");
+        map.put("pageSize", pageSize + "");
 
-        String result = httpManager.get(mContext, url,new RequestParams(map));
+        String result = httpManager.get(mContext, url, new RequestParams(map));
         List<BankListResponse> response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("BankListResponse", result);
@@ -1480,6 +1477,7 @@ public class SealAction extends BaseAction {
      * bankUserName 银行开户名
      * bankUserPwd 资金密码
      * bankNumNew 确认银行卡号
+     *
      * @throws HttpException
      */
     public PublicResponse addUserBank(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew) throws HttpException {
@@ -1501,5 +1499,18 @@ public class SealAction extends BaseAction {
         return response;
     }
 
+    /*
+     * 获取用户余额
+     * */
+    public UserBalanceResponse getUserBalance() throws HttpException {
+        String url = getURL("api/Funds/GetUserBalance");
+        String result = httpManager.get(mContext, url);
+        UserBalanceResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("UserBalanceResponse", result);
 
+            response = jsonToBean(result, UserBalanceResponse.class);
+        }
+        return response;
+    }
 }

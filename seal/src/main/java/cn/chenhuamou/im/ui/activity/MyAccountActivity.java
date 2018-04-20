@@ -43,9 +43,11 @@ import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.response.GetUserInfoResponse;
 import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.SetPortraitResponse;
+import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.utils.photo.PhotoUtils;
 import cn.chenhuamou.im.server.widget.BottomMenuDialog;
@@ -61,7 +63,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
 
     private static final int UP_LOAD_PORTRAIT = 8;
     private static final int GET_QI_NIU_TOKEN = 128;
-    private static final int SYNC_USER_INFO = 9;
+
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private SelectableRoundedImageView mImageView;
@@ -219,23 +221,29 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         if (result != null) {
             switch (requestCode) {
                 case UP_LOAD_PORTRAIT:
-                    PublicResponse spRes = (PublicResponse) result;
-                    if (spRes.isResult()) {
-
-                        // 更新
-                        request(SYNC_USER_INFO);
-
-
-                        editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
-                        editor.commit();
-                        ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
-                        if (RongIM.getInstance() != null) {
-                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.SEALTALK_LOGIN_NAME, ""), Uri.parse(imageUrl)));
-                        }
-                        BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
-                        NToast.shortToast(mContext, getString(R.string.portrait_update_success));
-                    }
                     LoadDialog.dismiss(mContext);
+                    PublicResponse publicResponse = (PublicResponse) result;
+                    if (publicResponse.isResult()) {
+                        // 处理返回的头像
+                        try {
+                            JSONObject jsonObject = new JSONObject(publicResponse.getParameter());
+                            imageUrl = BaseAction.DOMAIN + jsonObject.get("HeaderImage");
+                            editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, imageUrl);
+                            editor.commit();
+                            ImageLoader.getInstance().displayImage(imageUrl, mImageView, App.getOptions());
+                            if (RongIM.getInstance() != null) {
+                                RongIM.getInstance().setCurrentUserInfo(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.Nick_Name, ""), Uri.parse(imageUrl)));
+                            }
+                            BroadcastManager.getInstance(mContext).sendBroadcast(SealConst.CHANGEINFO);
+                            NToast.shortToast(mContext, getString(R.string.portrait_update_success));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        NToast.shortToast(mContext, "头像更新失败");
+                    }
+
                     break;
                 case GET_QI_NIU_TOKEN:
                     QiNiuTokenResponse response = (QiNiuTokenResponse) result;
@@ -250,17 +258,11 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onFailure(int requestCode, int state, Object result) {
+        LoadDialog.dismiss(mContext);
         switch (requestCode) {
             case GET_QI_NIU_TOKEN:
                 break;
             case UP_LOAD_PORTRAIT:
-                LoadDialog.dismiss(mContext);
-                PublicResponse publicResponse = (PublicResponse) result;
-                if (publicResponse.isResult()) {
-                    NToast.shortToast(mContext, "设置头像成功");
-                } else {
-                    NToast.shortToast(mContext, "设置头像请求失败");
-                }
                 break;
         }
     }
