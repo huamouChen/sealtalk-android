@@ -93,6 +93,7 @@ import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.response.QiNiuTokenResponse;
 import cn.chenhuamou.im.server.response.QuitGroupResponse;
 import cn.chenhuamou.im.server.response.QuitMyGroupResponse;
+import cn.chenhuamou.im.server.response.RechargeResponse;
 import cn.chenhuamou.im.server.response.RefuseFriendApplyResponse;
 import cn.chenhuamou.im.server.response.RegisterResponse;
 import cn.chenhuamou.im.server.response.RemoveFromBlackListResponse;
@@ -1510,6 +1511,24 @@ public class SealAction extends BaseAction {
             NLog.e("UserBalanceResponse", result);
 
             response = jsonToBean(result, UserBalanceResponse.class);
+        }
+        return response;
+    }
+
+    /*
+     * 支付宝转账，通知支付宝人工
+     * */
+    public PublicResponse getRechargeAlipay(String amount, String addtime, String bankcode) throws HttpException {
+        String url = getURL("api/Funds/AddRechardZfbrg");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("amount", amount);
+        map.put("addtime", addtime );
+        map.put("bankcode", bankcode);
+        String result = httpManager.get(mContext, url, new RequestParams(map));
+        PublicResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("RechargeResponse", result);
+            response = jsonToBean(result, PublicResponse.class);
         }
         return response;
     }

@@ -233,7 +233,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
                         editor.commit();
                         goToMain();
-                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phone, nickName, Uri.parse("")));
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(phone, nickName, Uri.parse(portraitUri)));
                     } else {
                         LoadDialog.dismiss(mContext);
                         NLog.e("GetUserInfoResponse", "获取用户信息失败，无法登录");

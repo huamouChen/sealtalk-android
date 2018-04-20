@@ -801,6 +801,7 @@ public class SealUserInfoManager implements OnDataListener {
         if (list != null && list.size() > 0) {
             List<Friend> friendsList = new ArrayList<>();
             for (GetRongFriendListResponse.ValueBean resultEntity : list) {
+                // 拼接头像
                 String avatorString = resultEntity.getHeadImg() != null ? resultEntity.getHeadImg() : "";
                     Friend friend = new Friend(
                             resultEntity.getUserName(),

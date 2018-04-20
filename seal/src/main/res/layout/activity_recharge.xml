@@ -1,136 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_bg"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_bg"
+    android:orientation="vertical">
 
-    <include layout="@layout/w_layout_titlebar"
-        android:id="@+id/titlebar"/>
+    <include
+        android:id="@+id/titlebar"
+        layout="@layout/w_layout_titlebar" />
 
+    <!--充值方式-->
     <LinearLayout
-        android:id="@+id/ll_bankCard"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/base_margin"
-        android:background="@drawable/selector_item"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_margin2"
-        android:visibility="gone">
+        android:layout_height="48dp">
 
-        <ImageView
-            android:id="@+id/iv_bankCardIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_card"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/base_margin"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_cardName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="中国工商银行"
-                android:textColor="@color/black"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tv_cardType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text=""
-                android:textColor="@color/color_a0a0a0"
-                android:textSize="14sp"/>
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="@dimen/base_margin2"
-            android:src="@drawable/arrow_right"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_add_card"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_mywallet_height"
-        android:layout_marginTop="@dimen/base_margin"
-        android:background="@drawable/selector_item"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        >
+            android:text="充值方式："
+            android:gravity="center"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/jrmf_add_bank_card"
-            android:textColor="@color/title_bar_color"
-            android:textSize="14sp"
-            />
+            android:text="请使用支付宝内的转账功能"
+            android:gravity="center"/>
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
+    <!--收款卡号-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="收款卡号:"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_cardNum"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="6217731107272250"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_cardnum_copy"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:text="复制"
+            android:gravity="center"
+            android:textColor="@color/red"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
+    <!--姓名-->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
 
     <TextView
-        android:id="@+id/tv_mount_tip"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginLeft="@dimen/base_margin"
-        android:gravity="center_vertical"
-        android:textColor="@color/color_a0a0a0"
-        android:textSize="12sp"
-        tools:text="本次最多可充值1.00元"
-        />
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:text="姓名："
+        android:gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_mywallet_height"
-        android:background="@color/white">
+    <TextView
+        android:id="@+id/tv_cardName"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="王在兵"
+        android:gravity="center"/>
 
         <TextView
-            android:layout_width="80dp"
+            android:id="@+id/tv_cardname_copy"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/base_margin"
-            android:gravity="center_vertical"
-            android:text="@string/jrmf_recharge_amount"
-            android:textColor="@color/black"
-            android:textSize="14sp"/>
+            android:text="复制"
+            android:gravity="center"
+            android:textColor="@color/red"
+            android:layout_marginLeft="10dp"/>
 
-        <com.jrmf360.rylib.wallet.widget.ClearEditText
-            android:id="@+id/cet_money"
+</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
+    <!--会员账号-->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:text="会员账号："
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_account"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="用户登录账号"
+        android:gravity="center"/>
+
+</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
+    <!--转账金额-->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:text="转账金额："
+        android:gravity="center"/>
+
+  <cn.chenhuamou.im.server.widget.ClearWriteEditText
+      android:id="@+id/cet_amount"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:inputType="number"
+      android:hint="单次最低100元，最高45000元"
+      android:textSize="14sp"/>
+
+</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
+    <!--转账时间-->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:text="转账时间："
+        android:gravity="center"/>
+
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+            android:id="@+id/cet_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:hint="@string/input_recharge_amount_hint"
-            android:inputType="numberDecimal"
-            android:maxLength="8"
-            android:paddingRight="@dimen/base_margin2"
-            android:textColorHint="@color/color_a0a0a0"
-            android:textCursorDrawable="@drawable/selector_cursor"
-            android:textSize="14sp"/>
-    </LinearLayout>
+            android:inputType="number"
+            android:hint="晚上18点30分请填写1830"
+            android:textSize="16sp"/>
+
+</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:background="@color/separator" />
+
 
     <Button
-        android:id="@+id/btn_next"
+        android:id="@+id/btn_charge"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="50dp"
-        android:background="@drawable/selector_round_btn"
-        android:text="@string/jrmf_next"
+        android:background="@drawable/rs_select_btn_gray"
+        android:clickable="true"
+        android:text="已转账，提交审核"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="14sp" />
 
 </LinearLayout>
 
