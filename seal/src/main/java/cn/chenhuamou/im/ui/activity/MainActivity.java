@@ -29,6 +29,7 @@ import java.util.List;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
+import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
 import cn.chenhuamou.im.server.SealAction;
@@ -40,6 +41,7 @@ import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.IsAliveResponse;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
+import cn.chenhuamou.im.server.utils.json.JsonMananger;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.adapter.ConversationListAdapterEx;
 import cn.chenhuamou.im.ui.fragment.ContactsFragment;
@@ -108,7 +110,21 @@ public class MainActivity extends FragmentActivity implements
         mAsyncTaskManager.request(RONG_ALIVE, this);
         SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
 
+        // 刷新用户信息
         RongIM.getInstance().refreshUserInfoCache(new UserInfo(sp.getString(SealConst.SEALTALK_LOGIN_ID, ""), sp.getString(SealConst.Nick_Name, ""), Uri.parse(sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, ""))));
+
+        BroadcastManager.getInstance(mContext).addAction("REFRESH_GROUP_UI", new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String json = intent.getStringExtra("result");
+                try {
+                    Groups groups = JsonMananger.jsonToBean(json, Groups.class);
+                    RongIM.getInstance().refreshGroupInfoCache(new Group(groups.getGroupId(), groups.getGroupName(), Uri.parse(groups.getGroupImage())));
+                } catch (HttpException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 

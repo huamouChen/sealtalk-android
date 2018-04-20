@@ -48,6 +48,7 @@ import io.rong.imkit.RongIM;
 import io.rong.imkit.emoticon.AndroidEmoji;
 import io.rong.imkit.widget.AsyncImageView;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Group;
 
 /**
  * Created by AMing on 16/1/25.
@@ -195,12 +196,14 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                         Groups groups = new Groups(mGroupId, mGroupName, imageUrl);
                         groups.setDisplayName(mGroupName);
                         SealUserInfoManager.getInstance().addGroup(groups);
-                        BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI);
+                        BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI, groups);
+
 
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.create_group_success));
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
                         finish();
+
 
 //                        if (TextUtils.isEmpty(imageUrl)) {
 //                            SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
