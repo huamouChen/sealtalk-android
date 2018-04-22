@@ -85,6 +85,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private static final int CLICK_CONVERSATION_USER_PORTRAIT = 1;
 
+    public static final String UPDATE_GROUP_MEMBER = "update_group_member";
+
     private static final int DISMISS_GROUP = 26;
     private static final int QUIT_GROUP = 27;
     private static final int SET_GROUP_NAME = 29;
@@ -146,29 +148,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
         setGroupsInfoChangeListener();
 
-        // 获取消息免打扰的状态
-        getConversationNotificationStatus();
-    }
-
-
-    // 获取是否消息免打扰
-    private void getConversationNotificationStatus() {
-        RongIM.getInstance().getConversationNotificationStatus(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
-            @Override
-            public void onSuccess(Conversation.ConversationNotificationStatus conversationNotificationStatus) {
-
-                if (conversationNotificationStatus == Conversation.ConversationNotificationStatus.DO_NOT_DISTURB) {
-                    messageNotification.setChecked(true);
-                } else {
-                    messageNotification.setChecked(false);
-                }
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-
-            }
-        });
     }
 
     private void getGroups() {
@@ -189,6 +168,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroupMembers() {
+
         SealUserInfoManager.getInstance().getGroupMembers(fromConversationId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
             @Override
             public void onSuccess(List<GroupMember> groupMembers) {
@@ -217,7 +197,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private void initGroupData() {
         // 群组头像
         String portraitUri = "";
-        if (mGroup.getHeaderImage() == null || mGroup.getHeaderImage().isEmpty()){
+        if (mGroup.getHeaderImage() == null || mGroup.getHeaderImage().isEmpty()) {
             portraitUri = SealUserInfoManager.getInstance().getPortraitUri(mGroup);
         } else {
             portraitUri = BaseAction.DOMAIN + mGroup.getHeaderImage();
@@ -267,16 +247,16 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             });
         }
 
-//        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
-//            isCreated = true;
+        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
+            isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
-//            mGroupNotice.setVisibility(View.VISIBLE);
+            mGroupNotice.setVisibility(View.VISIBLE);
         } else {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
             mDismissBtn.setVisibility(View.VISIBLE);
             mQuitBtn.setVisibility(View.GONE);
-//            mGroupNotice.setVisibility(View.VISIBLE);
+            mGroupNotice.setVisibility(View.VISIBLE);
         }
         if (CommonUtils.isNetworkConnected(mContext)) {
             request(CHECKGROUPURL);
@@ -805,6 +785,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                             null);
                     mGroupMember.add(1, member);
                 }
+
+
+
                 initGroupMemberData();
             } else if (deleMember != null && deleMember.size() > 0) {
                 for (Friend friend : deleMember) {
@@ -817,6 +800,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 }
                 initGroupMemberData();
             }
+
+            // 刷新本地数据，更新群组成员的本地数据库
+            SealUserInfoManager.getInstance().getGroups(fromConversationId);
+            SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
+            BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
+
 
         }
         switch (requestCode) {

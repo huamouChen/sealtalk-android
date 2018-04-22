@@ -123,20 +123,11 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         isConversationActivityStartDiscussion = getIntent().getBooleanExtra("CONVERSATION_DISCUSSION", false);
         isConversationActivityStartPrivate = getIntent().getBooleanExtra("CONVERSATION_PRIVATE", false);
         groupId = getIntent().getStringExtra("GroupId");
-        groupName = getIntent().getStringExtra("GroupName");
         isAddGroupMember = getIntent().getBooleanExtra("isAddGroupMember", false);
         isDeleteGroupMember = getIntent().getBooleanExtra("isDeleteGroupMember", false);
-
-        // 添加群组成员 或者 删除群组成员
         if (isAddGroupMember || isDeleteGroupMember) {
             initGroupMemberList();
         }
-
-        if (isDeleteGroupMember) {
-            // 获取群组成员
-            request(GET_GROUP_MEMBER);
-        }
-
         addDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("AddDiscuMember");
         deleDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("DeleteDiscuMember");
 
@@ -625,20 +616,6 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 //                        LoadDialog.dismiss(mContext);
 //                        NToast.shortToast(mContext, "创建者不能将自己移除");
 //                    }
-                    break;
-
-                case GET_GROUP_MEMBER:
-                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
-                    if (getRongGroupMembersResponse.getCode() != null && getRongGroupMembersResponse.getCode().getCodeId().equals("100")) {
-                        List<Groups> memberList = getRongGroupMembersResponse.getValue();
-                        deleteGroupMemberList = new ArrayList<>();
-                        for (Groups item : memberList) {
-                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(""));
-                            groupMember.setGroupId(groupId);
-                            deleteGroupMemberList.add(groupMember);
-                        }
-//                        fillSourceDataListForDeleteGroupMember();
-                    }
                     break;
             }
         }

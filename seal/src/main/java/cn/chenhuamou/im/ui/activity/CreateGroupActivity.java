@@ -198,25 +198,10 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                         SealUserInfoManager.getInstance().addGroup(groups);
                         BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI, groups);
 
-
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.create_group_success));
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
                         finish();
-
-
-//                        if (TextUtils.isEmpty(imageUrl)) {
-//                            SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
-//                            BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
-//                            LoadDialog.dismiss(mContext);
-//                            NToast.shortToast(mContext, getString(R.string.create_group_success));
-//                            RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
-//                            finish();
-//                        } else {
-//                            if (!TextUtils.isEmpty(mGroupId)) {
-//                                request(SET_GROUP_PORTRAIT_URI);
-//                            }
-//                        }
 
                     } else {
                         LoadDialog.dismiss(mContext);
