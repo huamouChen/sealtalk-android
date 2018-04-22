@@ -282,7 +282,7 @@
     <string name="ac_search_chat_detail_two">条与</string>
     <string name="ac_search_chat_detail_three">相关的聊天记录</string>
     <string name="ac_search_nick_name">昵称： </string>
-    <string name="ac_contact_nick_name">昵称:</string>
+    <string name="ac_contact_nick_name">昵称：</string>
 
     <string name="ac_search_friend">联系人</string>
     <string name="ac_search_group">群组</string>

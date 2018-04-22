@@ -49,7 +49,7 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
     private UserInfo mUserInfo;
     private SwitchButton messageTop, messageNotification;
     private SelectableRoundedImageView mImageView;
-    private TextView friendName;
+    private TextView tv_nickname, tv_account;
     private LinearLayout mSearchChattingRecordsLinearLayout;
 
     private Conversation.ConversationType mConversationType;
@@ -88,9 +88,11 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
 
             Friend friend = SealUserInfoManager.getInstance().getFriendByID(mUserInfo.getUserId());
             if (friend != null && !TextUtils.isEmpty(friend.getDisplayName())) {
-                friendName.setText(friend.getDisplayName());
+                tv_nickname.setText(getString(R.string.ac_contact_nick_name) + friend.getDisplayName());
+                tv_account.setText("iM账号：" + friend.getUserId());
             } else {
-                friendName.setText(mUserInfo.getName());
+                tv_nickname.setText(getString(R.string.ac_contact_nick_name) + mUserInfo.getName());
+                tv_account.setText("iM账号：" + friend.getUserId());
             }
         }
 
@@ -112,7 +114,8 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
         });
         messageTop = (SwitchButton) findViewById(R.id.sw_freind_top);
         messageNotification = (SwitchButton) findViewById(R.id.sw_friend_notfaction);
-        friendName = (TextView) findViewById(R.id.friend_name);
+        tv_nickname = (TextView) findViewById(R.id.tv_nicknam);
+        tv_account = (TextView) findViewById(R.id.tv_account);
         mSearchChattingRecordsLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_search_messages);
         cleanMessage.setOnClickListener(this);
         messageNotification.setOnCheckedChangeListener(this);
