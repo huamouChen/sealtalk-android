@@ -85,8 +85,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private static final int CLICK_CONVERSATION_USER_PORTRAIT = 1;
 
-    private static final int GROUP_INFO = 270;
-    private static final int GROUP_MEMBERS = 260;
     private static final int DISMISS_GROUP = 26;
     private static final int QUIT_GROUP = 27;
     private static final int SET_GROUP_NAME = 29;
@@ -174,12 +172,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroups() {
-
-        request(GROUP_INFO);
-
-
         SealUserInfoManager.getInstance().getGroupsByID(fromConversationId, new SealUserInfoManager.ResultCallback<Groups>() {
-
             @Override
             public void onSuccess(Groups groups) {
                 if (groups != null) {
@@ -196,7 +189,21 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void getGroupMembers() {
-        request(GROUP_MEMBERS);
+        SealUserInfoManager.getInstance().getGroupMembers(fromConversationId, new SealUserInfoManager.ResultCallback<List<GroupMember>>() {
+            @Override
+            public void onSuccess(List<GroupMember> groupMembers) {
+                LoadDialog.dismiss(mContext);
+                if (groupMembers != null && groupMembers.size() > 0) {
+                    mGroupMember = groupMembers;
+                    initGroupMemberData();
+                }
+            }
+
+            @Override
+            public void onError(String errString) {
+                LoadDialog.dismiss(mContext);
+            }
+        });
     }
 
     @Override
@@ -208,8 +215,15 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initGroupData() {
-        String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(mGroup);
+        // 群组头像
+        String portraitUri = "";
+        if (mGroup.getHeaderImage() == null || mGroup.getHeaderImage().isEmpty()){
+            portraitUri = SealUserInfoManager.getInstance().getPortraitUri(mGroup);
+        } else {
+            portraitUri = BaseAction.DOMAIN + mGroup.getHeaderImage();
+        }
         ImageLoader.getInstance().displayImage(portraitUri, mGroupHeader, App.getOptions());
+
         mGroupName.setText(mGroup.getName());
 
         if (RongIM.getInstance() != null) {
@@ -308,10 +322,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 return action.setGroupName(fromConversationId, newGroupName);
             case CHECKGROUPURL:
                 return action.getGroupInfo(fromConversationId);
-            case GROUP_MEMBERS:
-                return action.getRongGroupMembers(fromConversationId);
-            case GROUP_INFO:
-                return action.getRongGroupInfo(fromConversationId);
         }
         return super.doInBackground(requestCode, id);
     }
@@ -320,34 +330,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     public void onSuccess(int requestCode, Object result) {
         if (result != null) {
             switch (requestCode) {
-
-                case GROUP_INFO:  // 获取群组信息
-                    GetRongGroupInfoResponse getRongGroupResponse = (GetRongGroupInfoResponse) result;
-                    if (getRongGroupResponse.getValue() != null) {
-                        String groupId = getRongGroupResponse.getValue().getGroupId();
-                        String groupName = getRongGroupResponse.getValue().getGroupName();
-                        String groupOwer = getRongGroupResponse.getValue().getGroupOwner();
-                        mGroup = new Groups(groupId, groupName, "");
-                        initGroupData();
-                        String userId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-                        isCreated = groupOwer.equals(userId);
-                    }
-                    break;
-
-                case GROUP_MEMBERS:
-                    GetRongGroupMembersResponse getRongGroupMembersResponse = (GetRongGroupMembersResponse) result;
-                    if (getRongGroupMembersResponse.getCode() != null) {
-                        List<Groups> members = getRongGroupMembersResponse.getValue();
-                        for (Groups item : members) {
-                            String avatorString = BaseAction.DOMAIN + (item.getHeaderImage() != null ? item.getHeaderImage() : "");
-                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getNickName(), Uri.parse(avatorString));
-                            mGroupMember.add(groupMember);
-                        }
-                        initGroupMemberData();
-                    }
-
-                    break;
-
                 case QUIT_GROUP:  // 离开群组
                     QuitMyGroupResponse response = (QuitMyGroupResponse) result;
                     if (response.getCode().getCodeId().equals("100")) {
@@ -496,9 +478,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 NToast.shortToast(mContext, "解散群组请求失败");
                 LoadDialog.dismiss(mContext);
                 break;
-            case GROUP_INFO:
-                NToast.shortToast(mContext, "获取群组信息失败");
-
         }
     }
 

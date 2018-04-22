@@ -359,22 +359,22 @@ public class SealUserInfoManager implements OnDataListener {
     private void setGetAllUserInfoDone() {
         RLog.d(TAG, "SealUserInfoManager setGetAllUserInfoDone = " + mGetAllUserInfoState);
         doingGetAllUserInfo = false;
-        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
     }
 
     private boolean fetchFriends() throws HttpException {
-        UserRelationshipResponse userRelationshipResponse;
+        GetRongFriendListResponse userRelationshipResponse;
         try {
             userRelationshipResponse = action.getAllUserRelationship();
         } catch (JSONException e) {
             NLog.d(TAG, "fetchFriends occurs JSONException e=" + e.toString());
             return true;
         }
-        if (userRelationshipResponse != null && userRelationshipResponse.getCode() == 200) {
-            List<UserRelationshipResponse.ResultEntity> list = userRelationshipResponse.getResult();
+        if (userRelationshipResponse != null && userRelationshipResponse.getCode().getCodeId().equals("100")) {
+            List<GetRongFriendListResponse.ValueBean> list = userRelationshipResponse.getValue();
             if (list != null && list.size() > 0) {
                 syncDeleteFriends();
-//                addFriends(list);
+                addFriends(list);
             }
             mGetAllUserInfoState |= FRIEND;
             return true;
@@ -519,7 +519,7 @@ public class SealUserInfoManager implements OnDataListener {
         if (mGroupsList != null && mGroupsList.size() > 0) {
             syncDeleteGroupMembers();
             for (Groups group : mGroupsList) {
-                GetGroupMemberResponse groupMemberResponse;
+                GetRongGroupMembersResponse groupMemberResponse;
                 try {
                     groupMemberResponse = action.getGroupMember(group.getGroupsId());
                 } catch (JSONException e) {
@@ -527,12 +527,12 @@ public class SealUserInfoManager implements OnDataListener {
                     fetchGroupCount++;
                     continue;
                 }
-                if (groupMemberResponse != null && groupMemberResponse.getCode() == 200) {
+                if (groupMemberResponse != null && groupMemberResponse.getCode().getCodeId().equals("100")) {
                     fetchGroupCount++;
-                    List<GetGroupMemberResponse.ResultEntity> list = groupMemberResponse.getResult();
+                    List<Groups> list = groupMemberResponse.getValue();
                     if (list != null && list.size() > 0) {
                         if (mGroupMemberDao != null) {
-//                            addGroupMembers(list, group.getGroupsId());
+                            addGroupMembers(list, group.getGroupsId());
                         } else if (mDBManager == null) {
                             //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
                             return false;
@@ -569,13 +569,13 @@ public class SealUserInfoManager implements OnDataListener {
                 if (doingGetAllUserInfo)
                     return;
                 if (hasGetAllGroupMembers()) {
-                    GetGroupMemberResponse groupMemberResponse;
+                    GetRongGroupMembersResponse groupMemberResponse;
                     try {
                         groupMemberResponse = action.getGroupMember(groupID);
                     } catch (HttpException e) {
                         e.printStackTrace();
                         setGetAllUserInfoWithPartGroupMembersState();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                         NLog.d(TAG, "getGroupMember occurs HttpException e=" + e.toString() + "groupID=" + groupID);
                         return;
                     } catch (JSONException e) {
@@ -583,15 +583,15 @@ public class SealUserInfoManager implements OnDataListener {
                         NLog.d(TAG, "getGroupMember occurs JSONException e=" + e.toString() + "groupID=" + groupID);
                         return;
                     }
-                    if (groupMemberResponse != null && groupMemberResponse.getCode() == 200) {
-                        List<GetGroupMemberResponse.ResultEntity> list = groupMemberResponse.getResult();
+                    if (groupMemberResponse != null && groupMemberResponse.getCode().getCodeId().equals("100")) {
+                        List<Groups> list = groupMemberResponse.getValue();
                         if (list != null && list.size() > 0) {
                             syncDeleteGroupMembers(groupID);
-//                            addGroupMembers(list, groupID);
+                            addGroupMembers(list, groupID);
                         }
                     } else {
                         setGetAllUserInfoWithPartGroupMembersState();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                     }
                 } else {
                     if (hasGetPartGroupMembers()) {
@@ -602,10 +602,10 @@ public class SealUserInfoManager implements OnDataListener {
                     }
                     try {
                         fetchGroupMembers();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                     } catch (HttpException e) {
                         setGetAllUserInfoWithPartGroupMembersState();
-                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                        sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                         NLog.d(TAG, "getGroupMember occurs HttpException e=" + e.toString() + "groupID=" + groupID);
                         return;
                     }
@@ -638,7 +638,7 @@ public class SealUserInfoManager implements OnDataListener {
                     fetchGroupCount++;
                     continue;
                 }
-                if (groupMemberResponse != null && groupMemberResponse.getCode() != null) {
+                if (groupMemberResponse != null && groupMemberResponse.getCode().getCodeId().equals("100")) {
                     fetchGroupCount++;
                     List<Groups> list = groupMemberResponse.getValue();
                     if (list != null && list.size() > 0) {
@@ -803,23 +803,23 @@ public class SealUserInfoManager implements OnDataListener {
             for (GetRongFriendListResponse.ValueBean resultEntity : list) {
                 // 拼接头像
                 String avatorString = resultEntity.getHeaderImage() != null ? (BaseAction.DOMAIN + resultEntity.getHeaderImage()) : "";
-                String nickName = (resultEntity.getNickName() != null && !resultEntity.getNickName().isEmpty()) ? resultEntity.getNickName() :resultEntity.getUserName();
-                    Friend friend = new Friend(
-                            resultEntity.getUserName(),
-                            nickName,
-                            Uri.parse(avatorString),
-                            nickName,
-                            null, null, null, null,
-                            CharacterParser.getInstance().getSpelling(nickName),
-                            CharacterParser.getInstance().getSpelling(nickName));
-                    if (friend.getPortraitUri() == null || TextUtils.isEmpty(friend.getPortraitUri().toString())) {
-                        String portrait = getPortrait(friend);
-                        if (portrait != null) {
-                            friend.setPortraitUri(Uri.parse(getPortrait(friend)));
-                        }
+                String nickName = (resultEntity.getNickName() != null && !resultEntity.getNickName().isEmpty()) ? resultEntity.getNickName() : resultEntity.getUserName();
+                Friend friend = new Friend(
+                        resultEntity.getUserName(),
+                        nickName,
+                        Uri.parse(avatorString),
+                        nickName,
+                        null, null, null, null,
+                        CharacterParser.getInstance().getSpelling(nickName),
+                        CharacterParser.getInstance().getSpelling(nickName));
+                if (friend.getPortraitUri() == null || TextUtils.isEmpty(friend.getPortraitUri().toString())) {
+                    String portrait = getPortrait(friend);
+                    if (portrait != null) {
+                        friend.setPortraitUri(Uri.parse(getPortrait(friend)));
                     }
+                }
 
-                    friendsList.add(friend);
+                friendsList.add(friend);
             }
             if (friendsList.size() > 0) {
                 if (mFriendDao != null) {
@@ -848,7 +848,7 @@ public class SealUserInfoManager implements OnDataListener {
                 }
                 // 头像拼接域名
                 portrait = BaseAction.DOMAIN + portrait;
-                mGroupsList.add(new Groups(groups.getGroupsId() +"",
+                mGroupsList.add(new Groups(groups.getGroupsId() + "",
                         groups.getName(),
                         portrait,
                         String.valueOf(groups.getRole())
@@ -1033,7 +1033,9 @@ public class SealUserInfoManager implements OnDataListener {
                 List<Groups> groupsList;
                 if (!doingGetAllUserInfo && !hasGetGroups()) {
                     // 没有网络
-                    if (!isNetworkConnected()) {  onCallBackFail(callback); }
+                    if (!isNetworkConnected()) {
+                        onCallBackFail(callback);
+                    }
                     try {
                         groupsList = pullGroups();
                         sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
@@ -1122,12 +1124,7 @@ public class SealUserInfoManager implements OnDataListener {
                             return;
                         }
                     } else {
-                        try {
-                            groupMembersList = pullGroupMembers(groupID);
-                        } catch (HttpException e) {
-                            e.printStackTrace();
-                        }
-//                        groupMembersList = getGroupMembers(groupID);
+                        groupMembersList = getGroupMembers(groupID);
                     }
                     if (callback != null) {
                         callback.onCallback(groupMembersList);
@@ -1467,7 +1464,7 @@ public class SealUserInfoManager implements OnDataListener {
                         if (isNetworkConnected()) {
                             try {
                                 group = pullGroups(groupID);
-                                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
                             } catch (HttpException e) {
                                 onCallBackFail(callback);
                                 NLog.d(TAG, "getGroupsByID occurs HttpException e=" + e.toString() + "mGetAllUserInfoState=" + mGetAllUserInfoState);
@@ -1627,16 +1624,18 @@ public class SealUserInfoManager implements OnDataListener {
             String groupPortraitUri = null;
             Groups groups = getGroupsByID(groupID);
             if (groups != null) {
-                groupName = groups.getName();
-                groupPortraitUri = groups.getPortraitUri();
+                groupName = groups.getUserName();
+                groupPortraitUri = groups.getHeaderImage() != null && !TextUtils.isEmpty(groups.getHeaderImage()) ? (BaseAction.DOMAIN + groups.getHeaderImage()) : "";
             }
+            String nickName = group.getNickName() != null && !TextUtils.isEmpty(group.getNickName()) ? group.getNickName() : group.getUserName();
+            String groupmMembersHeaderImg = group.getHeaderImage() != null && !TextUtils.isEmpty(group.getHeaderImage()) ? (BaseAction.DOMAIN + group.getHeaderImage()) : "";
             GroupMember newMember = new GroupMember(groupID,
                     group.getUserName(),
-                    group.getUserName(),
-                    Uri.parse(group.getUserName()),
-                    group.getDisplayName(),
-                    CharacterParser.getInstance().getSpelling(group.getUserName()),
-                    CharacterParser.getInstance().getSpelling(group.getDisplayName()),
+                    nickName,
+                    Uri.parse(groupmMembersHeaderImg),
+                    nickName,
+                    CharacterParser.getInstance().getSpelling(nickName),
+                    CharacterParser.getInstance().getSpelling(nickName),
                     groupName,
                     CharacterParser.getInstance().getSpelling(groupName),
                     groupPortraitUri);

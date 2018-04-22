@@ -333,7 +333,6 @@ public class SealAction extends BaseAction {
             e.printStackTrace();
         }
         PublicResponse response = null;
-//        String result = httpManager.post(mContext, url, new RequestParams("ImgStream", ImgStream));
         String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
         if (!TextUtils.isEmpty(result)) {
             response = jsonToBean(result, PublicResponse.class);
@@ -443,12 +442,32 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public UserRelationshipResponse getAllUserRelationship() throws HttpException {
-        String url = getURL("friendship/all");
-        String result = httpManager.get(url);
-        UserRelationshipResponse response = null;
+    public GetRongFriendListResponse getAllUserRelationship() throws HttpException {
+        String url = getURL("api/Im/ListFriends");
+        String result = httpManager.get(mContext, url);
+        GetRongFriendListResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, UserRelationshipResponse.class);
+            NLog.e("GetRongGroupMembersResponse", result);
+            response = jsonToBean(result, GetRongFriendListResponse.class);
+
+            // 处理重复添加的，后台没有给接口，只能暴力判断
+            if (response.getValue() != null) {
+                List<GetRongFriendListResponse.ValueBean> list = response.getValue();
+                List<GetRongFriendListResponse.ValueBean> resultList = new ArrayList<>();
+                for (GetRongFriendListResponse.ValueBean item : list) {
+                    boolean isContainer = false;
+                    for (GetRongFriendListResponse.ValueBean newItem : resultList) {
+                        if (item.getUserName().equals(newItem.getUserName())) {
+                            isContainer = true;
+                            break;
+                        }
+                    }
+                    if (isContainer) continue;
+                    resultList.add(item);
+                }
+                response.setValue(resultList);
+            }
+
         }
         return response;
     }
@@ -604,12 +623,13 @@ public class SealAction extends BaseAction {
      * @param groupId 群组Id
      * @throws HttpException
      */
-    public GetGroupMemberResponse getGroupMember(String groupId) throws HttpException {
-        String url = getURL("group/" + groupId + "/members");
-        String result = httpManager.get(mContext, url);
-        GetGroupMemberResponse response = null;
+    public GetRongGroupMembersResponse getGroupMember(String groupId) throws HttpException {
+        String url = getURL("api/Im/ListGroupUsers");
+        String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
+        GetRongGroupMembersResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, GetGroupMemberResponse.class);
+            NLog.e("GetRongGroupMembersResponse", result);
+            response = jsonToBean(result, GetRongGroupMembersResponse.class);
         }
         return response;
     }
@@ -1522,7 +1542,7 @@ public class SealAction extends BaseAction {
         String url = getURL("api/Funds/AddRechardZfbrg");
         Map<String, String> map = new HashMap<String, String>();
         map.put("amount", amount);
-        map.put("addtime", addtime );
+        map.put("addtime", addtime);
         map.put("bankcode", bankcode);
         String result = httpManager.get(mContext, url, new RequestParams(map));
         PublicResponse response = null;

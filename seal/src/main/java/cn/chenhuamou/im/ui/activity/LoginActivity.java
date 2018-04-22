@@ -232,6 +232,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(SealConst.Bind_Phone, phone);
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
                         editor.commit();
+                        //不继续在login界面同步好友,群组,群组成员信息
+                        SealUserInfoManager.getInstance().getAllUserInfo();
                         goToMain();
                     } else {
                         LoadDialog.dismiss(mContext);
