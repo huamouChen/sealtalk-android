@@ -22,6 +22,7 @@ import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.db.Friend;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.ApplyFriendResponse;
@@ -48,7 +49,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
     private RelativeLayout searchBtn;
     private TextView searchName;
     private TextView tv_id;
-    private SelectableRoundedImageView searchImage;
+    private SelectableRoundedImageView searchHeader;
     private String mPhone;
     private String addFriendMessage;
     private String mFriendId;
@@ -66,7 +67,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
         mEtSearch = (EditText) findViewById(R.id.search_edit);
         searchItem = (LinearLayout) findViewById(R.id.search_result);
         searchName = (TextView) findViewById(R.id.search_name);
-        searchImage = (SelectableRoundedImageView) findViewById(R.id.search_header);
+        searchHeader = (SelectableRoundedImageView) findViewById(R.id.search_header);
 
         searchBtn.setOnClickListener(this);
         mEtSearch.addTextChangedListener(new TextWatcher() {
@@ -115,7 +116,6 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
             switch (requestCode) {
                 case SEARCH_PHONE:
                     LoadDialog.dismiss(mContext);
-                    // TODO: 这里还要改
                     FindUserInfoResponse findUserInfoResponse = (FindUserInfoResponse) result;
                     if (findUserInfoResponse.getCode().getCodeId().equals("100") && !findUserInfoResponse.getValue().isExist()) {
                         LoadDialog.dismiss(mContext);
@@ -126,6 +126,12 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
                         mFriendId = tv_id.getText().toString();
                         searchItem.setVisibility(View.VISIBLE);
                         searchName.setText(tv_id.getText().toString());
+                        // 设置头像
+                        if (findUserInfoResponse.getValue().getHeadimg() != null && !TextUtils.isEmpty(findUserInfoResponse.getValue().getHeadimg())) {
+                            String portraitUri = BaseAction.DOMAIN + findUserInfoResponse.getValue().getHeadimg();
+                            ImageLoader.getInstance().displayImage(portraitUri, searchHeader, App.getOptions());
+                        }
+
                         searchItem.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
