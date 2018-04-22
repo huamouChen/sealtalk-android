@@ -340,7 +340,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                         List<Groups> members = getRongGroupMembersResponse.getValue();
                         for (Groups item : members) {
                             String avatorString = BaseAction.DOMAIN + (item.getHeaderImage() != null ? item.getHeaderImage() : "");
-                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getUserName(), Uri.parse(avatorString));
+                            GroupMember groupMember = new GroupMember(item.getUserName(), item.getNickName(), Uri.parse(avatorString));
                             mGroupMember.add(groupMember);
                         }
                         initGroupMemberData();

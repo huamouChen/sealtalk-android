@@ -64,9 +64,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private static final int SYNC_FRIEND_INFO = 129;
     private ImageView mUserPortrait;
-    private TextView mUserNickName;
-    private TextView mUserDisplayName;
-    private TextView mUserPhone;
+    private TextView mNickname;
+    private TextView maccount;
     private TextView mUserLineStatus;
     private LinearLayout mChatButtonGroupLinearLayout;
     private Button mAddFriendButton;
@@ -77,7 +76,6 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     private Friend mFriend;
     private String addMessage;
     private String mGroupName;
-    private String mPhoneString;
     private boolean mIsFriendsRelationship;
 
     private int mType;
@@ -98,9 +96,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private void initView() {
         setTitle(R.string.user_details);
-        mUserNickName = (TextView) findViewById(R.id.contact_below);
-        mUserDisplayName = (TextView) findViewById(R.id.contact_top);
-        mUserPhone = (TextView) findViewById(R.id.contact_phone);
+        mNickname = (TextView) findViewById(R.id.tv_nicknam);
+        maccount = (TextView) findViewById(R.id.tv_account);
         mUserLineStatus = (TextView) findViewById(R.id.user_online_status);
         mUserPortrait = (ImageView) findViewById(R.id.ac_iv_user_portrait);
         mChatButtonGroupLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_chat_button_group);
@@ -108,7 +105,6 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         mNoteNameLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_note_name);
 
         mAddFriendButton.setOnClickListener(this);
-        mUserPhone.setOnClickListener(this);
     }
 
     private void initData() {
@@ -121,13 +117,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         mFriend = getIntent().getParcelableExtra("friend");
 
         if (mFriend != null) {
-            if (mFriend.isExitsDisplayName()) {
-                mUserNickName.setVisibility(View.VISIBLE);
-                mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + mFriend.getName());
-                mUserDisplayName.setText(mFriend.getDisplayName());
-            } else {
-                mUserDisplayName.setText(mFriend.getName());
-            }
+            mNickname.setVisibility(View.VISIBLE);
+            mNickname.setText(getString(R.string.ac_contact_nick_name) + " " + mFriend.getName());
+            maccount.setText("iM账号：" + mFriend.getUserId());
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(mFriend);
             ImageLoader.getInstance().displayImage(portraitUri, mUserPortrait, App.getOptions());
         }
@@ -335,14 +327,14 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                     });
                 }
                 break;
-            case R.id.contact_phone:
-                if (!TextUtils.isEmpty(mPhoneString)) {
-                    Uri telUri = Uri.parse("tel:" + mPhoneString);
-                    Intent intent = new Intent(Intent.ACTION_DIAL, telUri);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-                break;
+//            case R.id.contact_phone:
+//                if (!TextUtils.isEmpty(mPhoneString)) {
+//                    Uri telUri = Uri.parse("tel:" + mPhoneString);
+//                    Intent intent = new Intent(Intent.ACTION_DIAL, telUri);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(intent);
+//                }
+//                break;
         }
 
     }
@@ -352,14 +344,14 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         if (resultCode == 155 && data != null) {
             String displayName = data.getStringExtra("displayName");
             if (!TextUtils.isEmpty(displayName)) {
-                mUserNickName.setVisibility(View.VISIBLE);
-                mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + mFriend.getName());
-                mUserDisplayName.setText(displayName);
+                mNickname.setVisibility(View.VISIBLE);
+                mNickname.setText(getString(R.string.ac_contact_nick_name) + " " + mFriend.getName());
+                maccount.setText("iM账号；" + mFriend.getUserId());
                 mFriend.setDisplayName(displayName);
             } else {
-                mUserNickName.setVisibility(View.GONE);
-                mUserDisplayName.setText(mFriend.getName());
-                mUserDisplayName.setVisibility(View.VISIBLE);
+                mNickname.setVisibility(View.GONE);
+                mNickname.setText(mFriend.getName());
+                maccount.setText("iM账号；" + mFriend.getUserId());
                 mFriend.setDisplayName("");
             }
         }
@@ -399,7 +391,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                         String portraitUri = userInfoByIdResponse.getResult().getPortraitUri();
                         if (hasNickNameChanged(nickName) || hasPortraitUriChanged(portraitUri)) {
                             if (hasNickNameChanged(nickName)) {
-                                mUserNickName.setText(nickName);
+                                mNickname.setText(nickName);
                             }
                             if (hasPortraitUriChanged(portraitUri)) {
                                 ImageLoader.getInstance().displayImage(portraitUri, mUserPortrait, App.getOptions());
@@ -415,9 +407,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 case SYNC_FRIEND_INFO:
                     GetFriendInfoByIDResponse friendInfoByIDResponse = (GetFriendInfoByIDResponse) result;
                     if (friendInfoByIDResponse.getCode() == 200) {
-                        mUserPhone.setVisibility(View.VISIBLE);
-                        mPhoneString = friendInfoByIDResponse.getResult().getUser().getPhone();
-                        mUserPhone.setText("手机号:" + friendInfoByIDResponse.getResult().getUser().getPhone());
+                        mNickname.setVisibility(View.VISIBLE);
+//                        mPhoneString = friendInfoByIDResponse.getResult().getUser().getPhone();
+//                        mUserPhone.setText("手机号:" + friendInfoByIDResponse.getResult().getUser().getPhone());
                         GetFriendInfoByIDResponse.ResultEntity resultEntity = friendInfoByIDResponse.getResult();
                         GetFriendInfoByIDResponse.ResultEntity.UserEntity userEntity = resultEntity.getUser();
                         if (mFriend.getUserId().equals(userEntity.getId())) {
@@ -431,16 +423,17 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                                 //更新UI
                                 //if (TextUtils.isEmpty(displayName) && hasDisplayNameChanged(displayName)) {
                                 if (!TextUtils.isEmpty(mFriend.getDisplayName())) {
-                                    mUserNickName.setVisibility(View.VISIBLE);
-                                    mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
-                                    mUserNickName.setText("iM账号：");
-                                    mUserDisplayName.setText(mFriend.getDisplayName());
+                                    mNickname.setVisibility(View.VISIBLE);
+                                    mNickname.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
+                                    maccount.setText("iM账号：" + mFriend.getUserId());
+
                                 } else if (hasNickNameChanged(nickName)) {
                                     if (mFriend.isExitsDisplayName()) {
-                                        mUserNickName.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
-                                        mUserNickName.setText("iM账号：");
+                                        mNickname.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
+                                        maccount.setText("iM账号：" + mFriend.getUserId());
                                     } else {
-                                        mUserDisplayName.setText(nickName);
+                                        mNickname.setText(getString(R.string.ac_contact_nick_name) + " " + nickName);
+                                        maccount.setText("iM账号：" + mFriend.getUserId());
                                     }
                                 }
                                 if (hasPortraitUriChanged(portraitUri)) {
