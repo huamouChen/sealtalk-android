@@ -19,6 +19,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':IMKit')
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':IMKit')
 }
