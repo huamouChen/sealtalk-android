@@ -358,7 +358,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
                 case DISMISS_GROUP:
                     DismissGroupResponse response1 = (DismissGroupResponse) result;
-                    if (response1.getCode() == 200) {
+                    if (response1.getCode().getCodeId().equals("100")) {
                         RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, fromConversationId, new RongIMClient.ResultCallback<Conversation>() {
                             @Override
                             public void onSuccess(Conversation conversation) {

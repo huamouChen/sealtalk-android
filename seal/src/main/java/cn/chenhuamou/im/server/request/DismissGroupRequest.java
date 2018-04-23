@@ -6,11 +6,16 @@ package cn.chenhuamou.im.server.request;
  */
 public class DismissGroupRequest {
 
-    private String groupId;
 
     public DismissGroupRequest(String groupId) {
         this.groupId = groupId;
     }
+
+    /**
+     * groupId : 0
+     */
+
+    private String groupId;
 
     public String getGroupId() {
         return groupId;

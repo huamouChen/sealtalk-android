@@ -793,7 +793,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public DismissGroupResponse dissmissGroup(String groupId) throws HttpException {
-        String url = getURL("group/dismiss");
+        String url = getURL("api/Im/DismissGroup");
         String json = JsonMananger.beanToJson(new DismissGroupRequest(groupId));
         StringEntity entity = null;
         try {
