@@ -181,11 +181,10 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     mGroupMember = groupMembers;
                     initGroupMemberData();
                 } else {
-                    //群组添加人员
+                    //群组添加人员，主要是因为创建群组的时候，后台发送的消息不全切类型不对，懒得和他说，免得接口又有问题
                     SealUserInfoManager.getInstance().getGroups(fromConversationId);
                     SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
                     BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
-
                     getGroupMembers();
                 }
             }
@@ -258,7 +257,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             });
         }
 
-        if (mGroup.getRole() != null && mGroup.getRole().equals("0"))
+        // 当前用户登录账号
+        String loginId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+        if (mGroup.getRole() != null && mGroup.getRole().equals(loginId))
             isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
@@ -583,10 +584,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.ll_group_port:
-                showPhotoDialog();  // 现在都能改
-//                if (isCreated) {
-//                    showPhotoDialog();
-//        }
+                if (isCreated) {
+                    showPhotoDialog();
+                }
                 break;
             case R.id.ll_group_name:
                 if (isCreated) {

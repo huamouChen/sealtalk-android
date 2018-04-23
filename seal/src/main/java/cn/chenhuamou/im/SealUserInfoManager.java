@@ -853,7 +853,7 @@ public class SealUserInfoManager implements OnDataListener {
                 mGroupsList.add(new Groups(groups.getGroupsId() + "",
                         groups.getName(),
                         portrait,
-                        String.valueOf(groups.getRole())
+                        groups.getGroupOwner()
                 ));
             }
             if (mGroupsList.size() > 0) {
