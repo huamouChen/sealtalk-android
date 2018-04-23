@@ -23,6 +23,8 @@ public class Groups extends UserInfoBean {
     private boolean IsOfficial;
     private String NickName;
     private String HeaderImage;
+    private boolean CanBetting;
+
 
 
 
@@ -207,5 +209,13 @@ public class Groups extends UserInfoBean {
 
     public void setHeaderImage(String headerImage) {
         HeaderImage = headerImage;
+    }
+
+    public boolean isCanBetting() {
+        return CanBetting;
+    }
+
+    public void setCanBetting(boolean canBetting) {
+        CanBetting = canBetting;
     }
 }

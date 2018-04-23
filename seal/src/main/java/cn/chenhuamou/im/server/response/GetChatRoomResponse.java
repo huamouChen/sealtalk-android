@@ -75,6 +75,7 @@ public class GetChatRoomResponse {
         private boolean IsOfficial;
         private String GroupImage;
         private String AddTime;
+        private boolean CanBetting;
 
         public String getGroupId() {
             return GroupId;
@@ -122,6 +123,22 @@ public class GetChatRoomResponse {
 
         public void setAddTime(String AddTime) {
             this.AddTime = AddTime;
+        }
+
+        public boolean isOfficial() {
+            return IsOfficial;
+        }
+
+        public void setOfficial(boolean official) {
+            IsOfficial = official;
+        }
+
+        public boolean isCanBetting() {
+            return CanBetting;
+        }
+
+        public void setCanBetting(boolean canBetting) {
+            CanBetting = canBetting;
         }
     }
 }
