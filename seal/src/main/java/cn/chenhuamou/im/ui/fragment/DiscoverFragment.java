@@ -26,7 +26,7 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
 
     private static final int GETDEFCONVERSATION = 333;
     private AsyncTaskManager atm = AsyncTaskManager.getInstance(getActivity());
-    private ArrayList<DefaultConversationResponse.ResultEntity> chatroomList;
+    private ArrayList<GetChatRoomResponse.ValueBean> chatroomList;
 
 
     @Override
@@ -90,16 +90,16 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
         }
         switch (v.getId()) {
             case R.id.def_chatroom1:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getId(), "聊天室 I");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getGroupId(), chatroomList.get(0).getGroupName());
                 break;
             case R.id.def_chatroom2:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getId(), "聊天室 II");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getGroupId(), chatroomList.get(1).getGroupName());
                 break;
             case R.id.def_chatroom3:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(2).getId(), "聊天室 III");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(2).getGroupId(), chatroomList.get(2).getGroupName());
                 break;
             case R.id.def_chatroom4:
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(3).getId(), "聊天室 IV");
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(3).getGroupId(), chatroomList.get(3).getGroupName());
                 break;
         }
     }
@@ -112,28 +112,25 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
     @Override
     @SuppressWarnings("unchecked")
     public void onSuccess(int requestCode, Object result) {
-        GetChatRoomResponse getChatRoomResponse = (GetChatRoomResponse) result;
-
-
         initChatRoomData();
 
-
-//        DefaultConversationResponse response = (DefaultConversationResponse) result;
-//        if (response.getCode() == 200) {
-//            ArrayList<DefaultConversationResponse.ResultEntity> resultEntityArrayList = new ArrayList();
-//            chatroomList = new ArrayList();
-//            if (response.getResult().size() > 0) {
-//                resultEntityArrayList.clear();
-//                chatroomList.clear();
-//                for (DefaultConversationResponse.ResultEntity d : response.getResult()) {
+        GetChatRoomResponse response = (GetChatRoomResponse) result;
+        if (response.getCode().getCodeId().equals("100")) {
+            ArrayList<GetChatRoomResponse.ValueBean> resultEntityArrayList = new ArrayList();
+            chatroomList = new ArrayList();
+            if (response.getValue().size() > 0) {
+                resultEntityArrayList.clear();
+                chatroomList.clear();
+                for (GetChatRoomResponse.ValueBean d : response.getValue()) {
 //                    if (d.getType().equals("group")) {
 //                        resultEntityArrayList.add(d);
 //                    } else {
 //                        chatroomList.add(d);
 //                    }
-//                }
-//            }
-//        }
+                    chatroomList.add(d);
+                }
+            }
+        }
     }
 
     @Override
@@ -154,27 +151,27 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
         chatroom1.setName("CHM001Room1");
         chatroom1.setType("chatroom");
         chatroom1.setMaxMemberCount(0);
-        chatroomList.add(chatroom1);
+//        chatroomList.add(chatroom1);
 
         DefaultConversationResponse.ResultEntity chatroom2 = new DefaultConversationResponse.ResultEntity();
         chatroom2.setId("CHM001Room2");
         chatroom2.setName("CHM001Room2");
         chatroom2.setType("chatroom");
         chatroom2.setMaxMemberCount(0);
-        chatroomList.add(chatroom2);
+//        chatroomList.add(chatroom2);
 
         DefaultConversationResponse.ResultEntity chatroom3 = new DefaultConversationResponse.ResultEntity();
         chatroom3.setId("CHM001Room3");
         chatroom3.setName("CHM001Room3");
         chatroom3.setType("chatroom");
         chatroom3.setMaxMemberCount(0);
-        chatroomList.add(chatroom3);
+//        chatroomList.add(chatroom3);
 
         DefaultConversationResponse.ResultEntity chatroom4 = new DefaultConversationResponse.ResultEntity();
         chatroom4.setId("CHM001Room4");
         chatroom4.setName("CHM001Room4");
         chatroom4.setType("chatroom");
         chatroom4.setMaxMemberCount(0);
-        chatroomList.add(chatroom4);
+//        chatroomList.add(chatroom4);
     }
 }

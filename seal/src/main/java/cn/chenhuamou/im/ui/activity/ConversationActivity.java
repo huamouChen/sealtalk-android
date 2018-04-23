@@ -106,7 +106,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
     private Handler mHandler;
 
-    private String betNum = "";
+    private String betMsg = "";
 
 
     // 投注
@@ -262,7 +262,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         // 发送消息的监听
         sendMessageListener();
 
-
+        // 自定义插件
         setMyExtensionModule();
 
 
@@ -830,20 +830,21 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
     // 发送消息的监听
     private void sendMessageListener() {
-
-        if (mConversationType == Conversation.ConversationType.GROUP) {
+        // 群组或者聊天室的时候，把文本消息发送到服务器
+        if (mConversationType == Conversation.ConversationType.GROUP || mConversationType == Conversation.ConversationType.CHATROOM) {
             msgListener = new RongIM.OnSendMessageListener() {
                 @Override
                 public io.rong.imlib.model.Message onSend(io.rong.imlib.model.Message message) {
                     if (message.getContent() instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message.getContent();
-                        String msgContent = textMessage.getContent();
-                        if (msgContent.startsWith("#") && msgContent.endsWith("#")) {
-                            // 截取 betNum
-//                            betNum = msgContent.substring(1, msgContent.length() - 1);
-                            betNum = msgContent;
-                            request(Bet);
-                        }
+                        betMsg = textMessage.getContent();
+                        request(Bet);
+//                        if (msgContent.startsWith("#") && msgContent.endsWith("#")) {
+//                            // 截取 betMsg
+//                            betMsg = msgContent.substring(1, msgContent.length() - 1);
+//                            betMsg = msgContent;
+//                            request(Bet);
+//                        }
                     }
                     return message;
                 }
@@ -879,7 +880,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         if (mConversationType == Conversation.ConversationType.GROUP) {
             request(LotteryInfo);
         }
-
     }
 
     /*
@@ -897,7 +897,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
                     mHandler.sendEmptyMessage(Update_ProgressBar);
                 } else {
                     // 延迟两秒再重新获取开奖号码，获取开奖号码可能不及时，因为后台生成数据需要时间，app去拉去也需要时间，
-                    mHandler.sendEmptyMessageDelayed(LotteryInfo, 0);
+                    mHandler.sendEmptyMessage(LotteryInfo);
                     mTimer.cancel();
 
                 }
@@ -912,7 +912,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     public Object doInBackground(int requestCode, String id) throws HttpException {
         switch (requestCode) {
             case Bet:
-                return action.postKQWFPCDD(betNum, mTargetId);
+                return action.postKQWFPCDD(betMsg, mTargetId);
             case LotteryInfo:
                 return action.getLotteryInfo("90002");
             case LotteryNum:
