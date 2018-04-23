@@ -60,6 +60,7 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
     private static final int CREATE_GROUP = 16;
     private static final int SET_GROUP_PORTRAIT_URI = 17;
     public static final String REFRESH_GROUP_UI = "REFRESH_GROUP_UI";
+
     private AsyncImageView asyncImageView;
     private PhotoUtils photoUtils;
     private BottomMenuDialog dialog;
@@ -175,8 +176,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
             case CREATE_GROUP:
                 String loninid = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
                 return action.createMyGroup(loninid, mGroupName, groupIds, avatorBytes);
-            case SET_GROUP_PORTRAIT_URI:
-                return action.setGroupPortrait(mGroupId, imageUrl);
+//            case SET_GROUP_PORTRAIT_URI:
+//                return action.setGroupPortrait(mGroupId, imageUrl);
             case GET_QI_NIU_TOKEN:
                 return action.getQiNiuToken();
         }
@@ -208,16 +209,16 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                         NToast.shortToast(mContext, getString(R.string.group_create_api_fail));
                     }
                     break;
-                case SET_GROUP_PORTRAIT_URI:
-                    SetGroupPortraitResponse groupPortraitResponse = (SetGroupPortraitResponse) result;
-                    if (groupPortraitResponse.getCode() == 200) {
-                        SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
-                        BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, getString(R.string.create_group_success));
-                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
-                        finish();
-                    }
+//                case SET_GROUP_PORTRAIT_URI:
+//                    SetGroupPortraitResponse groupPortraitResponse = (SetGroupPortraitResponse) result;
+//                    if (groupPortraitResponse.getCode() == 200) {
+//                        SealUserInfoManager.getInstance().addGroup(new Groups(mGroupId, mGroupName, imageUrl, String.valueOf(0)));
+//                        BroadcastManager.getInstance(mContext).sendBroadcast(REFRESH_GROUP_UI);
+//                        LoadDialog.dismiss(mContext);
+//                        NToast.shortToast(mContext, getString(R.string.create_group_success));
+//                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP, mGroupId, mGroupName);
+//                        finish();
+//                    }
                 case GET_QI_NIU_TOKEN:
                     QiNiuTokenResponse response = (QiNiuTokenResponse) result;
                     if (response.getCode() == 200) {

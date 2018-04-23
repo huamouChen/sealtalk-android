@@ -29,6 +29,7 @@ import java.util.List;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
+import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
@@ -70,6 +71,8 @@ public class MainActivity extends FragmentActivity implements
         IUnReadMessageObserver, OnDataListener {
 
     private static final int RONG_ALIVE = 1000;
+
+    public static final String UPDATE_GROUP_MEMBER = "update_group_member";
 
 
     public static ViewPager mViewPager;
@@ -119,7 +122,7 @@ public class MainActivity extends FragmentActivity implements
                 String json = intent.getStringExtra("result");
                 try {
                     Groups groups = JsonMananger.jsonToBean(json, Groups.class);
-                    RongIM.getInstance().refreshGroupInfoCache(new Group(groups.getGroupId(), groups.getGroupName(), Uri.parse(groups.getGroupImage())));
+                    RongIM.getInstance().refreshGroupInfoCache(new Group(groups.getGroupId(), groups.getGroupName(), Uri.parse(groups.getPortraitUri())));
                 } catch (HttpException e) {
                     e.printStackTrace();
                 }

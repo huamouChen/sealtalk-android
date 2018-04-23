@@ -6,27 +6,32 @@ package cn.chenhuamou.im.server.request;
  */
 public class SetGroupPortraitRequest {
 
-    private String groupId;
-    private String portraitUri;
-
-    public SetGroupPortraitRequest(String groupId, String portraitUri) {
-        this.groupId = groupId;
-        this.portraitUri = portraitUri;
+    public SetGroupPortraitRequest(String groupId, byte[] groupImgStream) {
+        GroupId = groupId;
+        GroupImgStream = groupImgStream;
     }
+
+    /**
+     * GroupId : 0
+     * GroupImgStream : string
+     */
+
+    private String GroupId;
+    private byte[] GroupImgStream;
 
     public String getGroupId() {
-        return groupId;
+        return GroupId;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroupId(String GroupId) {
+        this.GroupId = GroupId;
     }
 
-    public String getPortraitUri() {
-        return portraitUri;
+    public byte[] getGroupImgStream() {
+        return GroupImgStream;
     }
 
-    public void setPortraitUri(String portraitUri) {
-        this.portraitUri = portraitUri;
+    public void setGroupImgStream(byte[] GroupImgStream) {
+        this.GroupImgStream = GroupImgStream;
     }
 }

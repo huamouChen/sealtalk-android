@@ -38,6 +38,7 @@ import cn.chenhuamou.im.server.response.GetBlackListResponse;
 import cn.chenhuamou.im.server.response.GetGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetGroupMemberResponse;
 import cn.chenhuamou.im.server.response.GetRongFriendListResponse;
+import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetTokenResponse;
@@ -440,14 +441,15 @@ public class SealUserInfoManager implements OnDataListener {
                     if (!hasGetGroups()) {
                         fetchGroups();
                     } else {
-                        GetGroupInfoResponse groupInfoResponse = action.getGroupInfo(groupID);
-                        if (groupInfoResponse != null && groupInfoResponse.getCode() == 200) {
-                            GetGroupInfoResponse.ResultEntity groupInfo = groupInfoResponse.getResult();
+                        GetRongGroupInfoResponse groupInfoResponse = action.getGroupInfo(groupID);
+                        if (groupInfoResponse != null && groupInfoResponse.getCode().getCodeId().equals("100")) {
+                            GetRongGroupInfoResponse.ValueBean groupInfo = groupInfoResponse.getValue();
                             if (groupInfo != null) {
-                                String role = groupInfo.getCreatorId().equals(RongIM.getInstance().getCurrentUserId()) ? "0" : "1";
+                                String role = groupInfo.getGroupOwner().equals(RongIM.getInstance().getCurrentUserId()) ? "0" : "1";
+                                String portrait = (groupInfo.getGroupImage() != null && !groupInfo.getGroupImage().isEmpty()) ? (BaseAction.DOMAIN + groupInfo.getGroupImage()) : "";
                                 syncAddGroup(new Groups(groupID,
-                                        groupInfo.getName(),
-                                        groupInfo.getPortraitUri(),
+                                        groupInfo.getGroupName(),
+                                        portrait,
                                         role));
                             }
                         } else {
@@ -462,7 +464,7 @@ public class SealUserInfoManager implements OnDataListener {
                     e.printStackTrace();
                     NLog.d(TAG, "fetchGroups occurs JSONException e=" + e.toString() + "groupID=" + groupID);
                 }
-                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).commit();
+                sp.edit().putInt("getAllUserInfoState", mGetAllUserInfoState).apply();
             }
         });
     }

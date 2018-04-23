@@ -342,6 +342,32 @@ public class SealAction extends BaseAction {
 
 
     /**
+     * 设置群组头像
+     *
+     * @param GroupImgStream 头像 流数组
+     * @param GroupId 群组ID
+     * @throws HttpException
+     */
+    public PublicResponse setGroupPortrait(byte[] GroupImgStream, String GroupId) throws HttpException {
+        String url = getURL("api/Im/SetGroupImg");
+        String json = JsonMananger.beanToJson(new SetGroupPortraitRequest(GroupId, GroupImgStream));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        PublicResponse response = null;
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        if (!TextUtils.isEmpty(result)) {
+            response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
+
+
+    /**
      * 当前登录用户通过旧密码设置新密码  前置条件需要登录才能访问
      *
      * @param oldPassword 旧密码
@@ -400,12 +426,13 @@ public class SealAction extends BaseAction {
      * @param userid 用户ID
      * @throws HttpException
      */
-    public GetUserInfoByIdResponse getUserInfoById(String userid) throws HttpException {
-        String url = getURL("user/" + userid);
-        String result = httpManager.get(url);
-        GetUserInfoByIdResponse response = null;
+    public FindUserInfoResponse getUserInfoById(String userid) throws HttpException {
+        String url = getURL("/api/Im/FindUser");
+        String result = httpManager.get(mContext, url, new RequestParams("toUser", userid));
+        FindUserInfoResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, GetUserInfoByIdResponse.class);
+            NLog.e("FindUserInfoResponse", result);
+            response = jsonToBean(result, FindUserInfoResponse.class);
         }
         return response;
     }
@@ -565,12 +592,12 @@ public class SealAction extends BaseAction {
      * 创建者设置群组头像
      *
      * @param groupId     群组Id
-     * @param portraitUri 群组头像
+     * @param GroupImgStream 群组头像
      * @throws HttpException
      */
-    public SetGroupPortraitResponse setGroupPortrait(String groupId, String portraitUri) throws HttpException {
-        String url = getURL("group/set_portrait_uri");
-        String json = JsonMananger.beanToJson(new SetGroupPortraitRequest(groupId, portraitUri));
+    public SetGroupPortraitResponse setGroupPortrait(String groupId, byte[] GroupImgStream) throws HttpException {
+        String url = getURL("api/Im/SetGroupImg");
+        String json = JsonMananger.beanToJson(new SetGroupPortraitRequest(groupId, GroupImgStream));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);
@@ -578,8 +605,8 @@ public class SealAction extends BaseAction {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
         SetGroupPortraitResponse response = null;
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
         if (!TextUtils.isEmpty(result)) {
             response = jsonToBean(result, SetGroupPortraitResponse.class);
         }
@@ -607,12 +634,13 @@ public class SealAction extends BaseAction {
      * @param groupId 群组Id
      * @throws HttpException
      */
-    public GetGroupInfoResponse getGroupInfo(String groupId) throws HttpException {
-        String url = getURL("group/" + groupId);
-        String result = httpManager.get(mContext, url);
-        GetGroupInfoResponse response = null;
+    public GetRongGroupInfoResponse getGroupInfo(String groupId) throws HttpException {
+        String url = getURL("api/Im/GetGroup");
+        String result = httpManager.get(mContext, url, new RequestParams("groupId", groupId));
+        GetRongGroupInfoResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, GetGroupInfoResponse.class);
+            NLog.e("GetRongGroupInfoResponse", result);
+            response = jsonToBean(result, GetRongGroupInfoResponse.class);
         }
         return response;
     }

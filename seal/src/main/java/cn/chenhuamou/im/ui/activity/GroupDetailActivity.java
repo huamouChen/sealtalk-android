@@ -3,6 +3,8 @@ package cn.chenhuamou.im.ui.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +27,7 @@ import com.qiniu.android.storage.UploadManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +118,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private UploadManager uploadManager;
     private String imageUrl;
     private Uri selectUri;
+    private byte[] portriatBytes;  // 群头像流
     private String newGroupName;
     private LinearLayout mGroupNotice;
     private LinearLayout mSearchMessagesLinearLayout;
@@ -176,6 +180,13 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 if (groupMembers != null && groupMembers.size() > 0) {
                     mGroupMember = groupMembers;
                     initGroupMemberData();
+                } else {
+                    //群组添加人员
+                    SealUserInfoManager.getInstance().getGroups(fromConversationId);
+                    SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
+                    BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
+
+                    getGroupMembers();
                 }
             }
 
@@ -295,7 +306,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             case GET_GROUP_INFO:
                 return action.getGroupInfo(fromConversationId);
             case UPDATE_GROUP_HEADER:
-                return action.setGroupPortrait(fromConversationId, imageUrl);
+                return action.setGroupPortrait(fromConversationId, portriatBytes);
             case GET_QI_NIU_TOKEN:
                 return action.getQiNiuToken();
             case UPDATE_GROUP_NAME:
@@ -405,11 +416,15 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     break;
                 case UPDATE_GROUP_HEADER:
                     SetGroupPortraitResponse response5 = (SetGroupPortraitResponse) result;
-                    if (response5.getCode() == 200) {
-                        ImageLoader.getInstance().displayImage(imageUrl, mGroupHeader, App.getOptions());
-                        RongIM.getInstance().refreshGroupInfoCache(new Group(fromConversationId, mGroup.getName(), Uri.parse(imageUrl)));
+                    if (response5.getCode().getCodeId().equals("100")) {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.update_success));
+                        String portriatString = (response5.getValue().getGroupImage() != null && !response5.getValue().getGroupImage().isEmpty()) ? (BaseAction.DOMAIN + response5.getValue().getGroupImage()) : "";
+                        ImageLoader.getInstance().displayImage(portriatString, mGroupHeader, App.getOptions());
+                        RongIM.getInstance().refreshGroupInfoCache(new Group(fromConversationId, mGroup.getName(), Uri.parse(portriatString)));
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, "更改失败");
                     }
 
                     break;
@@ -568,9 +583,10 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.ll_group_port:
-                if (isCreated) {
-                    showPhotoDialog();
-                }
+                showPhotoDialog();  // 现在都能改
+//                if (isCreated) {
+//                    showPhotoDialog();
+//        }
                 break;
             case R.id.ll_group_name:
                 if (isCreated) {
@@ -787,7 +803,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 }
 
 
-
                 initGroupMemberData();
             } else if (deleMember != null && deleMember.size() > 0) {
                 for (Friend friend : deleMember) {
@@ -886,7 +901,21 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
                     selectUri = uri;
                     LoadDialog.show(mContext);
-                    request(GET_QI_NIU_TOKEN);
+                    final File file = new File(selectUri.getPath());
+                    if (file.exists()) {
+                        Bitmap bm = BitmapFactory.decodeFile(selectUri.getPath());
+                        if (bm != null) {
+                            portriatBytes = bitMap2StringBase64(bm);
+                            request(UPDATE_GROUP_HEADER);
+                        } else {
+                            LoadDialog.dismiss(mContext);
+                            NToast.shortToast(mContext, "图片获取失败");
+                        }
+
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, "文件不存在");
+                    }
                 }
             }
 
@@ -895,6 +924,15 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
             }
         });
+    }
+
+    /*
+     * 前台处理图片
+     * */
+    private byte[] bitMap2StringBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);
+        return bos.toByteArray();
     }
 
 
