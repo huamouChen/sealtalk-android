@@ -45,6 +45,7 @@ public class FindUserInfoResponse {
         private int Relation;
         private String Notes;
         private boolean Exist;
+        private String NickName;
 
         public String getUserName() {
             return UserName;
@@ -84,6 +85,14 @@ public class FindUserInfoResponse {
 
         public void setExist(boolean Exist) {
             this.Exist = Exist;
+        }
+
+        public String getNickName() {
+            return NickName;
+        }
+
+        public void setNickName(String nickName) {
+            NickName = nickName;
         }
     }
 

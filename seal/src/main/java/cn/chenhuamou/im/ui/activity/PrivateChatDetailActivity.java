@@ -86,13 +86,19 @@ public class PrivateChatDetailActivity extends BaseActivity implements View.OnCl
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(mUserInfo);
             ImageLoader.getInstance().displayImage(portraitUri, mImageView, App.getOptions());
 
-            Friend friend = SealUserInfoManager.getInstance().getFriendByID(mUserInfo.getUserId());
-            if (friend != null && !TextUtils.isEmpty(friend.getDisplayName())) {
-                tv_nickname.setText(getString(R.string.ac_contact_nick_name) + friend.getDisplayName());
-                tv_account.setText("iM账号：" + friend.getUserId());
-            } else {
+            String loginId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+            if (mUserInfo.getUserId().equals(loginId)) {
                 tv_nickname.setText(getString(R.string.ac_contact_nick_name) + mUserInfo.getName());
-                tv_account.setText("iM账号：" + friend.getUserId());
+                tv_account.setText("iM账号：" + mUserInfo.getUserId());
+            } else {
+                Friend friend = SealUserInfoManager.getInstance().getFriendByID(mUserInfo.getUserId());
+                if (friend != null && !TextUtils.isEmpty(friend.getDisplayName())) {
+                    tv_nickname.setText(getString(R.string.ac_contact_nick_name) + friend.getDisplayName());
+                    tv_account.setText("iM账号：" + friend.getUserId());
+                } else {
+                    tv_nickname.setText(getString(R.string.ac_contact_nick_name) + mUserInfo.getName());
+                    tv_account.setText("iM账号：" + friend.getUserId());
+                }
             }
         }
 

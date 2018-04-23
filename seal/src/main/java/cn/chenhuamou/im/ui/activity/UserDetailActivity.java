@@ -27,9 +27,11 @@ import cn.chenhuamou.im.SealAppContext;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.db.Friend;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
+import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
 import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
@@ -405,19 +407,15 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                     }
                     break;
                 case SYNC_FRIEND_INFO:
-                    GetFriendInfoByIDResponse friendInfoByIDResponse = (GetFriendInfoByIDResponse) result;
-                    if (friendInfoByIDResponse.getCode() == 200) {
+                    FindUserInfoResponse friendInfoByIDResponse = (FindUserInfoResponse) result;
+                    if (friendInfoByIDResponse.getCode().getCodeId().equals("100")) {
                         mNickname.setVisibility(View.VISIBLE);
-//                        mPhoneString = friendInfoByIDResponse.getResult().getUser().getPhone();
-//                        mUserPhone.setText("手机号:" + friendInfoByIDResponse.getResult().getUser().getPhone());
-                        GetFriendInfoByIDResponse.ResultEntity resultEntity = friendInfoByIDResponse.getResult();
-                        GetFriendInfoByIDResponse.ResultEntity.UserEntity userEntity = resultEntity.getUser();
-                        if (mFriend.getUserId().equals(userEntity.getId())) {
-                            if (hasFriendInfoChanged(resultEntity)) {
-                                String nickName = userEntity.getNickname();
-                                String portraitUri = userEntity.getPortraitUri();
+                        FindUserInfoResponse.ValueBean userEntity = friendInfoByIDResponse.getValue();
+                        if (mFriend.getUserId().equals(userEntity.getUserName())) {
+                            if (hasFriendInfoChanged(userEntity)) {
+                                String portraitUri = (userEntity.getHeadimg() != null && !userEntity.getHeadimg().isEmpty()) ? (BaseAction.DOMAIN + userEntity.getHeadimg()) : "";
                                 //当前app server返回的displayName为空,先不使用
-                                String displayName = resultEntity.getdisplayName();
+                                String nickName = (userEntity.getNickName() != null && !userEntity.getNickName().isEmpty()) ? userEntity.getNickName() : "";
                                 //如果没有设置头像,好友数据库的头像地址和用户信息提供者的头像处理不一致,这个不一致是seal app代码处理的问题,未来应该矫正回来
                                 String userInfoPortraitUri = mFriend.getPortraitUri().toString();
                                 //更新UI
@@ -504,14 +502,12 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private boolean hasFriendInfoChanged(GetFriendInfoByIDResponse.ResultEntity resultEntity) {
-        GetFriendInfoByIDResponse.ResultEntity.UserEntity userEntity = resultEntity.getUser();
-        String nickName = userEntity.getNickname();
-        String portraitUri = userEntity.getPortraitUri();
-        String displayName = resultEntity.getdisplayName();
+    private boolean hasFriendInfoChanged(FindUserInfoResponse.ValueBean resultEntity) {
+        String portraitUri = (resultEntity.getHeadimg() != null && !resultEntity.getHeadimg().isEmpty()) ? (BaseAction.DOMAIN + resultEntity.getHeadimg()) : "";
+        String nickName = (resultEntity.getNickName() != null && !resultEntity.getNickName().isEmpty()) ? resultEntity.getNickName() : "";
         return hasNickNameChanged(nickName) ||
                 hasPortraitUriChanged(portraitUri) ||
-                hasDisplayNameChanged(displayName);
+                hasDisplayNameChanged(nickName);
     }
 
     @Override

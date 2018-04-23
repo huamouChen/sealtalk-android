@@ -504,12 +504,13 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public GetFriendInfoByIDResponse getFriendInfoByID(String userid) throws HttpException {
-        String url = getURL("friendship/" + userid + "/profile");
-        String result = httpManager.get(url);
-        GetFriendInfoByIDResponse response = null;
+    public FindUserInfoResponse getFriendInfoByID(String userid) throws HttpException {
+        String url = getURL("/api/Im/FindUser");
+        String result = httpManager.get(mContext, url, new RequestParams("toUser", userid));
+        FindUserInfoResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, GetFriendInfoByIDResponse.class);
+            NLog.e("FindUserInfoResponse", result);
+            response = jsonToBean(result, FindUserInfoResponse.class);
         }
         return response;
     }
@@ -1189,7 +1190,7 @@ public class SealAction extends BaseAction {
 
 
     /**
-     * 查询当前登录用户的信息
+     * 查询当前用户的信息
      *
      * @throws HttpException
      */
