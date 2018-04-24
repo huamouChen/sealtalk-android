@@ -2,78 +2,227 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_bg"
-    android:orientation="vertical" >
+    android:background="@color/color_80c9c9c9"
+    android:orientation="vertical">
 
-    <include layout="@layout/w_layout_titlebar"
-        android:id="@+id/titlebar"/>
+    <include
+        android:id="@+id/titlebar"
+        layout="@layout/w_layout_titlebar" />
 
+    <!--资金-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/title_bar_color">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="彩票账户"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00元"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="冻结资金"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_frozen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00元"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <!--提现账户-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/id_switch_tab_ll"
-            android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_marginLeft="15dp"
+            android:text="提现账户"
+            android:textSize="11sp" />
 
-            <LinearLayout
-                android:id="@+id/ll_deposit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_item"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dip" >
+        <Button
+            android:id="@+id/de_login_sign"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rs_select_btn_blue"
+            android:text="彩票账户"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_deposit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/jrmf_get_deposit"
-                    android:textSize="15dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_deposit_fee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_item"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dip" >
-
-                <TextView
-                    android:id="@+id/tv_deposit_fee"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/jrmf_get_deposit_free"
-                    android:textSize="15dp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/id_tab_line_iv"
-            android:layout_width="150dp"
-            android:layout_height="1dp"
-            android:background="@color/title_bar_color"
-            android:contentDescription="tab" >
-        </ImageView>
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <!--分割线-->
+    <View
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </android.support.v4.view.ViewPager>
+        android:layout_height="@dimen/chm_separator_height"
+        android:background="@color/separator" />
 
-    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_deposit_item"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:text="提现金额"
+            android:textSize="14sp" />
+
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+            android:id="@+id/cwe_draw"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="number"
+            android:layout_toRightOf="@+id/tv_deposit_item"
+            android:textColorHint="@color/color_c9c9c9"
+            android:hint="请输入提现金额"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@color/separator"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="单次可转100-45000元"
+        android:textColor="@color/red"
+        android:textSize="12sp" />
+
+    <!--分割线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chm_separator_height"
+        android:background="@color/separator" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_moneypwd_item"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:text="资金密码"
+            android:textSize="14sp" />
+
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+            android:id="@+id/cwe_moneypwd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/tv_moneypwd_item"
+            android:hint="请输入资金密码"
+            android:inputType="textPassword"
+            android:textColorHint="@color/color_c9c9c9"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <!--分割线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chm_separator_height"
+        android:background="@color/separator" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_bankcard_item"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:text="银行卡号"
+            android:textSize="14sp" />
+
+        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+            android:id="@+id/cwe_banknum"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/tv_bankcard_item"
+            android:hint="请选择银行卡号"
+            android:textColorHint="@color/color_c9c9c9"
+            android:inputType="number"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/btn_comfirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/rs_select_btn_gray"
+        android:clickable="true"
+        android:text="提现"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
+
 
 </LinearLayout>

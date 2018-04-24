@@ -1581,4 +1581,22 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
+
+    /*
+     * 提现
+     * */
+    public PublicResponse getWithDrawMoney(String money, String moneyPwd, String bankId) throws HttpException {
+        String url = getURL("api/Index/WithDrawMoney");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("money", money);
+        map.put("moneyPwd", moneyPwd);
+        map.put("bankId", bankId);
+        String result = httpManager.get(mContext, url, new RequestParams(map));
+        PublicResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("RechargeResponse", result);
+            response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
 }
