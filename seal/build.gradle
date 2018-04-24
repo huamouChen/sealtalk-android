@@ -2,13 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "cn.chenhuamou.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 106
-        versionName "1.0.6"
+        versionCode 105
+        versionName "1.0.5"
 
         multiDexEnabled true
         ndk {

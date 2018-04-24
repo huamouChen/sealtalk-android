@@ -1029,8 +1029,8 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public VersionResponse getSealTalkVersion() throws HttpException {
-        String url = getURL("misc/client_version");
-        String result = httpManager.get(mContext, url.trim());
+        String url = getURL("api/Im/GetLasterVersion");
+        String result = httpManager.get(mContext, url.trim(), new RequestParams("deviceType", "Android"));
         VersionResponse response = null;
         if (!TextUtils.isEmpty(result)) {
             response = jsonToBean(result, VersionResponse.class);

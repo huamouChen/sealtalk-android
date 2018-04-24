@@ -6,85 +6,78 @@ package cn.chenhuamou.im.server.response;
  */
 public class VersionResponse {
 
-
     /**
-     * version : 1.0.5
-     * build : 201607181821
-     * url : https://dn-rongcloud.qbox.me/app.plist
+     * Value : {"VersionCode":"string"}
+     * Code : {"CodeId":"string","Description":"string"}
      */
 
-    private IosEntity ios;
-    /**
-     * version : 1.0.5
-     * url : http://downloads.rongcloud.cn/SealTalk_by_RongCloud_Android_v1_0_5.apk
-     */
+    private ValueBean Value;
+    private CodeBean Code;
 
-    private AndroidEntity android;
-
-    public void setIos(IosEntity ios) {
-        this.ios = ios;
+    public ValueBean getValue() {
+        return Value;
     }
 
-    public void setAndroid(AndroidEntity android) {
-        this.android = android;
+    public void setValue(ValueBean Value) {
+        this.Value = Value;
     }
 
-    public IosEntity getIos() {
-        return ios;
+    public CodeBean getCode() {
+        return Code;
     }
 
-    public AndroidEntity getAndroid() {
-        return android;
+    public void setCode(CodeBean Code) {
+        this.Code = Code;
     }
 
-    public static class IosEntity {
-        private String version;
-        private String build;
-        private String url;
+    public static class ValueBean {
+        /**
+         * VersionCode : string
+         */
 
-        public void setVersion(String version) {
-            this.version = version;
+        private String VersionCode;
+        private String FileUrl;
+
+        public String getVersionCode() {
+            return VersionCode;
         }
 
-        public void setBuild(String build) {
-            this.build = build;
+        public void setVersionCode(String VersionCode) {
+            this.VersionCode = VersionCode;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public String getFileUrl() {
+            return FileUrl;
         }
 
-        public String getVersion() {
-            return version;
-        }
-
-        public String getBuild() {
-            return build;
-        }
-
-        public String getUrl() {
-            return url;
+        public void setFileUrl(String fileUrl) {
+            FileUrl = fileUrl;
         }
     }
 
-    public static class AndroidEntity {
-        private String version;
-        private String url;
+    public static class CodeBean {
+        /**
+         * CodeId : string
+         * Description : string
+         */
 
-        public void setVersion(String version) {
-            this.version = version;
+        private String CodeId;
+        private String Description;
+
+        public String getCodeId() {
+            return CodeId;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setCodeId(String CodeId) {
+            this.CodeId = CodeId;
         }
 
-        public String getVersion() {
-            return version;
+        public String getDescription() {
+            return Description;
         }
 
-        public String getUrl() {
-            return url;
+        public void setDescription(String Description) {
+            this.Description = Description;
         }
     }
 }

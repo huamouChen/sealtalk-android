@@ -84,21 +84,34 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        if (chatroomList == null || chatroomList.get(0) == null) {
-            NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
-            return;
-        }
+
         switch (v.getId()) {
             case R.id.def_chatroom1:
+                if (chatroomList == null || chatroomList.get(0) == null) {
+                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
+                    return;
+                }
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getGroupId(), chatroomList.get(0).getGroupName());
                 break;
             case R.id.def_chatroom2:
+                if (chatroomList == null || chatroomList.get(1) == null) {
+                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
+                    return;
+                }
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getGroupId(), chatroomList.get(1).getGroupName());
                 break;
             case R.id.def_chatroom3:
+                if (chatroomList == null || chatroomList.get(2) == null) {
+                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
+                    return;
+                }
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(2).getGroupId(), chatroomList.get(2).getGroupName());
                 break;
             case R.id.def_chatroom4:
+                if (chatroomList == null || chatroomList.get(3) == null) {
+                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
+                    return;
+                }
                 RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(3).getGroupId(), chatroomList.get(3).getGroupName());
                 break;
         }

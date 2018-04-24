@@ -12,10 +12,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -106,10 +108,20 @@ public class UpdateService extends Service {
 
     private static Intent installIntent(String path) {
         Uri uri = Uri.fromFile(new File(path));
-        Intent installIntent = new Intent(Intent.ACTION_VIEW);
-        installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
-        return installIntent;
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Intent installIntent = new Intent(Intent.ACTION_VIEW);
+            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+            return installIntent;
+//        } else {
+//            Intent installIntent = new Intent(Intent.ACTION_VIEW);
+//            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+//            return installIntent;
+//        }
     }
 
     private static Intent webLauncher(String downloadUrl) {

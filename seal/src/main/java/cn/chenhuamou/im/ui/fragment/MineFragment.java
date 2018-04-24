@@ -1,27 +1,26 @@
 package cn.chenhuamou.im.ui.fragment;
 
+import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.jrmf360.rylib.JrmfClient;
 
 import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
@@ -29,14 +28,14 @@ import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
 import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.SealAction;
+import cn.chenhuamou.im.server.UpdateService;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
-import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.VersionResponse;
+import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
-import cn.chenhuamou.im.ui.activity.AboutRongCloudActivity;
 import cn.chenhuamou.im.ui.activity.AccountSettingActivity;
 import cn.chenhuamou.im.ui.activity.MyAccountActivity;
 import cn.chenhuamou.im.ui.activity.MyWallet.MyWalletActivity;
@@ -75,7 +74,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         });
 
         // 比较版本
-        //compareVersion();
+        compareVersion();
         return mView;
     }
 
@@ -89,23 +88,30 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSuccess(int requestCode, Object result) {
                 if (result != null) {
-                    VersionResponse response = (VersionResponse) result;
-                    String[] s = response.getAndroid().getVersion().split("\\.");
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < s.length; i++) {
-                        sb.append(s[i]);
-                    }
 
-                    String[] s2 = getVersionInfo()[1].split("\\.");
-                    StringBuilder sb2 = new StringBuilder();
-                    for (int i = 0; i < s2.length; i++) {
-                        sb2.append(s2[i]);
-                    }
-                    if (Integer.parseInt(sb.toString()) > Integer.parseInt(sb2.toString())) {
-                        mNewVersionView.setVisibility(View.VISIBLE);
-                        url = response.getAndroid().getUrl();
-                        isHasNewVersion = true;
-                        BroadcastManager.getInstance(getActivity()).sendBroadcast(SHOW_RED);
+                    VersionResponse response = (VersionResponse) result;
+                    if (response.getCode() != null && response.getCode().getCodeId().equals("100")) {
+                        // 服务器版本
+                        String serviceVersion = response.getValue().getVersionCode();
+                        String[] s1 = serviceVersion.split("\\.");
+                        StringBuilder sb1 = new StringBuilder();
+                        for (int i = 0; i < s1.length; i++) {
+                            sb1.append(s1[i]);
+                        }
+                        // 当前版本
+                        String[] s2 = getVersionInfo()[1].split("\\.");
+                        StringBuilder sb2 = new StringBuilder();
+                        for (int i = 0; i < s2.length; i++) {
+                            sb2.append(s2[i]);
+                        }
+                        if (Integer.parseInt(sb1.toString()) > Integer.parseInt(sb2.toString())) {
+                            mNewVersionView.setVisibility(View.VISIBLE);
+                            url = (response.getValue().getFileUrl() != null && !response.getValue().getFileUrl().isEmpty()) ? (BaseAction.DOMAIN + response.getValue().getFileUrl()) : "";
+                            isHasNewVersion = true;
+                            BroadcastManager.getInstance(getActivity()).sendBroadcast(SHOW_RED);
+                        } else {
+                            mNewVersionView.setVisibility(View.GONE);
+                        }
                     }
                 }
             }
@@ -169,13 +175,17 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 RongIM.getInstance().startCustomerServiceChat(getActivity(), "zf_1000_1481459114694", "在线客服", builder1.build());
                 break;
             case R.id.mine_about:  // 当前版本
-                mNewVersionView.setVisibility(View.GONE);
-                Intent intent = new Intent(getActivity(), AboutRongCloudActivity.class);
-                intent.putExtra("isHasNewVersion", isHasNewVersion);
-                if (!TextUtils.isEmpty(url)) {
-                    intent.putExtra("url", url);
-                }
+//                mNewVersionView.setVisibility(View.GONE);
+//                Intent intent = new Intent(getActivity(), AboutRongCloudActivity.class);
+//                intent.putExtra("isHasNewVersion", isHasNewVersion);
+//                if (!TextUtils.isEmpty(url)) {
+//                    intent.putExtra("url", url);
+//                }
 //                startActivity(intent);
+//                if (url != null && !url.isEmpty()) {
+                versionCheck();
+//                }
+
                 break;
             case R.id.my_wallet:
                 startActivity(new Intent(getActivity(), MyWalletActivity.class));
@@ -217,6 +227,68 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         }
 
         return version;
+    }
+
+
+    private void versionCheck() {
+        mNewVersionView.setVisibility(View.GONE);
+        final AlertDialog dlg = new AlertDialog.Builder(getContext()).create();
+        dlg.show();
+        Window window = dlg.getWindow();
+        window.setContentView(R.layout.dialog_download);
+        TextView text = (TextView) window.findViewById(R.id.friendship_content1);
+        TextView photo = (TextView) window.findViewById(R.id.friendship_content2);
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(url);
+                intent.setData(content_url);
+                startActivity(intent);
+                dlg.cancel();
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0 以下
+                if (url == null || url.isEmpty()) return;
+                    NToast.shortToast(getContext(), getString(R.string.downloading_apk));
+                    UpdateService.Builder.create(url)
+                            .setStoreDir("update/flag")
+                            .setDownloadSuccessNotificationFlag(Notification.DEFAULT_ALL)
+                            .setDownloadErrorNotificationFlag(Notification.DEFAULT_ALL)
+                            .build(getContext());
+                    dlg.cancel();
+//                } else {
+//                    getActivity().requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                }
+
+            }
+        });
+        isHasNewVersion = false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (url == null || url.isEmpty()) return;
+                    NToast.shortToast(getContext(), getString(R.string.downloading_apk));
+                    UpdateService.Builder.create(url)
+                            .setStoreDir("update/flag")
+                            .setDownloadSuccessNotificationFlag(Notification.DEFAULT_ALL)
+                            .setDownloadErrorNotificationFlag(Notification.DEFAULT_ALL)
+                            .build(getContext());
+                } else {
+                    NToast.shortToast(getContext(), "暂无读写SD卡权限");
+                }
+                break;
+        }
     }
 
 }

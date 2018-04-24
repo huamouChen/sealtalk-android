@@ -49,8 +49,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private final static String TAG = "LoginActivity";
     private static final int LOGIN = 5;
     private static final int GET_TOKEN = 6;
-    private static final int GET_RONG_TOKEN = 600;
-    private static final int GET_RONG_GROUPS = 700;
     private static final int SYNC_USER_INFO = 9;
 
     private ImageView mImg_Background;
@@ -187,14 +185,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case LOGIN:
                 return action.login(phoneString, passwordString, getCurrentTime(), false, "");
             case GET_TOKEN:
-                return action.getToken();
+                return action.getRongToken();
             case SYNC_USER_INFO:
                 return action.getUserInfo();
-            case GET_RONG_TOKEN:
-                return action.getRongToken();
-            case GET_RONG_GROUPS:
-                return action.getRongGroups(phoneString);
-
         }
         return null;
     }
@@ -214,7 +207,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         // 打开数据库
                         SealUserInfoManager.getInstance().openDB();
                         // 登录成功，获取融云 token
-                        request(GET_RONG_TOKEN);
+                        request(GET_TOKEN);
                     } else {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, loginResponse.getError());
@@ -232,48 +225,47 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString(SealConst.Bind_Phone, phone);
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
                         editor.commit();
+                        goToMain();
                         //不继续在login界面同步好友,群组,群组成员信息
                         SealUserInfoManager.getInstance().getAllUserInfo();
-                        goToMain();
+
                     } else {
                         LoadDialog.dismiss(mContext);
                         NLog.e("GetUserInfoResponse", "获取用户信息失败");
                     }
                     break;
 
-                case GET_RONG_TOKEN:
+                case GET_TOKEN:
                     final GetRongTokenResponse rongTokenResponse = (GetRongTokenResponse) result;
-                    if (rongTokenResponse.getValue() == null) {
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, R.string.get_token_api_fail);
-                    }
-                    rong_token = rongTokenResponse.getValue().getRongToken();
-                    editor.putString(SealConst.Rong_Token, rong_token);
-                    editor.commit();
-                    // 连接 融云 服务器
-                    if (!TextUtils.isEmpty(rong_token)) {
+                    if (rongTokenResponse.getCode() != null && rongTokenResponse.getCode().getCodeId().equals("100")) {
+                        rong_token = rongTokenResponse.getValue().getRongToken();
+                        // 连接 融云 服务器
                         RongIM.connect(rong_token, new RongIMClient.ConnectCallback() {
                             @Override
                             public void onTokenIncorrect() {
                                 NLog.e("connect", "onTokenIncorrect");
-                                request(GET_RONG_TOKEN);
+                                request(GET_TOKEN);
                             }
 
                             @Override
                             public void onSuccess(String s) {
                                 connectResultId = s;
-                                editor.putString(SealConst.SEALTALK_LOGIN_ID, s);
-                                editor.putString(SealConst.Rong_Token, rong_token);
-                                editor.commit();
                                 // 获取用户信息
                                 request(SYNC_USER_INFO, true);
                             }
 
                             @Override
                             public void onError(RongIMClient.ErrorCode errorCode) {
+                                LoadDialog.dismiss(mContext);
+                                NToast.shortToast(mContext, "获取IMtoken发生错误");
                                 NLog.e("connect", "onError errorcode:" + errorCode.getValue());
                             }
                         });
+                    } else {
+                        LoadDialog.dismiss(mContext);
+                        NToast.shortToast(mContext, R.string.get_token_api_fail);
+                        return;
+
                     }
                     break;
             }
@@ -301,10 +293,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 NToast.shortToast(mContext, R.string.sync_userinfo_api_fail);
                 break;
             case GET_TOKEN:
-                LoadDialog.dismiss(mContext);
-                NToast.shortToast(mContext, R.string.get_token_api_fail);
-                break;
-            case GET_RONG_TOKEN:
                 LoadDialog.dismiss(mContext);
                 NToast.shortToast(mContext, R.string.get_token_api_fail);
                 break;

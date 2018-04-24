@@ -208,7 +208,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="14dp"
             android:src="@drawable/newversion"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 
