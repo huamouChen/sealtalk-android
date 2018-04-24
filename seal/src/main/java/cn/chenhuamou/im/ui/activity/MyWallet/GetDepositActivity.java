@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -64,85 +65,36 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
     }
 
     /*
-    * 设置点击监听
-    * */
+     * 设置点击监听
+     * */
     private void addListener() {
-        cwe_draw.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2 && cwe_banknum.getText().length() > 2 && cwe_moneypwd.getText().length() > 2) {
-                    btn_comfirm.setClickable(true);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
-                } else {
-                    btn_comfirm.setClickable(false);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        cwe_moneypwd.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2 && cwe_banknum.getText().length() > 2 && cwe_draw.getText().length() > 2) {
-                    btn_comfirm.setClickable(true);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
-                } else {
-                    btn_comfirm.setClickable(false);
-                    btn_comfirm.setClickable(false);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        cwe_banknum.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2 && cwe_draw.getText().length() > 2 && cwe_moneypwd.getText().length() > 2) {
-                    btn_comfirm.setClickable(true);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
-                } else {
-                    btn_comfirm.setClickable(false);
-                    btn_comfirm.setClickable(false);
-                    btn_comfirm.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         btn_comfirm.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        LoadDialog.show(mContext);
-        request(GET_DRAW_MONEY);
+        if (TextUtils.isEmpty(cwe_draw.getText().toString())) {
+            NToast.shortToast(mContext, "取现金额不能为空");
+            cwe_draw.setShakeAnimation();
+            return;
+        }
+
+        if (TextUtils.isEmpty(cwe_moneypwd.getText().toString())) {
+            NToast.shortToast(mContext, "资金密码不能为空");
+            cwe_moneypwd.setShakeAnimation();
+            return;
+        }
+
+        if (TextUtils.isEmpty(cwe_banknum.getText().toString())) {
+            NToast.shortToast(mContext, "银行ID不能为空");
+            cwe_banknum.setShakeAnimation();
+            return;
+        }
+
+        if (btn_comfirm.isEnabled()) {
+            LoadDialog.show(mContext);
+            request(GET_DRAW_MONEY);
+        }
     }
 
     @Override

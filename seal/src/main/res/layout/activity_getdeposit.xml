@@ -218,7 +218,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="25dp"
-        android:background="@drawable/rs_select_btn_gray"
+        android:background="@drawable/rs_select_btn_blue"
         android:clickable="true"
         android:text="提现"
         android:textColor="#FFFFFF"

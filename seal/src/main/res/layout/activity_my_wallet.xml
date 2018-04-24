@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_bg"
     android:orientation="vertical">
 
-    <include layout="@layout/w_layout_titlebar"
-        android:id="@+id/titlebar"/>
+    <include
+        android:id="@+id/titlebar"
+        layout="@layout/w_layout_titlebar" />
 
     <LinearLayout
         android:id="@+id/ll_my_change"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
         android:background="@color/title_bar_color"
         android:gravity="center"
         android:orientation="vertical">
@@ -26,15 +26,122 @@
             android:gravity="center"
             android:text="@string/jrmf_my_balance"
             android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="¥ 0.00"
             android:textColor="@color/white"
-            android:textSize="22sp"
-            android:text="¥ 0.00"/>
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/title_bar_color">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_userMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="彩票账户"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_agMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="真人账户"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_texMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="棋牌账户"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_ptMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="老虎机账户"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +169,7 @@
                 android:gravity="center"
                 android:text="@string/jrmf_recharge"
                 android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <View
@@ -70,7 +177,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="9dp"
             android:layout_marginTop="9dp"
-            android:background="@color/white"/>
+            android:background="@color/white" />
 
         <LinearLayout
             android:id="@+id/ll_getDeposit"
@@ -89,7 +196,7 @@
                 android:gravity="center"
                 android:text="@string/jrmf_get_deposit"
                 android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -101,16 +208,14 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
         android:paddingRight="@dimen/base_padding"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_my_rp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_rp"
-            />
+            android:src="@drawable/ic_rp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -120,16 +225,14 @@
             android:layout_toRightOf="@id/iv_my_rp"
             android:text="@string/my_rp_title"
             android:textColor="@color/color_535353"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -140,16 +243,14 @@
         android:background="@drawable/selector_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
-        android:paddingRight="@dimen/base_padding"
-        >
+        android:paddingRight="@dimen/base_padding">
 
         <ImageView
             android:id="@+id/iv_accountInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/account_info"
-            />
+            android:src="@drawable/account_info" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -159,16 +260,14 @@
             android:layout_toRightOf="@id/iv_accountInfo"
             android:text="@string/account_info_title"
             android:textColor="@color/color_535353"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -179,16 +278,14 @@
         android:background="@drawable/selector_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
-        android:paddingRight="@dimen/base_padding"
-        >
+        android:paddingRight="@dimen/base_padding">
 
         <ImageView
             android:id="@+id/iv_tradeDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/trade_detail"
-            />
+            android:src="@drawable/trade_detail" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -198,16 +295,14 @@
             android:layout_toRightOf="@id/iv_tradeDetail"
             android:text="@string/trade_detail_title"
             android:textColor="@color/color_535353"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -218,16 +313,14 @@
         android:background="@drawable/selector_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
-        android:paddingRight="@dimen/base_padding"
-        >
+        android:paddingRight="@dimen/base_padding">
 
         <ImageView
             android:id="@+id/iv_secureSetting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/secure_setting"
-            />
+            android:src="@drawable/secure_setting" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -237,16 +330,14 @@
             android:layout_toRightOf="@id/iv_secureSetting"
             android:text="@string/jrmf_security_setting"
             android:textColor="@color/color_535353"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
     </RelativeLayout>
 
 
@@ -258,16 +349,14 @@
         android:background="@drawable/selector_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
-        android:paddingRight="@dimen/base_padding"
-        >
+        android:paddingRight="@dimen/base_padding">
 
         <ImageView
             android:id="@+id/iv_mybank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/bank_setting"
-            />
+            android:src="@drawable/bank_setting" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -277,8 +366,7 @@
             android:layout_toRightOf="@id/iv_mybank"
             android:text="@string/jrmf_bank_card_setting"
             android:textColor="@color/color_535353"
-            android:textSize="12sp"
-            />
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/iv_mycard_arrow"
@@ -286,8 +374,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right"
-            />
+            android:src="@drawable/arrow_right" />
 
         <TextView
             android:id="@+id/tv_cardNum"
@@ -298,8 +385,7 @@
             android:layout_toLeftOf="@id/iv_mycard_arrow"
             android:text=""
             android:textColor="@color/color_b5b5b5"
-            android:textSize="15sp"
-            />
+            android:textSize="15sp" />
     </RelativeLayout>
 </LinearLayout>
 

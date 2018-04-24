@@ -31,7 +31,7 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
     private static final int GET_BALANCE = 1000;
 
     private TitleBar titleBar;
-    private TextView tv_balance;  // 余额
+    private TextView tv_balance, tv_userMoney, tv_agMoney, tv_texMoney, tv_ptMoney;  // 余额
     private LinearLayout mRechargeView, mGetDepositView;  // 充值 提现
     private RelativeLayout rl_account_info, rl_tradeDetail, rl_secureSetting, rl_mybank;
 
@@ -67,6 +67,11 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
         rl_tradeDetail = (RelativeLayout) findViewById(R.id.rl_tradeDetail);
         rl_secureSetting = (RelativeLayout) findViewById(R.id.rl_secureSetting);
         rl_mybank = (RelativeLayout) findViewById(R.id.rl_mybank);
+
+        tv_userMoney = (TextView) findViewById(R.id.tv_userMoney);
+        tv_agMoney = (TextView) findViewById(R.id.tv_agMoney);
+        tv_texMoney = (TextView) findViewById(R.id.tv_texMoney);
+        tv_ptMoney = (TextView) findViewById(R.id.tv_ptMoney);
 
         initListener();
     }
@@ -104,8 +109,12 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
         if (userBalanceResponse != null) {
             int balance = userBalanceResponse.getAgMoney() + userBalanceResponse.getPtMoney() + userBalanceResponse.getTexMoney() + userBalanceResponse.getUserMoney();
             tv_balance.setText("¥ " + balance + "");
+            tv_userMoney.setText("¥ " + userBalanceResponse.getUserMoney());
+            tv_agMoney.setText("¥ " + userBalanceResponse.getAgMoney());
+            tv_texMoney.setText("¥ " + userBalanceResponse.getTexMoney());
+            tv_ptMoney.setText("¥ " + userBalanceResponse.getPtMoney());
         } else {
-//            NToast.shortToast(mContext, "获取用户余额返回为空");
+            NToast.shortToast(mContext, "获取用户余额返回为空");
         }
     }
 
