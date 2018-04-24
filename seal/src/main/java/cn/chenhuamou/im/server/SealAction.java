@@ -26,6 +26,7 @@ import cn.chenhuamou.im.server.request.BankCardListRequest;
 import cn.chenhuamou.im.server.request.BettingRequest;
 import cn.chenhuamou.im.server.request.ChangePasswordRequest;
 import cn.chenhuamou.im.server.request.CheckPhoneRequest;
+import cn.chenhuamou.im.server.request.CreateBankPasswordRequest;
 import cn.chenhuamou.im.server.request.CreateGroupRequest;
 import cn.chenhuamou.im.server.request.CreateMyGroupRequest;
 import cn.chenhuamou.im.server.request.DeleteFriendRequest;
@@ -37,6 +38,7 @@ import cn.chenhuamou.im.server.request.JoinGroupRequest;
 import cn.chenhuamou.im.server.request.JoinMyGroupRequest;
 import cn.chenhuamou.im.server.request.KickMyGroupRequest;
 import cn.chenhuamou.im.server.request.LoginRequest;
+import cn.chenhuamou.im.server.request.ModifyBankPasswordRequest;
 import cn.chenhuamou.im.server.request.QuitGroupRequest;
 import cn.chenhuamou.im.server.request.RegisterRequest;
 import cn.chenhuamou.im.server.request.RemoveFromBlacklistRequest;
@@ -1599,4 +1601,54 @@ public class SealAction extends BaseAction {
         }
         return response;
     }
+
+    /**
+     * 为用户创建资金密码
+     *
+     * @throws HttpException
+     */
+    public PublicResponse createBankPassword(String UserName, String NewPwd) throws HttpException {
+        String url = getURL("api/User/CreateBankPassword");
+        String json = JsonMananger.beanToJson(new CreateBankPasswordRequest(UserName, "a123456", NewPwd));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        PublicResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("createBankPassword", result);
+            response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
+
+
+    /**
+     * 修改用户资金密码
+     *
+     * @throws HttpException
+     */
+    public PublicResponse modifyBankPassword(String UserName, String OldPwd, String NewPwd) throws HttpException {
+        String url = getURL("api/User/Funds");
+        String json = JsonMananger.beanToJson(new ModifyBankPasswordRequest(UserName, OldPwd, NewPwd));
+        StringEntity entity = null;
+        try {
+            entity = new StringEntity(json, ENCODING);
+            entity.setContentType(CONTENT_TYPE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
+        PublicResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("modifyBankPassword", result);
+            response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
+
 }

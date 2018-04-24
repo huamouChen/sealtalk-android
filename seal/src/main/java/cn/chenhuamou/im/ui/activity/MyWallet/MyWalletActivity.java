@@ -114,7 +114,7 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
             tv_texMoney.setText("¥ " + userBalanceResponse.getTexMoney());
             tv_ptMoney.setText("¥ " + userBalanceResponse.getPtMoney());
         } else {
-            NToast.shortToast(mContext, "获取用户余额返回为空");
+//            NToast.shortToast(mContext, "获取用户余额返回为空");
         }
     }
 

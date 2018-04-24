@@ -91,6 +91,7 @@
         <activity android:name=".ui.activity.MyWallet.SecureSettingActivity" />
         <activity android:name=".ui.activity.MyWallet.TradeHistoryActivity" />
         <activity android:name=".ui.activity.MyWallet.AddCardFirstActivity" />
+        <activity android:name=".ui.activity.MyWallet.SetPayPwdActivity" />
 
         <!--登录页面-->
         <activity

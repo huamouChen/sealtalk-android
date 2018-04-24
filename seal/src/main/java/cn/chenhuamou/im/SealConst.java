@@ -5,6 +5,9 @@ package cn.chenhuamou.im;
  * Company RongCloud
  */
 public class SealConst {
+
+    public static final String SharedPreferencesName = "config";
+
     public static final int DISCUSSION_REMOVE_MEMBER_REQUEST_CODE = 1;
     public static final int DISCUSSION_ADD_MEMBER_REQUEST_CODE = 2;
 
@@ -32,6 +35,9 @@ public class SealConst {
     public static final String Bind_Phone = "bindPhone";
     // 绑定手机
     public static final String Nick_Name = "NickName";
+
+    // 是设置资金密码 还是修改资金密码
+    public static final String IsCreatwPayPwd = "isCreatwPayPwd";
 
 
 

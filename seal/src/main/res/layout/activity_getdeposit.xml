@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:text="银行卡号"
+            android:text="银行ID"
             android:textSize="14sp" />
 
         <cn.chenhuamou.im.server.widget.ClearWriteEditText
@@ -203,7 +203,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toRightOf="@+id/tv_bankcard_item"
-            android:hint="请选择银行卡号"
+            android:hint="请输入银行ID"
             android:textColorHint="@color/color_c9c9c9"
             android:inputType="number"
             android:textSize="14sp" />

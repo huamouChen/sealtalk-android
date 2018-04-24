@@ -53,17 +53,17 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
 
         final SwitchButton mSwitchDetail = (SwitchButton) findViewById(R.id.switch_push_detail);
 
-        RongIMClient.getInstance().getPushContentShowStatus(new RongIMClient.ResultCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean aBoolean) {
-                mSwitchDetail.setChecked(aBoolean);
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode e) {
-
-            }
-        });
+//        RongIMClient.getInstance().getPushContentShowStatus(new RongIMClient.ResultCallback<Boolean>() {
+//            @Override
+//            public void onSuccess(Boolean aBoolean) {
+//                mSwitchDetail.setChecked(aBoolean);
+//            }
+//
+//            @Override
+//            public void onError(RongIMClient.ErrorCode e) {
+//
+//            }
+//        });
 
 
         mSwitchDetail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
