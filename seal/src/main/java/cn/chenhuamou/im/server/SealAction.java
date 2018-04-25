@@ -1558,7 +1558,7 @@ public class SealAction extends BaseAction {
      * 获取用户余额
      * */
     public UserBalanceResponse getUserBalance() throws HttpException {
-        String url = getURL("api/Funds/GetUserBalance");
+        String url = getURL("api/User/GetUserMoney");
         String result = httpManager.get(mContext, url);
         UserBalanceResponse response = null;
         if (!TextUtils.isEmpty(result)) {

@@ -271,7 +271,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onReceive(Context context, Intent intent) {
                 String string = intent.getStringExtra("String");
-                NToast.shortToast(mContext, string);
+//                NToast.shortToast(mContext, string);
             }
         });
 

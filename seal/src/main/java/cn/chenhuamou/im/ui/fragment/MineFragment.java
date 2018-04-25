@@ -175,16 +175,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 RongIM.getInstance().startCustomerServiceChat(getActivity(), "zf_1000_1481459114694", "在线客服", builder1.build());
                 break;
             case R.id.mine_about:  // 当前版本
-//                mNewVersionView.setVisibility(View.GONE);
-//                Intent intent = new Intent(getActivity(), AboutRongCloudActivity.class);
-//                intent.putExtra("isHasNewVersion", isHasNewVersion);
-//                if (!TextUtils.isEmpty(url)) {
-//                    intent.putExtra("url", url);
-//                }
-//                startActivity(intent);
-//                if (url != null && !url.isEmpty()) {
-                versionCheck();
-//                }
+                if (mNewVersionView.getVisibility() != View.GONE) {
+                    downNewVersion();
+                }
 
                 break;
             case R.id.my_wallet:
@@ -230,7 +223,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private void versionCheck() {
+    private void downNewVersion() {
         mNewVersionView.setVisibility(View.GONE);
         final AlertDialog dlg = new AlertDialog.Builder(getContext()).create();
         dlg.show();
@@ -255,13 +248,13 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
 //                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0 以下
                 if (url == null || url.isEmpty()) return;
-                    NToast.shortToast(getContext(), getString(R.string.downloading_apk));
-                    UpdateService.Builder.create(url)
-                            .setStoreDir("update/flag")
-                            .setDownloadSuccessNotificationFlag(Notification.DEFAULT_ALL)
-                            .setDownloadErrorNotificationFlag(Notification.DEFAULT_ALL)
-                            .build(getContext());
-                    dlg.cancel();
+                NToast.shortToast(getContext(), getString(R.string.downloading_apk));
+                UpdateService.Builder.create(url)
+                        .setStoreDir("update/flag")
+                        .setDownloadSuccessNotificationFlag(Notification.DEFAULT_ALL)
+                        .setDownloadErrorNotificationFlag(Notification.DEFAULT_ALL)
+                        .build(getContext());
+                dlg.cancel();
 //                } else {
 //                    getActivity().requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 //                }
@@ -277,7 +270,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (url == null || url.isEmpty()) return;
+                    if (url == null || url.isEmpty()) return;
                     NToast.shortToast(getContext(), getString(R.string.downloading_apk));
                     UpdateService.Builder.create(url)
                             .setStoreDir("update/flag")
