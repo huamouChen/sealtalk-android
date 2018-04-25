@@ -38,7 +38,7 @@ import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import cn.chenhuamou.im.ui.activity.AccountSettingActivity;
 import cn.chenhuamou.im.ui.activity.MyAccountActivity;
-import cn.chenhuamou.im.ui.activity.MyWallet.MyWalletActivity;
+import cn.chenhuamou.im.ui.activity.wallet.MyWalletActivity;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.CSCustomServiceInfo;

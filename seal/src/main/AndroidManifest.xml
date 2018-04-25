@@ -80,15 +80,15 @@
             android:theme="@style/myTransparent"  />
 
         <!--我的钱包-->
-        <activity android:name=".ui.activity.MyWallet.MyWalletActivity" />
-        <activity android:name=".ui.activity.MyWallet.AccountInfoActivity" />
-        <activity android:name=".ui.activity.MyWallet.BankSettingActivity" />
-        <activity android:name=".ui.activity.MyWallet.GetDepositActivity" />
-        <activity android:name=".ui.activity.MyWallet.RechargeActivity" />
-        <activity android:name=".ui.activity.MyWallet.SecureSettingActivity" />
-        <activity android:name=".ui.activity.MyWallet.TradeHistoryActivity" />
-        <activity android:name=".ui.activity.MyWallet.AddCardFirstActivity" />
-        <activity android:name=".ui.activity.MyWallet.SetPayPwdActivity" />
+        <activity android:name=".ui.activity.wallet.MyWalletActivity" />
+        <activity android:name=".ui.activity.wallet.AccountInfoActivity" />
+        <activity android:name=".ui.activity.wallet.BankSettingActivity" />
+        <activity android:name=".ui.activity.wallet.GetDepositActivity" />
+        <activity android:name=".ui.activity.wallet.RechargeActivity" />
+        <activity android:name=".ui.activity.wallet.SecureSettingActivity" />
+        <activity android:name=".ui.activity.wallet.TradeHistoryActivity" />
+        <activity android:name=".ui.activity.wallet.AddCardFirstActivity" />
+        <activity android:name=".ui.activity.wallet.SetPayPwdActivity" />
 
         <!--登录页面-->
         <activity

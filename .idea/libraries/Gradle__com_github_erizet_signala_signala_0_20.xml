@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.erizet.signala:signala-0.20">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-0.20.aar/588da345afbe11902ed26d5b449560ca/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-0.20.aar/588da345afbe11902ed26d5b449560ca/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-0.20.aar/2a44924311fbd867872ba3b793791303/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/signala-0.20.aar/2a44924311fbd867872ba3b793791303/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -1,6 +1,5 @@
-package cn.chenhuamou.im.ui.activity.MyWallet;
+package cn.chenhuamou.im.ui.activity.wallet;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +10,7 @@ import android.widget.TextView;
 
 import com.jrmf360.rylib.wallet.widget.TitleBar;
 
-import org.w3c.dom.Text;
-
 import cn.chenhuamou.im.R;
-import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.UserBalanceResponse;
 import cn.chenhuamou.im.server.utils.NToast;

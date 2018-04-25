@@ -1,12 +1,9 @@
-package cn.chenhuamou.im.ui.activity.MyWallet;
+package cn.chenhuamou.im.ui.activity.wallet;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.jrmf360.rylib.wallet.widget.TitleBar;
 

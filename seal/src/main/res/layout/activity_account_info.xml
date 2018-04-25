@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_bg"
     android:orientation="vertical"
-    tools:context=".ui.activity.MyWallet.AccountInfoActivity" >
+    tools:context=".ui.activity.wallet.AccountInfoActivity" >
 
     <include layout="@layout/w_layout_titlebar"
         android:id="@+id/titlebar"/>

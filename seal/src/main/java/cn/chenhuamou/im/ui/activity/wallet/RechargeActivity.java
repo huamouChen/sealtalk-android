@@ -1,6 +1,5 @@
-package cn.chenhuamou.im.ui.activity.MyWallet;
+package cn.chenhuamou.im.ui.activity.wallet;
 
-import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jrmf360.rylib.wallet.widget.TitleBar;
-
-import org.w3c.dom.Text;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
