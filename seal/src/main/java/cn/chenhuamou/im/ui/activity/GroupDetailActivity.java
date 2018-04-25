@@ -1,12 +1,24 @@
 package cn.chenhuamou.im.ui.activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
@@ -29,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +115,18 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private static final int CHECKGROUPURL = 39;
 
 
+    private static final int PERMISSIONS_FOR_TAKE_PHOTO = 10;
+    private static final int PERMISSIONS_FOR_PICK_IMAGE = 11;
+    //图片文件路径
+    private String picPath;
+    //图片对应Uri
+    private Uri photoUri;
+    //拍照对应RequestCode
+    public static final int SELECT_PIC_BY_TACK_PHOTO = 1;
+    //裁剪图片
+    private static final int CROP_PICTURE = 3;
+
+
     private boolean isCreated = false;
     private DemoGridView mGridView;
     private List<GroupMember> mGroupMember = new ArrayList<>();
@@ -113,12 +139,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private boolean isFromConversation;
     private LinearLayout mGroupAnnouncementDividerLinearLayout;
     private TextView mGroupName;
-    private PhotoUtils photoUtils;
+
     private BottomMenuDialog dialog;
-    private UploadManager uploadManager;
+
     private String imageUrl;
     private Uri selectUri;
-    private byte[] portriatBytes;  // 群头像流
+    private byte[] portraitBytes;  // 群头像流
     private String newGroupName;
     private LinearLayout mGroupNotice;
     private LinearLayout mSearchMessagesLinearLayout;
@@ -146,7 +172,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             getGroups();
             getGroupMembers();
         }
-        setPortraitChangeListener();
+
 
         SealAppContext.getInstance().pushActivity(this);
 
@@ -307,7 +333,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             case GET_GROUP_INFO:
                 return action.getGroupInfo(fromConversationId);
             case UPDATE_GROUP_HEADER:
-                return action.setGroupPortrait(fromConversationId, portriatBytes);
+                return action.setGroupPortrait(fromConversationId, portraitBytes);
             case GET_QI_NIU_TOKEN:
                 return action.getQiNiuToken();
             case UPDATE_GROUP_NAME:
@@ -429,12 +455,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     }
 
                     break;
-                case GET_QI_NIU_TOKEN:
-                    QiNiuTokenResponse response6 = (QiNiuTokenResponse) result;
-                    if (response6.getCode() == 200) {
-                        uploadImage(response6.getResult().getDomain(), response6.getResult().getToken(), selectUri);
-                    }
-                    break;
+
                 case UPDATE_GROUP_NAME:
                     SetGroupNameResponse response7 = (SetGroupNameResponse) result;
                     if (response7.getCode() == 200) {
@@ -789,47 +810,105 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     @SuppressWarnings("unchecked")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            List<Friend> newMemberData = (List<Friend>) data.getSerializableExtra("newAddMember");
-            List<Friend> deleMember = (List<Friend>) data.getSerializableExtra("deleteMember");
-            if (newMemberData != null && newMemberData.size() > 0) {
-                for (Friend friend : newMemberData) {
-                    GroupMember member = new GroupMember(fromConversationId,
-                            friend.getUserId(),
-                            friend.getName(),
-                            friend.getPortraitUri(),
-                            null);
-                    mGroupMember.add(1, member);
+
+
+        // 拍照
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_PIC_BY_TACK_PHOTO) {
+                String[] pojo = {MediaStore.Images.Media.DATA};
+                Cursor cursor = managedQuery(photoUri, pojo, null, null, null);
+                if (cursor != null) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(pojo[0]);
+                    cursor.moveToFirst();
+                    picPath = cursor.getString(columnIndex);
                 }
-
-
-                initGroupMemberData();
-            } else if (deleMember != null && deleMember.size() > 0) {
-                for (Friend friend : deleMember) {
-                    for (GroupMember member : mGroupMember) {
-                        if (member.getUserId().equals(friend.getUserId())) {
-                            mGroupMember.remove(member);
-                            break;
-                        }
+                if (picPath != null && (picPath.endsWith(".png") || picPath.endsWith(".PNG") || picPath.endsWith(".jpg") || picPath.endsWith(".JPG"))) {
+                    photoUri = Uri.fromFile(new File(picPath));
+                    if (Build.VERSION.SDK_INT > 23) {
+                        photoUri = FileProvider.getUriForFile(this, "cn.chenhuamou.im.fileprovider", new File(picPath));
+                        cropForN(picPath, CROP_PICTURE);
+                    } else {
+                        startPhotoZoom(photoUri, CROP_PICTURE);
                     }
+                } else {
+                    //错误提示
+                    NToast.shortToast(mContext, "头像设置失败");
                 }
-                initGroupMemberData();
             }
 
-            // 刷新本地数据，更新群组成员的本地数据库
-            SealUserInfoManager.getInstance().getGroups(fromConversationId);
-            SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
-            BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
+            // 裁剪后的图片
+            if (requestCode == CROP_PICTURE) {
+                if (photoUri != null) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(picPath);
+                    if (bitmap != null) {
+                        mGroupHeader.setImageBitmap(bitmap);
+                        portraitBytes = bitMap2StringBase64(bitmap);
+                        LoadDialog.show(mContext);
+                        request(UPDATE_GROUP_HEADER);
+                    }
+                } else {
+                    NToast.shortToast(mContext, "头像设置失败");
+                }
+            }
+        }
+
+        // 从相册获取
+        if (requestCode == PERMISSIONS_FOR_PICK_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    Uri uri = data.getData();
+                    Bitmap bit = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    mGroupHeader.setImageBitmap(bit);
+                    portraitBytes = bitMap2StringBase64(bit);
+                    LoadDialog.show(mContext);
+                    request(UPDATE_GROUP_HEADER);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    NToast.shortToast(mContext, "头像设置失败");
+                }
+            } else {
+                NToast.shortToast(mContext, "头像设置失败");
+            }
+        }
+
+        if (requestCode == 100 || requestCode == 101) {
+            if (data != null) {
+                List<Friend> newMemberData = (List<Friend>) data.getSerializableExtra("newAddMember");
+                List<Friend> deleMember = (List<Friend>) data.getSerializableExtra("deleteMember");
+                if (newMemberData != null && newMemberData.size() > 0) {
+                    for (Friend friend : newMemberData) {
+                        GroupMember member = new GroupMember(fromConversationId,
+                                friend.getUserId(),
+                                friend.getName(),
+                                friend.getPortraitUri(),
+                                null);
+                        mGroupMember.add(1, member);
+                    }
 
 
+                    initGroupMemberData();
+                } else if (deleMember != null && deleMember.size() > 0) {
+                    for (Friend friend : deleMember) {
+                        for (GroupMember member : mGroupMember) {
+                            if (member.getUserId().equals(friend.getUserId())) {
+                                mGroupMember.remove(member);
+                                break;
+                            }
+                        }
+                    }
+                    initGroupMemberData();
+                }
+
+
+                // 刷新本地数据，更新群组成员的本地数据库
+                SealUserInfoManager.getInstance().getGroups(fromConversationId);
+                SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
+                BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
+
+
+            }
         }
-        switch (requestCode) {
-            case PhotoUtils.INTENT_CROP:
-            case PhotoUtils.INTENT_TAKE:
-            case PhotoUtils.INTENT_SELECT:
-                photoUtils.onActivityResult(GroupDetailActivity.this, requestCode, resultCode, data);
-                break;
-        }
+
 
     }
 
@@ -894,37 +973,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         finish();
     }
 
-    private void setPortraitChangeListener() {
-        photoUtils = new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
-            @Override
-            public void onPhotoResult(Uri uri) {
-                if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
-                    selectUri = uri;
-                    LoadDialog.show(mContext);
-                    final File file = new File(selectUri.getPath());
-                    if (file.exists()) {
-                        Bitmap bm = BitmapFactory.decodeFile(selectUri.getPath());
-                        if (bm != null) {
-                            portriatBytes = bitMap2StringBase64(bm);
-                            request(UPDATE_GROUP_HEADER);
-                        } else {
-                            LoadDialog.dismiss(mContext);
-                            NToast.shortToast(mContext, "图片获取失败");
-                        }
-
-                    } else {
-                        LoadDialog.dismiss(mContext);
-                        NToast.shortToast(mContext, "文件不存在");
-                    }
-                }
-            }
-
-            @Override
-            public void onPhotoCancel() {
-
-            }
-        });
-    }
 
     /*
      * 前台处理图片
@@ -945,55 +993,179 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         }
 
         dialog = new BottomMenuDialog(mContext);
+
+        // 拍照
         dialog.setConfirmListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                photoUtils.takePicture(GroupDetailActivity.this);
+
+                //小于6.0版本直接操作
+                if (Build.VERSION.SDK_INT < 23) {
+                    takePictures();
+                } else {
+                    //6.0以后权限处理
+                    permissionForM();
+                }
             }
         });
+
+        // 从本地导入
         dialog.setMiddleListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                photoUtils.selectPicture(GroupDetailActivity.this);
+                choosePhoto();
             }
         });
         dialog.show();
     }
 
+    /*
+     * 从相册获取图片
+     * */
+    private void choosePhoto() {
+        /**
+         * 打开选择图片的界面
+         */
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");//相片类型
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PERMISSIONS_FOR_PICK_IMAGE);
+    }
 
-    public void uploadImage(final String domain, String imageToken, Uri imagePath) {
-        if (TextUtils.isEmpty(domain) && TextUtils.isEmpty(imageToken) && TextUtils.isEmpty(imagePath.toString())) {
-            throw new RuntimeException("upload parameter is null!");
+
+    /**
+     * 拍照获取图片
+     */
+    private void takePictures() {
+        //执行拍照前，应该先判断SD卡是否存在
+        String SDState = Environment.getExternalStorageState();
+        if (SDState.equals(Environment.MEDIA_MOUNTED)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            ContentValues values = new ContentValues();
+            photoUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            startActivityForResult(intent, SELECT_PIC_BY_TACK_PHOTO);
+        } else {
+            Toast.makeText(this, "手机未插入内存卡", Toast.LENGTH_LONG).show();
         }
-        File imageFile = new File(imagePath.getPath());
+    }
 
-        if (this.uploadManager == null) {
-            this.uploadManager = new UploadManager();
-        }
-        this.uploadManager.put(imageFile, null, imageToken, new UpCompletionHandler() {
 
-            @Override
-            public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
-                if (responseInfo.isOK()) {
-                    try {
-                        String key = (String) jsonObject.get("key");
-                        imageUrl = "http://" + domain + "/" + key;
-                        Log.e("uploadImage", imageUrl);
-                        if (!TextUtils.isEmpty(imageUrl)) {
-                            request(UPDATE_GROUP_HEADER);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+    /**
+     * 图片裁剪，参数根据自己需要设置
+     *
+     * @param uri
+     * @param REQUE_CODE_CROP
+     */
+    private void startPhotoZoom(Uri uri,
+                                int REQUE_CODE_CROP) {
+        int dp = 500;
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+        intent.putExtra("crop", "true");
+        intent.putExtra("scale", true);// 去黑边
+        intent.putExtra("scaleUpIfNeeded", true);// 去黑边
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 4);//输出是X方向的比例
+        intent.putExtra("aspectY", 3);
+        intent.putExtra("outputX", 600);//输出X方向的像素
+        intent.putExtra("outputY", 450);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra("return-data", false);//设置为不返回数据
+        startActivityForResult(intent, REQUE_CODE_CROP);
+    }
+
+    /**
+     * 7.0以上版本图片裁剪操作
+     *
+     * @param imagePath
+     * @param REQUE_CODE_CROP
+     */
+    private void cropForN(String imagePath, int REQUE_CODE_CROP) {
+        Uri cropUri = getImageContentUri(new File(imagePath));
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(cropUri, "image/*");
+        intent.putExtra("crop", "true");
+        //输出是X方向的比例
+        intent.putExtra("aspectX", 4);
+        intent.putExtra("aspectY", 3);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 600);
+        intent.putExtra("outputY", 450);
+        intent.putExtra("scale", true);
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cropUri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true);
+        startActivityForResult(intent, REQUE_CODE_CROP);
+    }
+
+
+    private Uri getImageContentUri(File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
             }
-        }, null);
+        }
+    }
+
+
+    /**
+     * 安卓6.0以上版本权限处理
+     */
+    private void permissionForM() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_FOR_TAKE_PHOTO);
+        } else {
+            takePictures();
+        }
+    }
+
+    /*
+     * android 6.0 动态申请权限
+     * */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == PERMISSIONS_FOR_TAKE_PHOTO) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePictures();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 

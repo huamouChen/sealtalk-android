@@ -569,30 +569,7 @@ public class SealAction extends BaseAction {
         return response;
     }
 
-    /**
-     * 创建群组
-     *
-     * @param name      群组名
-     * @param memberIds 群组成员id
-     * @throws HttpException
-     */
-    public CreateGroupResponse createGroup(String name, List<String> memberIds) throws HttpException {
-        String url = getURL("group/create");
-        String json = JsonMananger.beanToJson(new CreateGroupRequest(name, memberIds));
-        StringEntity entity = null;
-        try {
-            entity = new StringEntity(json, ENCODING);
-            entity.setContentType(CONTENT_TYPE);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
-        CreateGroupResponse response = null;
-        if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, CreateGroupResponse.class);
-        }
-        return response;
-    }
+
 
     /**
      * 创建者设置群组头像

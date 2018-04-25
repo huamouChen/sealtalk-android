@@ -927,9 +927,9 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             case Bet:
                 KqwfPcddResponse kqwfPcddResponse = (KqwfPcddResponse) result;
                 if (kqwfPcddResponse.isResult()) {
-                    NToast.shortToast(mContext, "投注成功");
+//                    NToast.shortToast(mContext, "投注成功");
                 } else {
-                    NToast.shortToast(mContext, kqwfPcddResponse.getError());
+//                    NToast.shortToast(mContext, kqwfPcddResponse.getError());
                 }
                 break;
             case LotteryInfo:
