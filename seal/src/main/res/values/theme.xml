@@ -1,7 +1,11 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="MyTheme" parent="android:ThemeOverlay.Material.ActionBar">
     <!--<style name="MyTheme" parent="@android:style/Theme.Holo.Light">-->
+        <item name="android:colorPrimaryDark">#0195ff</item>
+        <item name="android:colorPrimary">#0195ff</item>
+        <item name="android:colorAccent">#0195ff</item>
+
         <item name="android:listDivider">@android:color/transparent</item>
         <item name="android:listSelector">@android:color/transparent</item>
         <item name="android:textColorPrimary">@color/rc_text_color_primary</item>

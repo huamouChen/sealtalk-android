@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "cn.chenhuamou.im"
-        minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 106
-        versionName "1.0.6"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 108
+        versionName "1.0.8"
 
         multiDexEnabled true
         ndk {
@@ -49,7 +49,10 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.android.support:support-v4:23.4.0'
+    //noinspection GradleCompatible
+
+    api 'com.android.support:support-v4:27.1.1'
+
     api project(':recognizer')
     api project(':contactcard')
     api project(':sticker')

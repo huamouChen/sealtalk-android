@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.chenhuamou.im">
 
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />

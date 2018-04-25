@@ -243,7 +243,8 @@
         android:background="@drawable/selector_item"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/base_padding"
-        android:paddingRight="@dimen/base_padding">
+        android:paddingRight="@dimen/base_padding"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_accountInfo"
