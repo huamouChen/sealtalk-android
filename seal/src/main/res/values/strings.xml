@@ -7,6 +7,8 @@
 
     <string name="token_not_available">token 失效，请重新登录</string>
 
+    <string name="rex_rmb">¥ </string>
+
     <!--主页-->
     <string name="main_name">融云</string>
     <string name="main_conversation">会话</string>

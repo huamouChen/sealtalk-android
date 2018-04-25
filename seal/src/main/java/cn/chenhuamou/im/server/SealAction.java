@@ -33,6 +33,7 @@ import cn.chenhuamou.im.server.request.DeleteFriendRequest;
 import cn.chenhuamou.im.server.request.DeleteGroupMemberRequest;
 import cn.chenhuamou.im.server.request.DismissGroupRequest;
 import cn.chenhuamou.im.server.request.FriendInvitationRequest;
+import cn.chenhuamou.im.server.request.GetUserCashRequest;
 import cn.chenhuamou.im.server.request.InviteMyGroupRequest;
 import cn.chenhuamou.im.server.request.JoinGroupRequest;
 import cn.chenhuamou.im.server.request.JoinMyGroupRequest;
@@ -78,6 +79,8 @@ import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
+import cn.chenhuamou.im.server.response.GetUserCashResponse;
+import cn.chenhuamou.im.server.response.GetUserChargeListResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByPhoneResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoResponse;
@@ -1647,6 +1650,58 @@ public class SealAction extends BaseAction {
         if (!TextUtils.isEmpty(result)) {
             NLog.e("modifyBankPassword", result);
             response = jsonToBean(result, PublicResponse.class);
+        }
+        return response;
+    }
+
+    /**
+     * 获取用户提现列表
+     *  userName 用户账号
+     *  startDate 开始日期  2018-04-25
+     *  endDate 结束日期    2018-04-25
+     *  pageSize 每页取多少条
+     *  pageIndex 第几页
+     * @throws HttpException
+     */
+    public GetUserCashResponse getUserCashLists(String userName, String startDate, String endDate, int pageSize, int pageIndex) throws HttpException {
+        String url = getURL("api/User/Cash");
+       Map<String, String> map = new HashMap<>();
+       map.put("userName", userName);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("pageSize", pageSize + "");
+        map.put("pageIndex", pageIndex + "");
+        String result = httpManager.get(mContext, url, new RequestParams(map));
+        GetUserCashResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetUserCashResponse", result);
+            response = jsonToBean(result, GetUserCashResponse.class);
+        }
+        return response;
+    }
+
+    /**
+     * 获取用户的充值记录
+     *  userName 用户账号
+     *  startDate 开始日期  2018-04-25
+     *  endDate 结束日期    2018-04-25
+     *  pageSize 每页取多少条
+     *  pageIndex 第几页
+     * @throws HttpException
+     */
+    public GetUserChargeListResponse getUserChargeLists(String userName, String startDate, String endDate, int pageSize, int pageIndex) throws HttpException {
+        String url = getURL("api/User/Charge");
+        Map<String, String> map = new HashMap<>();
+        map.put("userName", userName);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("pageSize", pageSize + "");
+        map.put("pageIndex", pageIndex + "");
+        String result = httpManager.get(mContext, url, new RequestParams(map));
+        GetUserChargeListResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetUserChargeListResponse", result);
+            response = jsonToBean(result, GetUserChargeListResponse.class);
         }
         return response;
     }

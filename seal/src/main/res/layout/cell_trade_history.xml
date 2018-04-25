@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_white"
+    android:layout_margin="2dp">
+
+
+    <TextView
+        android:id="@+id/tv_trade_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="充值"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/text_tips_color"/>
+
+    <TextView
+        android:id="@+id/tv_trade_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2018-05-25"
+        android:layout_below="@+id/tv_trade_item"
+        android:layout_alignStart="@+id/tv_trade_item"
+        android:textColor="@color/text_tips_color"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¥ 100"
+        android:textColor="@color/red"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"/>
+
+
+</RelativeLayout>

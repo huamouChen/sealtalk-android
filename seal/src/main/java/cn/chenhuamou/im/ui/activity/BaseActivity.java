@@ -56,7 +56,6 @@ public abstract class BaseActivity extends FragmentActivity implements OnDataLis
         mBtnBackDrawable.setBounds(0, 0, mBtnBackDrawable.getMinimumWidth(),
                                    mBtnBackDrawable.getMinimumHeight());
 
-
         mAsyncTaskManager = AsyncTaskManager.getInstance(getApplicationContext());
         // Activity管理
         action = new SealAction(mContext);
