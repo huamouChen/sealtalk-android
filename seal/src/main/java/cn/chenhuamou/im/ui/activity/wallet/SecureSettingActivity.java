@@ -35,7 +35,7 @@ public class SecureSettingActivity extends BaseActivity implements View.OnClickL
     private void initView() {
         mHeadLayout.setVisibility(View.GONE);
 
-        titleBar = (TitleBar) findViewById(R.id.titlebar);
+        titleBar = findViewById(R.id.titlebar);
         titleBar.setTitle("安全设置");
 
         // 返回按钮
@@ -46,15 +46,23 @@ public class SecureSettingActivity extends BaseActivity implements View.OnClickL
             }
         });
 
-        mModifyPwdView = (RelativeLayout) findViewById(R.id.rl_modify_money_pwd);
-        mCreatePwdView = (RelativeLayout) findViewById(R.id.rl_creat_money_pwd);
+        mModifyPwdView = findViewById(R.id.rl_modify_money_pwd);
+        mCreatePwdView = findViewById(R.id.rl_creat_money_pwd);
+
+        boolean isHavePayPassword = getSharedPreferences(SealConst.SharedPreferencesName, MODE_PRIVATE).getBoolean(SealConst.IsHavePayPassword, false);
+
+        if (isHavePayPassword) {
+            mCreatePwdView.setVisibility(View.GONE);
+        } else {
+            mCreatePwdView.setVisibility(View.VISIBLE);
+        }
 
         addListener();
     }
 
     /*
-    * 设置点击监听
-    * */
+     * 设置点击监听
+     * */
     private void addListener() {
         mModifyPwdView.setOnClickListener(this);
         mCreatePwdView.setOnClickListener(this);

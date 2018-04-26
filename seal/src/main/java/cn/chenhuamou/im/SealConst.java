@@ -31,6 +31,9 @@ public class SealConst {
     // 是否是由群组点开查看用户信息
     public static final String IsFromGroup = "isFromGroup";
 
+    // 资金密码
+    public static final String IsHavePayPassword = "IsHavePayPassword";
+
     // 绑定手机
     public static final String Bind_Phone = "bindPhone";
     // 绑定手机

@@ -223,6 +223,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         String portraitUri = BaseAction.DOMAIN + userInfoByIdResponse.getHeaderImage();
                         editor.putString(SealConst.Nick_Name, nickName.isEmpty() ? phoneString : nickName);
                         editor.putString(SealConst.Bind_Phone, phone);
+                        editor.putBoolean(SealConst.IsHavePayPassword, (userInfoByIdResponse.getBankPassword() != null && !userInfoByIdResponse.getBankPassword().isEmpty()));
                         editor.putString(SealConst.SEALTALK_LOGING_PORTRAIT, portraitUri);
                         editor.commit();
                         goToMain();
