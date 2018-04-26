@@ -1512,9 +1512,9 @@ public class SealAction extends BaseAction {
      *
      * @throws HttpException
      */
-    public PublicResponse addUserBank(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew) throws HttpException {
+    public PublicResponse addUserBank(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew, String province) throws HttpException {
         String url = getURL("api/User/AddUserBank");
-        String json = JsonMananger.beanToJson(new AddBankRequest(userName, bankCode, bankNum, bankUserName, bankUserPwd, bankNumNew));
+        String json = JsonMananger.beanToJson(new AddBankRequest(userName, bankCode, bankNum, bankUserName, bankUserPwd, bankNumNew, province));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);

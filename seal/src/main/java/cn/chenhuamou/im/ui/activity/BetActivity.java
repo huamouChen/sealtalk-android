@@ -124,7 +124,7 @@ public class BetActivity extends Activity implements View.OnClickListener, OnDat
                     // 调用PC蛋蛋接口
                     mAsyncTaskManager.request(Bet, this);
                     // 发送消息
-                    String betString = String.format("玩法：%s\n金额：%s", playString, moneyString);
+                    String betString = playString + moneyString;
                     BroadcastManager.getInstance(mContext).sendBroadcast("SendBetMessage", betString);
                 }
 

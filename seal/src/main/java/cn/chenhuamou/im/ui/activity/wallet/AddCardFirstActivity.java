@@ -26,7 +26,7 @@ public class AddCardFirstActivity extends BaseActivity {
 
     private TitleBar titleBar;
 
-    private ClearEditText cet_bank_code, cet_bankCardNum, cet_bankCardNum_com, cet_card_username, cet_pwd;
+    private ClearEditText cet_bank_code, cet_bankCardNum, cet_bankCardNum_com, cet_card_username, cet_pwd, cet_province;
     private Button btn_next;
 
 
@@ -38,7 +38,8 @@ public class AddCardFirstActivity extends BaseActivity {
                 cet_bankCardNum.getText().toString(),
                 cet_card_username.getText().toString(),
                 cet_pwd.getText().toString(),
-                cet_bankCardNum_com.getText().toString());
+                cet_bankCardNum_com.getText().toString(),
+                cet_province.getText().toString());
     }
 
     @Override
@@ -82,13 +83,14 @@ public class AddCardFirstActivity extends BaseActivity {
             }
         });
 
-        cet_bank_code = (ClearEditText) findViewById(R.id.cet_bank_code);
-        cet_bankCardNum = (ClearEditText) findViewById(R.id.cet_bankCardNum);
-        cet_bankCardNum_com = (ClearEditText) findViewById(R.id.cet_bankCardNum_com);
-        cet_card_username = (ClearEditText) findViewById(R.id.cet_card_username);
-        cet_pwd = (ClearEditText) findViewById(R.id.cet_pwd);
+        cet_bank_code =  findViewById(R.id.cet_bank_code);
+        cet_bankCardNum =  findViewById(R.id.cet_bankCardNum);
+        cet_bankCardNum_com =  findViewById(R.id.cet_bankCardNum_com);
+        cet_card_username =  findViewById(R.id.cet_card_username);
+        cet_pwd =  findViewById(R.id.cet_pwd);
+        cet_province = findViewById(R.id.cet_province);
 
-        btn_next = (Button) findViewById(R.id.btn_next);
+        btn_next =  findViewById(R.id.btn_next);
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override

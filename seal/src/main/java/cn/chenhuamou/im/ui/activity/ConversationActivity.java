@@ -281,7 +281,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onReceive(Context context, Intent intent) {
                 String betString = intent.getStringExtra("String");
-                betString += "\n期号：" + current_num;
                 TextMessage mTextMessage = TextMessage.obtain(betString);
                 io.rong.imlib.model.Message myMessage = io.rong.imlib.model.Message.obtain(mTargetId, Conversation.ConversationType.GROUP, mTextMessage);
                 RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMediaMessageCallback() {

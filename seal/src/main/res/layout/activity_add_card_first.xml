@@ -177,6 +177,40 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
     </LinearLayout>
+
+    <!--省份-->
+    <LinearLayout
+        android:id="@+id/ll_province"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_mywallet_height"
+        android:layout_below="@id/ll_pwd"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/base_padding2" >
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="开户省份"
+            android:textColor="@color/color_959595"
+            android:textSize="14sp" />
+
+        <com.jrmf360.rylib.wallet.widget.ClearEditText
+            android:id="@+id/cet_province"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="请输入开户省份，如广东省"
+            android:paddingRight="@dimen/base_padding"
+            android:inputType="textPassword"
+            android:textColorHint="@color/color_b7b7b7"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
     
    <TextView 
        android:id="@+id/tv_support"

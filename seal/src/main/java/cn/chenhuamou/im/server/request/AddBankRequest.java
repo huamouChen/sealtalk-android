@@ -7,13 +7,14 @@ package cn.chenhuamou.im.server.request;
 public class AddBankRequest {
 
 
-    public AddBankRequest(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew) {
+    public AddBankRequest(String userName, String bankCode, String bankNum, String bankUserName, String bankUserPwd, String bankNumNew, String province) {
         UserName = userName;
         BankCode = bankCode;
         BankNum = bankNum;
         BankUserName = bankUserName;
         BankUserPwd = bankUserPwd;
         BankNumNew = bankNumNew;
+        Province = province;
     }
 
     /**
@@ -31,6 +32,7 @@ public class AddBankRequest {
     private String BankUserName;
     private String BankUserPwd;
     private String BankNumNew;
+    private String Province;
 
     public String getUserName() {
         return UserName;
@@ -78,6 +80,14 @@ public class AddBankRequest {
 
     public void setBankNumNew(String BankNumNew) {
         this.BankNumNew = BankNumNew;
+    }
+
+    public String getProvince() {
+        return Province;
+    }
+
+    public void setProvince(String province) {
+        Province = province;
     }
 }
 
