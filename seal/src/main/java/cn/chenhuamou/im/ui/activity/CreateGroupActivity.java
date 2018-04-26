@@ -182,7 +182,12 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
                     if (createGroupResponse.getCode() != null && createGroupResponse.getCode().getCodeId().equals("100")) {
                         mGroupId = createGroupResponse.getValue().getGroupId() + "";
                         mGroupName = createGroupResponse.getValue().getGroupName();
-                        imageUrl = BaseAction.DOMAIN + createGroupResponse.getValue().getGroupImage();
+                        if (createGroupResponse.getValue().getGroupImage() != null && !createGroupResponse.getValue().getGroupImage().isEmpty()) {
+                            imageUrl = BaseAction.DOMAIN + createGroupResponse.getValue().getGroupImage();
+                        } else {
+                            imageUrl = "";
+                        }
+
                         Groups groups = new Groups(mGroupId, mGroupName, imageUrl);
                         groups.setDisplayName(mGroupName);
                         SealUserInfoManager.getInstance().addGroup(groups);

@@ -129,7 +129,7 @@ public class MainActivity extends FragmentActivity implements
                 String json = intent.getStringExtra("result");
                 try {
                     Groups groups = JsonMananger.jsonToBean(json, Groups.class);
-                    RongIM.getInstance().refreshGroupInfoCache(new Group(groups.getGroupId(), groups.getGroupName(), Uri.parse(groups.getPortraitUri())));
+                    RongIM.getInstance().refreshGroupInfoCache(new Group(groups.getUserId(), groups.getGroupName(), Uri.parse(groups.getPortraitUri())));
                 } catch (HttpException e) {
                     e.printStackTrace();
                 }
