@@ -86,7 +86,11 @@ public class BankSettingActivity extends BaseActivity {
                 LoadDialog.dismiss(mContext);
                 List<BankListResponse> list = (List<BankListResponse>) result;
                 if (list != null && list.size() > 0) {
+                    // 清空旧的数据
+                    datas.clear();
                     datas.addAll(list);
+                    // 添加银行卡选项
+                    datas.add( new BankListResponse());
                     adapterBankCard.notifyDataSetChanged();
                 }
                 break;
@@ -171,20 +175,25 @@ public class BankSettingActivity extends BaseActivity {
                 if (view == null) {
                     viewHolder = new BankCarViewHolder();
                     view = LayoutInflater.from(BankSettingActivity.this).inflate(R.layout.item_setting_bank_cark_list, null);
-                    viewHolder.tv_tv_bankCardName = (TextView) view.findViewById(R.id.tv_bankCardName);
-                    viewHolder.tv_bankCardNum = (TextView) view.findViewById(R.id.tv_bankCardNum);
+                    viewHolder.tv_bank_owner = view.findViewById(R.id.tv_bank_owner);
+                    viewHolder.tv_bankCardNum = view.findViewById(R.id.tv_bank_num);
+                    viewHolder.tv_bank_code = view.findViewById(R.id.tv_bank_code);
+                    viewHolder.tv_bank_name = view.findViewById(R.id.tv_bank_name);
+                    viewHolder.tv_unbind = view.findViewById(R.id.tv_unbind);
                     view.setTag(viewHolder);
                 } else {
                     viewHolder = (BankCarViewHolder) view.getTag();
                 }
 
-                viewHolder.tv_tv_bankCardName.setText(bankListResponse.getBankName());
+                viewHolder.tv_bank_owner.setText(bankListResponse.getBankUserName());
+                viewHolder.tv_bank_name.setText(bankListResponse.getBankCodeName());
+                viewHolder.tv_bank_code.setText(bankListResponse.getBankCode());
                 viewHolder.tv_bankCardNum.setText(bankListResponse.getBankNum());
 
                 return view;
             } else { // 添加银行卡
                 View cell = LayoutInflater.from(BankSettingActivity.this).inflate(R.layout.item_add_bank_card, null);
-                LinearLayout linearLayout = (LinearLayout) cell.findViewById(R.id.ll_add_card);
+                LinearLayout linearLayout = cell.findViewById(R.id.ll_add_card);
                 linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -198,7 +207,7 @@ public class BankSettingActivity extends BaseActivity {
 
 
     class BankCarViewHolder {
-        TextView tv_tv_bankCardName, tv_bankCardNum;
+        TextView tv_bank_owner, tv_bankCardNum, tv_unbind, tv_bank_code, tv_bank_name;
     }
 
 
