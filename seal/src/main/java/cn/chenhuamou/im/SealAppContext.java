@@ -229,28 +229,20 @@ public class SealAppContext implements RongIM.ConversationListBehaviorListener,
                 BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_RED_DOT);
             } else if (contactNotificationMessage.getOperation().equals("AcceptResponse")) {
                 //对方同意我的好友请求
-                ContactNotificationMessageData contactNotificationMessageData;
-                try {
-                    contactNotificationMessageData = JsonMananger.jsonToBean(contactNotificationMessage.getExtra(), ContactNotificationMessageData.class);
-                } catch (HttpException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (contactNotificationMessage.getTargetUserId() == null || contactNotificationMessage.getTargetUserId().isEmpty()) {
                     return false;
                 }
-                if (contactNotificationMessageData != null) {
-                    if (SealUserInfoManager.getInstance().isFriendsRelationship(contactNotificationMessage.getSourceUserId())) {
-                        return false;
-                    }
-                    SealUserInfoManager.getInstance().addFriend(
-                            new Friend(contactNotificationMessage.getSourceUserId(),
-                                    contactNotificationMessageData.getSourceUserNickname(),
-                                    null, null, null, null,
-                                    null, null,
-                                    CharacterParser.getInstance().getSpelling(contactNotificationMessageData.getSourceUserNickname()),
-                                    null));
+                if (SealUserInfoManager.getInstance().isFriendsRelationship(contactNotificationMessage.getTargetUserId())) {
+                    return false;
                 }
+                SealUserInfoManager.getInstance().addFriend(
+                        new Friend(contactNotificationMessage.getTargetUserId(),
+                                contactNotificationMessage.getTargetUserId(),
+                                null, null, null, null,
+                                null, null,
+                                CharacterParser.getInstance().getSpelling(contactNotificationMessage.getTargetUserId()),
+                                null));
+//                }
                 BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_FRIEND);
                 BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_RED_DOT);
             }
