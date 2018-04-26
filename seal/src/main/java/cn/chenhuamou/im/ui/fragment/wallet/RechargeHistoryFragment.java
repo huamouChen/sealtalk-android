@@ -2,11 +2,15 @@ package cn.chenhuamou.im.ui.fragment.wallet;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +51,10 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
     private ChargeHistoryAdapter mChargeHistoryAdapter;
     private List<GetUserChargeListResponse.ChargeBean> mDatas;
 
+    private int lastVisibleItem = 0;
+    private boolean isLoading = false;
+    private boolean isHaveMore = false;
+
     private TextView tv_no_data;
     private int pageIndex = 1;
     private int pageSize = 20;
@@ -59,7 +67,7 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
      * */
     public void refreshData(String startDate, String endDate) {
         this.startDate = startDate;
-        this.endDate =endDate;
+        this.endDate = endDate;
         mDatas.clear();
         mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
     }
@@ -79,19 +87,57 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
      * */
     private void initView(View contentView) {
         mRecyclerView = contentView.findViewById(R.id.recyclerview_recharge);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mChargeHistoryAdapter = new ChargeHistoryAdapter(getContext(), mDatas);
         mRecyclerView.setAdapter(mChargeHistoryAdapter);
 
+        // 添加加载更多
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mChargeHistoryAdapter.getItemCount() && !isLoading) {
+                    //到达底部之后如果footView的状态不是正在加载的状态,就将 他切换成正在加载的状态
+                    if (isHaveMore) {
+                        isLoading = true;
+                        mChargeHistoryAdapter.changeState(SealConst.LOADING_MORE);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadMoreData();
+                            }
+                        }, 0);
+                    } else {
+                        mChargeHistoryAdapter.changeState(SealConst.NO_MORE);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+
         tv_no_data = contentView.findViewById(R.id.tv_no_data);
+    }
+
+    /*
+     * 加载更多数据
+     * */
+    private void loadMoreData() {
+        mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
     }
 
     /*
      * 获取数据
      * */
     private void initData() {
-        userId = mContext.getSharedPreferences(SealConst.SharedPreferencesName,  Context.MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+        userId = mContext.getSharedPreferences(SealConst.SharedPreferencesName, Context.MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
         mAsyncTaskManager = AsyncTaskManager.getInstance(mContext);
         // Activity管理
         action = new SealAction(mContext);
@@ -125,17 +171,34 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
 
     @Override
     public void onSuccess(int requestCode, Object result) {
+        isLoading = false;
         GetUserChargeListResponse cashResponse = (GetUserChargeListResponse) result;
         if (cashResponse.getCode().getCodeId().equals("100")) {
             List<GetUserChargeListResponse.ChargeBean> resultList = cashResponse.getList();
             mDatas.addAll(resultList);
             // 判断是否有数据
-            if (pageIndex == 1 && (resultList == null || resultList.size() == 0)) {
+            if (pageIndex == 1 && resultList.size() == 0) {
                 tv_no_data.setVisibility(View.VISIBLE);
             } else {
                 tv_no_data.setVisibility(View.GONE);
             }
-            mChargeHistoryAdapter.notifyDataSetChanged();
+
+            // 数据只有一页，且没有更多了
+            if (pageIndex == 1 && mDatas.size() % pageSize != 0) {
+                isHaveMore = false;
+                mChargeHistoryAdapter.changeState(SealConst.NO_MORE);
+                return;
+            }
+
+            // 超过两页，之后没有更多了
+            if (resultList.size() == 0) {
+                isHaveMore = false;
+                mChargeHistoryAdapter.changeState(SealConst.NO_MORE);
+            } else { // 还有更多数据
+                pageIndex++;
+                isHaveMore = true;
+                mChargeHistoryAdapter.changeState(SealConst.LOADING_MORE);
+            }
         } else {
             NToast.shortToast(mContext, cashResponse.getCode().getDescription());
         }
@@ -145,4 +208,6 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
     public void onFailure(int requestCode, int state, Object result) {
         NToast.shortToast(mContext, "获取充值记录失败");
     }
+
+
 }

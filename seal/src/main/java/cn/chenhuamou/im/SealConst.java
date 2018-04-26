@@ -46,6 +46,14 @@ public class SealConst {
     public static final String EndDate = "EndDate";
 
 
+    //上拉加载更多
+    public static final int PULL_LOAD_MORE = 0;
+    //正在加载更多
+    public static final int LOADING_MORE = 1;
+    //没有更多
+    public static final int NO_MORE = 2;
+
+
 
 
 
