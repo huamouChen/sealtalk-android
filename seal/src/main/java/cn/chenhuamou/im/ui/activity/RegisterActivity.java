@@ -3,6 +3,7 @@ package cn.chenhuamou.im.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -261,11 +262,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
     }
+//
+//    @Override
+//    public android.support.v4.app.FragmentManager getSupportFragmentManager() {
+//        return null;
+//    }
 
-    @Override
-    public android.support.v4.app.FragmentManager getSupportFragmentManager() {
-        return null;
-    }
+
 
     @Override
     public void onClick(View v) {
