@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
 
         // 默认获取今天的
         startDate = getCurrentTime();
-        endDate = getCurrentTime();
+        endDate = getTomorrowTime();
         mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
     }
 
@@ -108,9 +109,17 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
         return simpleDateFormat.format(date);
     }
 
+    // 获取明天的时间
+    private String getTomorrowTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
+
     @Override
     public Object doInBackground(int requestCode, String parameter) throws HttpException {
-        return action.getUserChargeLists(userId, "2018-04-25", "2018-04-25", pageSize, pageIndex);
+        return action.getUserChargeLists(userId, startDate, endDate, pageSize, pageIndex);
     }
 
     @Override

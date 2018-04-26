@@ -89,7 +89,8 @@
             android:paddingTop="@dimen/jrmf_dimen_4"
             android:text="@string/bankcard_unbind"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 

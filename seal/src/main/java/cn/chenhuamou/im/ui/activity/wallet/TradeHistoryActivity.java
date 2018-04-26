@@ -45,7 +45,7 @@ public class TradeHistoryActivity extends BaseActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             startDate = data.getStringExtra(SealConst.StartDate);
             endDate = data.getStringExtra(SealConst.EndDate);
 

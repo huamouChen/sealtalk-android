@@ -60,7 +60,7 @@ public class SelectDateActivity extends Activity implements View.OnClickListener
         btn_date_cancle = findViewById(R.id.btn_date_cancle);
 
         btn_start_date.setText(getCurrentTime());
-        btn_end_date.setText(getCurrentTime());
+        btn_end_date.setText(getTomorrowTime());
 
         addListener();
     }
@@ -93,15 +93,15 @@ public class SelectDateActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.btn_today:
                 btn_start_date.setText(getCurrentTime());
-                btn_end_date.setText(getCurrentTime());
+                btn_end_date.setText(getTomorrowTime());
                 break;
             case R.id.btn_pass_three_day:
                 btn_start_date.setText(getPassThreeDate());
-                btn_end_date.setText(getCurrentTime());
+                btn_end_date.setText(getTomorrowTime());
                 break;
             case R.id.btn_last_week:
                 btn_start_date.setText(getLastWeek());
-                btn_end_date.setText(getCurrentTime());
+                btn_end_date.setText(getTomorrowTime());
                 break;
             case R.id.btn_date_comfirm:
                 clickComfirmButton();
@@ -152,6 +152,13 @@ public class SelectDateActivity extends Activity implements View.OnClickListener
     private String getCurrentTime() {
         Date date = new Date(System.currentTimeMillis());
         return simpleDateFormat.format(date);
+    }
+
+    // 获取明天的时间
+    private String getTomorrowTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     // 获取系统的前3填时间

@@ -8,10 +8,10 @@
 
 
     <TextView
-        android:id="@+id/tv_trade_item"
+        android:id="@+id/tv_record_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="充值"
+        android:text="单号"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="20dp"
@@ -22,11 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2018-05-25"
-        android:layout_below="@+id/tv_trade_item"
-        android:layout_alignStart="@+id/tv_trade_item"
+        android:layout_below="@+id/tv_record_code"
+        android:layout_alignStart="@+id/tv_record_code"
         android:textColor="@color/text_tips_color"/>
 
     <TextView
+        android:id="@+id/tv_trade_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¥ 100"

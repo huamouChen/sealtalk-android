@@ -40,7 +40,6 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
     private Button btn_com;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +49,8 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
     }
 
     /*
-    * 获取intent传过来的数据
-    * */
+     * 获取intent传过来的数据
+     * */
     private void initIntentData() {
         isCreatwPayPwd = getIntent().getBooleanExtra(SealConst.IsCreatwPayPwd, false);
 
@@ -79,15 +78,15 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
-        mModifyPwdView = (LinearLayout) findViewById(R.id.ll_modify_pwd);
-        mCreatePayPwdView = (LinearLayout) findViewById(R.id.ll_create_pwd);
+        mModifyPwdView = findViewById(R.id.ll_modify_pwd);
+        mCreatePayPwdView = findViewById(R.id.ll_create_pwd);
 
-        mCreatePwdView = (ClearEditText)findViewById(R.id.cet_pwd);
-        mCreatePwdComView = (ClearEditText)findViewById(R.id.cet_confirm_pwd);
+        mCreatePwdView = findViewById(R.id.cet_pwd);
+        mCreatePwdComView = findViewById(R.id.cet_confirm_pwd);
 
-        mModifyOldPwdView = (ClearEditText)findViewById(R.id.cet_old_pwd);
-        mModifyNewPwdView = (ClearEditText)findViewById(R.id.cet_new_pwd);
-        mModifyNewComPwdView = (ClearEditText)findViewById(R.id.cet_new_pwd_com);
+        mModifyOldPwdView = findViewById(R.id.cet_old_pwd);
+        mModifyNewPwdView = findViewById(R.id.cet_new_pwd);
+        mModifyNewComPwdView = findViewById(R.id.cet_new_pwd_com);
 
         // 是修改资金密码 还是 创建资金密码
         if (isCreatwPayPwd) {
@@ -98,14 +97,14 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
             mModifyPwdView.setVisibility(View.VISIBLE);
         }
 
-        btn_com = (Button) findViewById(R.id.btn_pay_pwd_comfirm);
+        btn_com = findViewById(R.id.btn_pay_pwd_comfirm);
 
         addListener();
     }
 
     /*
-    * 添加点击监听
-    * */
+     * 添加点击监听
+     * */
     private void addListener() {
         btn_com.setOnClickListener(this);
     }
@@ -113,10 +112,20 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         LoadDialog.show(mContext);
-        if (isCreatwPayPwd)
+        if (isCreatwPayPwd) {
             request(CREATE_PAY_PASSWORD);
-        else
+        } else {
+           modifyPayPassword();
+        }
+    }
+
+    private void modifyPayPassword() {
+        if (!mModifyNewPwdView.getText().equals(mModifyNewComPwdView)) {
+            mModifyNewPwdView.setShakeAnimation();
+            NToast.shortToast(mContext, "新密码输入不一致");
+        } else {
             request(MODIFY_PAY_PASSWORD);
+        }
     }
 
     @Override

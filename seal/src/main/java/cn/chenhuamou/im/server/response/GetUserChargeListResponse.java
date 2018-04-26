@@ -116,7 +116,7 @@ public class GetUserChargeListResponse {
         private int ID;
         private String UserName;
         private String RecordCode;
-        private int ChargeMoney;
+        private String ChargeMoney;
         private int BeforeMoney;
         private String AddTime;
         private String Commt;
@@ -168,11 +168,11 @@ public class GetUserChargeListResponse {
             this.RecordCode = RecordCode;
         }
 
-        public int getChargeMoney() {
+        public String getChargeMoney() {
             return ChargeMoney;
         }
 
-        public void setChargeMoney(int ChargeMoney) {
+        public void setChargeMoney(String ChargeMoney) {
             this.ChargeMoney = ChargeMoney;
         }
 

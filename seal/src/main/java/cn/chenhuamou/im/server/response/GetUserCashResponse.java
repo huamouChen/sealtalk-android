@@ -124,7 +124,7 @@ public class GetUserCashResponse {
         private int ID;
         private String UserName;
         private String RecordCode;
-        private int WithDrawMoney;
+        private String WithDrawMoney;
         private int BeforeMoney;
         private String AddTime;
         private String Commt;
@@ -207,11 +207,11 @@ public class GetUserCashResponse {
             this.RecordCode = RecordCode;
         }
 
-        public int getWithDrawMoney() {
+        public String getWithDrawMoney() {
             return WithDrawMoney;
         }
 
-        public void setWithDrawMoney(int WithDrawMoney) {
+        public void setWithDrawMoney(String WithDrawMoney) {
             this.WithDrawMoney = WithDrawMoney;
         }
 

@@ -39,7 +39,8 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_white"
-                android:text="2018-04-25" />
+                android:textColor="@color/text_tips_color"
+                />
 
 
         </LinearLayout>
@@ -64,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_white"
-                android:text="2018-04-25" />
+                android:textColor="@color/text_tips_color"/>
 
 
         </LinearLayout>
@@ -85,7 +86,8 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_white"
-                android:text="今天" />
+                android:text="今天"
+                android:textColor="@color/text_tips_color"/>
 
             <Button
                 android:id="@+id/btn_pass_three_day"
@@ -94,7 +96,8 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_white"
-                android:text="近三天" />
+                android:text="近三天"
+                android:textColor="@color/text_tips_color"/>
 
             <Button
                 android:id="@+id/btn_last_week"
@@ -103,7 +106,8 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_white"
-                android:text="近一周" />
+                android:text="近一周"
+                android:textColor="@color/text_tips_color"/>
 
         </LinearLayout>
 

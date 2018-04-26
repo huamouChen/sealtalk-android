@@ -37,7 +37,11 @@ public class ChargeHistoryAdapter extends RecyclerView.Adapter<ChargeHistoryAdap
 
     @Override
     public void onBindViewHolder(@NonNull TradeHistoryViewHolder holder, int position) {
-
+        GetUserChargeListResponse.ChargeBean chargehBean = mDatas.get(position);
+        holder.tv_record_code.setText(chargehBean.getRecordCode());
+        holder.tv_date.setText(chargehBean.getAddTime());
+        holder.tv_amount.setTextColor(mContext.getResources().getColor(R.color.red));
+        holder.tv_amount.setText("¥ " +  chargehBean.getChargeMoney());
     }
 
     @Override
@@ -50,14 +54,15 @@ public class ChargeHistoryAdapter extends RecyclerView.Adapter<ChargeHistoryAdap
     * viewHolder
     * */
     public class TradeHistoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_date, tv_type, tv_amount;
+        private TextView tv_record_code, tv_date, tv_amount;
 
 
         public TradeHistoryViewHolder(View itemView) {
             super(itemView);
+            tv_record_code = itemView.findViewById(R.id.tv_record_code);
+            tv_date = itemView.findViewById(R.id.tv_trade_date);
+            tv_amount = itemView.findViewById(R.id.tv_trade_amount);
         }
-
-
     }
 }
 
