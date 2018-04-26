@@ -48,7 +48,10 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     private NewFriendListAdapter adapter;
     private String friendId;
     private TextView isData;
+    private int mPosition = -1;
     private UserRelationshipResponse userRelationshipResponse = new UserRelationshipResponse();
+
+    private List<UserRelationshipResponse.ResultEntity> mList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +82,20 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         UserRelationshipResponse.ResultEntity resultEntity = new UserRelationshipResponse.ResultEntity();
                         resultEntity.setDisplayName(item.getTargetId());
                         resultEntity.setMessage(item.getTargetId() + " 想加你为好友");
-                        resultEntity.setStatus(11);
+                        // 判断是不是好友
+                        boolean isFriend = SealUserInfoManager.getInstance().isFriendsRelationship(item.getTargetId());
+                        if (isFriend) {
+                            resultEntity.setStatus(20);
+                        } else {
+                            resultEntity.setStatus(11);
+                        }
                         resultEntity.setUpdatedAt("");
                         String applyId = "";
                         if (item.getLatestMessage() instanceof ContactNotificationMessage) {
                             ContactNotificationMessage message = (ContactNotificationMessage) item.getLatestMessage();
                             String extraJson = message.getExtra();
                             if (!TextUtils.isEmpty(extraJson)) {
-                                JSONObject jsonObject= JSONObject.parseObject(extraJson);
+                                JSONObject jsonObject = JSONObject.parseObject(extraJson);
                                 applyId = jsonObject.getIntValue("ApplyId") + "";
                             }
                         }
@@ -99,6 +108,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                 adapter.removeAll();
                 adapter.addData(list);
                 adapter.notifyDataSetChanged();
+                mList.addAll(list);
                 LoadDialog.dismiss(mContext);
                 userRelationshipResponse.setResult(list);
 
@@ -143,6 +153,8 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             switch (requestCode) {
                 case GET_ALL:
                     LoadDialog.dismiss(mContext);
+
+
                     break;
                 case AGREE_FRIENDS:
                     AgreeFriendApplyResponse agreeFriendApplyResponse = (AgreeFriendApplyResponse) result;
@@ -163,6 +175,9 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         LoadDialog.dismiss(mContext);
                         BroadcastManager.getInstance(mContext).sendBroadcast(SealAppContext.UPDATE_FRIEND);
                         request(GET_ALL); //刷新 UI 按钮
+
+                        refreshCellButton();
+
                     } else {
                         // 通知好友列表刷新数据
                         NToast.shortToast(mContext, "接受好友失败");
@@ -170,6 +185,20 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                     }
             }
         }
+    }
+
+    // 暂时没有接口，暴力刷新右边 接受按钮
+    private void refreshCellButton() {
+        // 暂时没有接口，暴力刷新
+        if (mPosition == -1 || mPosition > mList.size()) return;
+        UserRelationshipResponse.ResultEntity itme = mList.get(mPosition);
+        itme.setStatus(20);
+        // 替换掉点击的那个
+        mList.set(mPosition, itme);
+
+        adapter.removeAll();
+        adapter.addData(mList);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -196,6 +225,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     @Override
     public boolean onButtonClick(int position, View view, int status) {
         index = position;
+        mPosition = position;
         switch (status) {
             case 11: //收到了好友邀请
                 if (!CommonUtils.isNetworkConnected(mContext)) {
