@@ -91,6 +91,9 @@
         <activity android:name=".ui.activity.wallet.AddCardFirstActivity" />
         <activity android:name=".ui.activity.wallet.SetPayPwdActivity" />
 
+        <activity android:name=".ui.activity.wallet.SelectDateActivity"
+            android:theme="@style/myTransparent"/>
+
         <!--登录页面-->
         <activity
             android:name=".ui.activity.LoginActivity"

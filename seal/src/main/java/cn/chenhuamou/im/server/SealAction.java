@@ -1534,14 +1534,13 @@ public class SealAction extends BaseAction {
     /*
      * 获取用户余额
      * */
-    public UserBalanceResponse getUserBalance() throws HttpException {
+    public String getUserBalance() throws HttpException {
         String url = getURL("api/User/GetUserMoney");
         String result = httpManager.get(mContext, url);
-        UserBalanceResponse response = null;
+        String response = null;
         if (!TextUtils.isEmpty(result)) {
             NLog.e("UserBalanceResponse", result);
-
-            response = jsonToBean(result, UserBalanceResponse.class);
+            response = jsonToBean(result, String.class);
         }
         return response;
     }

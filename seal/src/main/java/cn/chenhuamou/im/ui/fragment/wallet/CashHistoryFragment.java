@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.chenhuamou.im.R;
@@ -46,6 +48,19 @@ public class CashHistoryFragment extends Fragment implements OnDataListener {
     private TextView tv_no_data;
     private int pageIndex = 1;
     private int pageSize = 20;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private String startDate, endDate;
+
+
+    /*
+    * 刷新数据
+    * */
+    public void refreshData(String startDate, String endDate) {
+        this.startDate = startDate;
+        this.endDate =endDate;
+        mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
+    }
 
     @Nullable
     @Override
@@ -81,12 +96,21 @@ public class CashHistoryFragment extends Fragment implements OnDataListener {
 
         mDatas = new ArrayList<>();
 
+        // 默认获取今天的
+        startDate = getCurrentTime();
+        endDate = getCurrentTime();
         mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
+    }
+
+    // 获取系统的当前时间
+    private String getCurrentTime() {
+        Date date = new Date(System.currentTimeMillis());
+        return simpleDateFormat.format(date);
     }
 
     @Override
     public Object doInBackground(int requestCode, String parameter) throws HttpException {
-        return action.getUserCashLists(userId, "2018-04-25", "2018-04-25", pageSize, pageIndex);
+        return action.getUserCashLists(userId, startDate, endDate, pageSize, pageIndex);
     }
 
     @Override

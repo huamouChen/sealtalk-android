@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.erizet.signala:parallel-basic-http-client-0.20">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/d78a48f3a0c3d7e55b57eab550cba01d/jars/libs/basic-http-client-android-0.88.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/d78a48f3a0c3d7e55b57eab550cba01d/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/d78a48f3a0c3d7e55b57eab550cba01d/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/b658ae1b589715baba9b1acdfe4eb4fe/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/b658ae1b589715baba9b1acdfe4eb4fe/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/parallel-basic-http-client-0.20.aar/b658ae1b589715baba9b1acdfe4eb4fe/jars/libs/basic-http-client-android-0.88.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

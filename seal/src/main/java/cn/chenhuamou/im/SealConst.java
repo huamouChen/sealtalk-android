@@ -40,6 +40,13 @@ public class SealConst {
     public static final String IsCreatwPayPwd = "isCreatwPayPwd";
 
 
+    // 起始日期
+    public static final String StartDate = "StartDate";
+    // 截止日期
+    public static final String EndDate = "EndDate";
+
+
+
 
 
 }

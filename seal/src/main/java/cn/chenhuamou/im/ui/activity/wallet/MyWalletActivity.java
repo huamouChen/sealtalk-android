@@ -56,18 +56,18 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-        tv_balance = (TextView) findViewById(R.id.tv_change);
-        mRechargeView = (LinearLayout) findViewById(R.id.ll_wallet_recharge);
-        mGetDepositView = (LinearLayout) findViewById(R.id.ll_getDeposit);
-        rl_account_info = (RelativeLayout) findViewById(R.id.rl_accountInfo);
-        rl_tradeDetail = (RelativeLayout) findViewById(R.id.rl_tradeDetail);
-        rl_secureSetting = (RelativeLayout) findViewById(R.id.rl_secureSetting);
-        rl_mybank = (RelativeLayout) findViewById(R.id.rl_mybank);
+        tv_balance = findViewById(R.id.tv_wallet_balance);
+        mRechargeView = findViewById(R.id.ll_wallet_recharge);
+        mGetDepositView = findViewById(R.id.ll_getDeposit);
+        rl_account_info = findViewById(R.id.rl_accountInfo);
+        rl_tradeDetail = findViewById(R.id.rl_tradeDetail);
+        rl_secureSetting = findViewById(R.id.rl_secureSetting);
+        rl_mybank = findViewById(R.id.rl_mybank);
 
-        tv_userMoney = (TextView) findViewById(R.id.tv_userMoney);
-        tv_agMoney = (TextView) findViewById(R.id.tv_agMoney);
-        tv_texMoney = (TextView) findViewById(R.id.tv_texMoney);
-        tv_ptMoney = (TextView) findViewById(R.id.tv_ptMoney);
+        tv_userMoney = findViewById(R.id.tv_userMoney);
+        tv_agMoney = findViewById(R.id.tv_agMoney);
+        tv_texMoney = findViewById(R.id.tv_texMoney);
+        tv_ptMoney = findViewById(R.id.tv_ptMoney);
 
         initListener();
     }
@@ -101,16 +101,14 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onSuccess(int requestCode, Object result) {
         LoadDialog.dismiss(mContext);
-        UserBalanceResponse userBalanceResponse = (UserBalanceResponse) result;
-        if (userBalanceResponse != null) {
-            int balance = userBalanceResponse.getAgMoney() + userBalanceResponse.getPtMoney() + userBalanceResponse.getTexMoney() + userBalanceResponse.getUserMoney();
-            tv_balance.setText("¥ " + balance + "");
-            tv_userMoney.setText("¥ " + userBalanceResponse.getUserMoney());
-            tv_agMoney.setText("¥ " + userBalanceResponse.getAgMoney());
-            tv_texMoney.setText("¥ " + userBalanceResponse.getTexMoney());
-            tv_ptMoney.setText("¥ " + userBalanceResponse.getPtMoney());
+        String balanceString = (String) result;
+
+        if (balanceString != null) {
+            double balance = Double.valueOf(balanceString);
+            String moneyString = String.format("¥" + "%.2f", balance);
+            tv_balance.setText(moneyString);
         } else {
-//            NToast.shortToast(mContext, "获取用户余额返回为空");
+            NToast.shortToast(mContext, "获取用户余额返回为空");
         }
     }
 
