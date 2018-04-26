@@ -66,7 +66,8 @@ public class ChargeHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             viewHolder.tv_record_code.setText(chargehBean.getRecordCode());
             viewHolder.tv_date.setText(chargehBean.getAddTime());
             viewHolder.tv_amount.setTextColor(mContext.getResources().getColor(R.color.red));
-            viewHolder.tv_amount.setText("¥ " + chargehBean.getChargeMoney());
+            double doubleString = Double.valueOf(chargehBean.getChargeMoney());
+            viewHolder.tv_amount.setText(String.format("¥ %.2f", doubleString));
         } else {
             LoadMoreViewHolder viewHolder = (LoadMoreViewHolder) holder;
             if (footer_state == SealConst.PULL_LOAD_MORE) {

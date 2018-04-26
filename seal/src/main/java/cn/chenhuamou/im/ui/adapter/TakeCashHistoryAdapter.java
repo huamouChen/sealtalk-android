@@ -65,7 +65,8 @@ public class TakeCashHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder.tv_record_code.setText(takeCashBean.getRecordCode());
             viewHolder.tv_date.setText(takeCashBean.getAddTime());
             viewHolder.tv_amount.setTextColor(mContext.getResources().getColor(R.color.green));
-            viewHolder.tv_amount.setText("¥ " + takeCashBean.getWithDrawMoney());
+            double doubleString = Double.valueOf(takeCashBean.getWithDrawMoney());
+            viewHolder.tv_amount.setText(String.format("¥ %.2f", doubleString));
 
         } else {
             LoadMoreViewHolder viewHolder = (LoadMoreViewHolder) holder;
