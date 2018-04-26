@@ -60,6 +60,7 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
     public void refreshData(String startDate, String endDate) {
         this.startDate = startDate;
         this.endDate =endDate;
+        mDatas.clear();
         mAsyncTaskManager.request(GET_USER_TAKE_CASH, this);
     }
 
