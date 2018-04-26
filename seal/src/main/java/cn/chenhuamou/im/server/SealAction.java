@@ -1568,7 +1568,7 @@ public class SealAction extends BaseAction {
      * */
     public PublicResponse getWithDrawMoney(String money, String moneyPwd, String bankId) throws HttpException {
         String url = getURL("api/Index/WithDrawMoney");
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("money", money);
         map.put("moneyPwd", moneyPwd);
         map.put("bankId", bankId);

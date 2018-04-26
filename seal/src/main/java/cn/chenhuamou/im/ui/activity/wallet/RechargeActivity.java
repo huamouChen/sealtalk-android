@@ -32,7 +32,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
 
     private TitleBar titleBar;
     private TextView tv_account, tv_cardnum_copy, tv_cardname_copy, tv_cardNum, tv_cardName;
-    private ClearEditText cet_amount, cet_time;
+    private ClearEditText cet_amount, cet_time, cet_bank_code;
     private Button btn_next;
 
     @Override
@@ -49,7 +49,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
 
         mHeadLayout.setVisibility(View.GONE);
 
-        titleBar =  findViewById(R.id.titlebar);
+        titleBar = findViewById(R.id.titlebar);
         titleBar.setTitle("充值");
 
         // 返回按钮
@@ -61,72 +61,31 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
         });
 
         // 当前账号
-        tv_account =  findViewById(R.id.tv_account);
+        tv_account = findViewById(R.id.tv_account);
         tv_account.setText(getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, ""));
         // 复制
-        tv_cardnum_copy =  findViewById(R.id.tv_cardnum_copy);
-        tv_cardname_copy =  findViewById(R.id.tv_cardname_copy);
+        tv_cardnum_copy = findViewById(R.id.tv_cardnum_copy);
+        tv_cardname_copy = findViewById(R.id.tv_cardname_copy);
         // 要复制的两个控件
-        tv_cardNum =  findViewById(R.id.tv_cardNum);
-        tv_cardName =  findViewById(R.id.tv_cardName);
+        tv_cardNum = findViewById(R.id.tv_cardNum);
+        tv_cardName = findViewById(R.id.tv_cardName);
 
         // 转账金额
-        cet_amount =  findViewById(R.id.cet_amount);
+        cet_amount = findViewById(R.id.cet_amount);
+
+        // 银行编码
+        cet_bank_code = findViewById(R.id.cet_bank_code);
 
         // 转账时间
-        cet_time =  findViewById(R.id.cet_time);
+        cet_time = findViewById(R.id.cet_time);
 
         // 已转账，提交审核
-        btn_next =  findViewById(R.id.btn_charge);
+        btn_next = findViewById(R.id.btn_charge);
 
         addListener();
     }
 
     private void addListener() {
-        cet_amount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2 && cet_time.getText().length() > 2) {
-                    btn_next.setClickable(true);
-                } else {
-                    btn_next.setClickable(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        cet_time.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 2 && cet_amount.getText().length() > 2) {
-                    btn_next.setClickable(true);
-                    btn_next.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_blue));
-                } else {
-                    btn_next.setClickable(false);
-                    btn_next.setBackgroundDrawable(getResources().getDrawable(R.drawable.rs_select_btn_gray));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         tv_cardnum_copy.setOnClickListener(this);
         tv_cardname_copy.setOnClickListener(this);
 
@@ -138,6 +97,21 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_charge:  // 提交审核
+                if (cet_amount.getText().toString().isEmpty()) {
+                    NToast.shortToast(mContext, "转账金额不能为空");
+                    cet_amount.setShakeAnimation();
+                    return;
+                }
+                if (cet_bank_code.getText().toString().isEmpty()) {
+                    NToast.shortToast(mContext, "银行代码不能为空");
+                    cet_bank_code.setShakeAnimation();
+                    return;
+                }
+                if (cet_time.getText().toString().isEmpty()) {
+                    NToast.shortToast(mContext, "转账时间不能为空");
+                    cet_time.setShakeAnimation();
+                    return;
+                }
                 LoadDialog.show(mContext);
                 request(AliPay_Check);
                 break;
@@ -157,7 +131,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return action.getRechargeAlipay(cet_amount.getText().toString(), cet_time.getText().toString(), "104AAAABBBBC");
+        return action.getRechargeAlipay(cet_amount.getText().toString(), cet_time.getText().toString(), cet_bank_code.getText().toString());
     }
 
     @Override

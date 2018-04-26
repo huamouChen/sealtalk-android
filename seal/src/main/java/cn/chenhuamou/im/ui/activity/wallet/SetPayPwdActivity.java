@@ -111,21 +111,32 @@ public class SetPayPwdActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        LoadDialog.show(mContext);
         if (isCreatwPayPwd) {
+            LoadDialog.show(mContext);
             request(CREATE_PAY_PASSWORD);
         } else {
-           modifyPayPassword();
+            modifyPayPassword();
         }
     }
 
     private void modifyPayPassword() {
-        if (!mModifyNewPwdView.getText().equals(mModifyNewComPwdView)) {
-            mModifyNewPwdView.setShakeAnimation();
-            NToast.shortToast(mContext, "新密码输入不一致");
-        } else {
-            request(MODIFY_PAY_PASSWORD);
+        if (mModifyOldPwdView.getText().toString().isEmpty()) {
+            NToast.shortToast(mContext, "旧密码不能为空");
+            return;
         }
+
+        if (mModifyNewPwdView.getText().toString().isEmpty()) {
+            NToast.shortToast(mContext, "新密码不能为空");
+            return;
+        }
+
+        if (!mModifyNewPwdView.getText().toString().equals(mModifyNewComPwdView.getText().toString())) {
+            NToast.shortToast(mContext, "新密码输入不一致");
+            return;
+        }
+        LoadDialog.show(mContext);
+        request(MODIFY_PAY_PASSWORD);
+
     }
 
     @Override

@@ -42,7 +42,7 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
     private void initView() {
         mHeadLayout.setVisibility(View.GONE);
 
-        titleBar =  findViewById(R.id.titlebar);
+        titleBar = findViewById(R.id.titlebar);
         titleBar.setTitle("提现");
 
         // 返回按钮
@@ -53,10 +53,10 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-        cwe_draw =  findViewById(R.id.cwe_draw);
-        cwe_moneypwd =  findViewById(R.id.cwe_moneypwd);
-        cwe_banknum =  findViewById(R.id.cwe_banknum);
-        btn_comfirm =  findViewById(R.id.btn_comfirm);
+        cwe_draw = findViewById(R.id.cwe_draw);
+        cwe_moneypwd = findViewById(R.id.cwe_moneypwd);
+        cwe_banknum = findViewById(R.id.cwe_banknum);
+        btn_comfirm = findViewById(R.id.btn_comfirm);
 
         addListener();
     }
@@ -88,10 +88,8 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
             return;
         }
 
-        if (btn_comfirm.isEnabled()) {
-            LoadDialog.show(mContext);
-            request(GET_DRAW_MONEY);
-        }
+        LoadDialog.show(mContext);
+        request(GET_DRAW_MONEY);
     }
 
     @Override
@@ -110,6 +108,7 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
         } else {
             NToast.shortToast(mContext, publicResponse.getError());
         }
+
     }
 
     @Override

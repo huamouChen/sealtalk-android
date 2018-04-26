@@ -176,7 +176,7 @@ public class RechargeHistoryFragment extends Fragment implements OnDataListener 
         if (cashResponse.getCode().getCodeId().equals("100")) {
             List<GetUserChargeListResponse.ChargeBean> resultList = cashResponse.getList();
             mDatas.addAll(resultList);
-            // 判断是否有数据
+            // 判断第一次加载是否有数据
             if (pageIndex == 1 && resultList.size() == 0) {
                 tv_no_data.setVisibility(View.VISIBLE);
             } else {
