@@ -34,11 +34,10 @@
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@null"
             android:gravity="center_vertical"
             android:hint="请输入银行编码"
-            android:inputType="number"
             android:paddingRight="@dimen/base_padding"
+            android:background="@null"
             android:textColorHint="@color/color_b7b7b7"
             android:textColor="@color/black"
             android:textSize="16sp" />

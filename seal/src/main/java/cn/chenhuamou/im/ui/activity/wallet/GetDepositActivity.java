@@ -6,13 +6,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.jrmf360.rylib.wallet.widget.ClearEditText;
 import com.jrmf360.rylib.wallet.widget.TitleBar;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.utils.NToast;
-import cn.chenhuamou.im.server.widget.ClearWriteEditText;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.activity.BaseActivity;
 
@@ -26,7 +26,7 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
     private static final int GET_DRAW_MONEY = 1000;   // 提现
 
     private TitleBar titleBar;
-    private ClearWriteEditText cwe_draw, cwe_moneypwd, cwe_banknum;
+    private ClearEditText cwe_draw, cwe_moneypwd, cwe_banknum;
     private Button btn_comfirm;
 
     @Override
@@ -42,7 +42,7 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
     private void initView() {
         mHeadLayout.setVisibility(View.GONE);
 
-        titleBar = (TitleBar) findViewById(R.id.titlebar);
+        titleBar =  findViewById(R.id.titlebar);
         titleBar.setTitle("提现");
 
         // 返回按钮
@@ -53,10 +53,10 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-        cwe_draw = (ClearWriteEditText) findViewById(R.id.cwe_draw);
-        cwe_moneypwd = (ClearWriteEditText) findViewById(R.id.cwe_moneypwd);
-        cwe_banknum = (ClearWriteEditText) findViewById(R.id.cwe_banknum);
-        btn_comfirm = (Button) findViewById(R.id.btn_comfirm);
+        cwe_draw =  findViewById(R.id.cwe_draw);
+        cwe_moneypwd =  findViewById(R.id.cwe_moneypwd);
+        cwe_banknum =  findViewById(R.id.cwe_banknum);
+        btn_comfirm =  findViewById(R.id.btn_comfirm);
 
         addListener();
     }

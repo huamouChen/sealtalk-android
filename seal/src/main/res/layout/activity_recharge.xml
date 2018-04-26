@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/color_bg"
     android:orientation="vertical">
 
     <include
@@ -12,171 +12,175 @@
     <!--充值方式-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:text="充值方式："
-            android:gravity="center"/>
+            android:textColor="@color/color_959595"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:text="请使用支付宝内的转账功能"
-            android:gravity="center"/>
+            android:textColor="@color/color_959595"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
 
     <!--收款卡号-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:text="收款卡号:"
-            android:gravity="center"/>
+            android:textColor="@color/color_959595"
+            />
 
         <TextView
             android:id="@+id/tv_cardNum"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:text="6217731107272250"
-            android:gravity="center"/>
+            android:textColor="@color/color_959595"/>
 
         <TextView
             android:id="@+id/tv_cardnum_copy"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:text="复制"
+            android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:textColor="@color/red"
-            android:layout_marginLeft="10dp"/>
+            android:text="复制"
+            android:textColor="@color/red" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
 
     <!--姓名-->
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="48dp">
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
 
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:text="姓名："
-        android:gravity="center"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="姓名："
+            android:textColor="@color/color_959595"/>
 
-    <TextView
-        android:id="@+id/tv_cardName"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="王在兵"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/tv_cardName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="王在兵"
+            android:textColor="@color/color_959595"/>
 
         <TextView
             android:id="@+id/tv_cardname_copy"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:text="复制"
+            android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:textColor="@color/red"
-            android:layout_marginLeft="10dp"/>
+            android:text="复制"
+            android:textColor="@color/red" />
 
-</LinearLayout>
+    </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
 
     <!--会员账号-->
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="48dp">
-
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:text="会员账号："
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/tv_account"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="用户登录账号"
-        android:gravity="center"/>
-
-</LinearLayout>
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="会员账号："
+            android:textColor="@color/color_959595"/>
+
+        <TextView
+            android:id="@+id/tv_account"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="用户登录账号"
+            android:textColor="@color/color_959595"/>
+
+    </LinearLayout>
+
 
     <!--转账金额-->
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="48dp">
-
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:text="转账金额："
-        android:gravity="center"/>
-
-  <cn.chenhuamou.im.server.widget.ClearWriteEditText
-      android:id="@+id/cet_amount"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:inputType="number"
-      android:hint="单次最低100元，最高45000元"
-      android:textSize="14sp"/>
-
-</LinearLayout>
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="转账金额："
+            android:textColor="@color/color_959595"/>
+
+        <com.jrmf360.rylib.wallet.widget.ClearEditText
+            android:id="@+id/cet_amount"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="单次最低100元，最高45000元"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
 
     <!--转账时间-->
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="48dp">
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
 
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:text="转账时间："
-        android:gravity="center"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="转账时间："
+            android:textColor="@color/color_959595"/>
 
-        <cn.chenhuamou.im.server.widget.ClearWriteEditText
+        <com.jrmf360.rylib.wallet.widget.ClearEditText
             android:id="@+id/cet_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="number"
+            android:background="@null"
             android:hint="例如晚上18点30分请填写1830"
-            android:textSize="14sp"/>
+            android:inputType="number"
+            android:textColorHint="@color/color_b7b7b7"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
-</LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.25dp"
-        android:background="@color/separator" />
+    </LinearLayout>
 
 
     <Button

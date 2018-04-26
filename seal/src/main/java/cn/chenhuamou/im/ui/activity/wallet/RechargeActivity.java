@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.jrmf360.rylib.wallet.widget.ClearEditText;
 import com.jrmf360.rylib.wallet.widget.TitleBar;
 
 import cn.chenhuamou.im.R;
@@ -17,7 +18,6 @@ import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.utils.NToast;
-import cn.chenhuamou.im.server.widget.ClearWriteEditText;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.activity.BaseActivity;
 
@@ -32,7 +32,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
 
     private TitleBar titleBar;
     private TextView tv_account, tv_cardnum_copy, tv_cardname_copy, tv_cardNum, tv_cardName;
-    private ClearWriteEditText cet_amount, cet_time;
+    private ClearEditText cet_amount, cet_time;
     private Button btn_next;
 
     @Override
@@ -49,7 +49,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
 
         mHeadLayout.setVisibility(View.GONE);
 
-        titleBar = (TitleBar) findViewById(R.id.titlebar);
+        titleBar =  findViewById(R.id.titlebar);
         titleBar.setTitle("充值");
 
         // 返回按钮
@@ -61,23 +61,23 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
         });
 
         // 当前账号
-        tv_account = (TextView) findViewById(R.id.tv_account);
+        tv_account =  findViewById(R.id.tv_account);
         tv_account.setText(getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, ""));
         // 复制
-        tv_cardnum_copy = (TextView) findViewById(R.id.tv_cardnum_copy);
-        tv_cardname_copy = (TextView) findViewById(R.id.tv_cardname_copy);
+        tv_cardnum_copy =  findViewById(R.id.tv_cardnum_copy);
+        tv_cardname_copy =  findViewById(R.id.tv_cardname_copy);
         // 要复制的两个控件
-        tv_cardNum = (TextView) findViewById(R.id.tv_cardNum);
-        tv_cardName = (TextView) findViewById(R.id.tv_cardName);
+        tv_cardNum =  findViewById(R.id.tv_cardNum);
+        tv_cardName =  findViewById(R.id.tv_cardName);
 
         // 转账金额
-        cet_amount = (ClearWriteEditText) findViewById(R.id.cet_amount);
+        cet_amount =  findViewById(R.id.cet_amount);
 
         // 转账时间
-        cet_time = (ClearWriteEditText) findViewById(R.id.cet_time);
+        cet_time =  findViewById(R.id.cet_time);
 
         // 已转账，提交审核
-        btn_next = (Button) findViewById(R.id.btn_charge);
+        btn_next =  findViewById(R.id.btn_charge);
 
         addListener();
     }
