@@ -6,7 +6,7 @@
     android:background="#ebebeb"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/start_user_profile"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -15,24 +15,29 @@
         android:clickable="true"
         android:orientation="horizontal">
 
+        <!--头像-->
         <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
             android:id="@+id/mine_header"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
             android:scaleType="centerCrop"
             app:sriv_left_bottom_corner_radius="3dip"
             app:sriv_left_top_corner_radius="3dip"
             app:sriv_right_bottom_corner_radius="3dip"
-            app:sriv_right_top_corner_radius="3dip" />
-        
+            app:sriv_right_top_corner_radius="3dip"
+            android:layout_centerVertical="true"/>
+
+        <!--昵称和账号-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp">
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/mine_header"
+            android:layout_centerVertical="true">
 
             <TextView
                 android:id="@+id/mine_name"
@@ -58,8 +63,28 @@
         </LinearLayout>
 
 
+        <ImageView
+            android:id="@+id/img_qr_code"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/img_right_arrow"
+            android:layout_marginEnd="20dp"/>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/img_right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/arrow_right"/>
+
+
+
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/mine_setting"

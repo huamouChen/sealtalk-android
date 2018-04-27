@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +21,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
+import java.util.Hashtable;
 
 import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
@@ -54,7 +64,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences sp;
     private SelectableRoundedImageView imageView;
     private TextView mName, mCurrent_version, tv_account;
-    private ImageView mNewVersionView;
+    private ImageView mNewVersionView, mQRCodeImg;
     private boolean isHasNewVersion;
     private String url;
     private boolean isDebug;
@@ -129,17 +139,18 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initViews(View mView) {
-        mNewVersionView = (ImageView) mView.findViewById(R.id.new_version_icon);
-        mCurrent_version = (TextView) mView.findViewById(R.id.tv_current_version);
+        mQRCodeImg = mView.findViewById(R.id.img_qr_code);
+        mNewVersionView = mView.findViewById(R.id.new_version_icon);
+        mCurrent_version = mView.findViewById(R.id.tv_current_version);
         mCurrent_version.setText("当前版本 " + getVersionInfo()[1]);
-        imageView = (SelectableRoundedImageView) mView.findViewById(R.id.mine_header);
-        mName = (TextView) mView.findViewById(R.id.mine_name);
-        tv_account = (TextView) mView.findViewById(R.id.mine_account);
-        LinearLayout mUserProfile = (LinearLayout) mView.findViewById(R.id.start_user_profile);
-        LinearLayout mMineSetting = (LinearLayout) mView.findViewById(R.id.mine_setting);
-        LinearLayout mMineService = (LinearLayout) mView.findViewById(R.id.mine_service);
-        LinearLayout mMineXN = (LinearLayout) mView.findViewById(R.id.mine_xiaoneng);
-        LinearLayout mMineAbout = (LinearLayout) mView.findViewById(R.id.mine_about);
+        imageView = mView.findViewById(R.id.mine_header);
+        mName = mView.findViewById(R.id.mine_name);
+        tv_account = mView.findViewById(R.id.mine_account);
+        RelativeLayout mUserProfile = mView.findViewById(R.id.start_user_profile);
+        LinearLayout mMineSetting = mView.findViewById(R.id.mine_setting);
+        LinearLayout mMineService = mView.findViewById(R.id.mine_service);
+        LinearLayout mMineXN = mView.findViewById(R.id.mine_xiaoneng);
+        LinearLayout mMineAbout = mView.findViewById(R.id.mine_about);
         if (isDebug) {
             mMineXN.setVisibility(View.VISIBLE);
         } else {
@@ -152,6 +163,30 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mMineXN.setOnClickListener(this);
         mView.findViewById(R.id.my_wallet).setOnClickListener(this);
     }
+
+
+    private Bitmap createQRCode(String contentString, int size) throws WriterException {
+        Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
+        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+        BitMatrix matrix = new MultiFormatWriter().encode(contentString,
+                BarcodeFormat.QR_CODE, size, size);
+        int width = matrix.getWidth();
+        int height = matrix.getHeight();
+        int[] pixels = new int[width * height];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (matrix.get(x, y)) {
+                    pixels[y * width + x] = getContext().getResources().getColor(R.color.black);
+                }
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -203,6 +238,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     (new UserInfo(userId, username, Uri.parse(userPortrait)));
             ImageLoader.getInstance().displayImage(portraitUri, imageView, App.getOptions());
         }
+
+        // 二维码
+        try {
+            Bitmap bitmapQRCode = createQRCode(userId, 30);
+            mQRCodeImg.setImageBitmap(bitmapQRCode);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private String[] getVersionInfo() {
@@ -229,8 +273,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         dlg.show();
         Window window = dlg.getWindow();
         window.setContentView(R.layout.dialog_download);
-        TextView text = (TextView) window.findViewById(R.id.friendship_content1);
-        TextView photo = (TextView) window.findViewById(R.id.friendship_content2);
+        TextView text = window.findViewById(R.id.friendship_content1);
+        TextView photo = window.findViewById(R.id.friendship_content2);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,7 +302,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 //                } else {
 //                    getActivity().requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 //                }
-
             }
         });
         isHasNewVersion = false;
