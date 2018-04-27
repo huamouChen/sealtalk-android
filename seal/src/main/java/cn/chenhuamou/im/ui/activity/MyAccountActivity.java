@@ -30,10 +30,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.WriterException;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -64,6 +66,7 @@ import cn.chenhuamou.im.server.utils.photo.PhotoUtils;
 import cn.chenhuamou.im.server.widget.BottomMenuDialog;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
+import cn.chenhuamou.im.utils.QRCodeUtils;
 import cn.chenhuamou.im.utils.UploadUtils;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
@@ -92,6 +95,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     private SelectableRoundedImageView mImageView;
     private TextView mName;
     private BottomMenuDialog dialog;
+    private ImageView mQRCodeImg;
 
 
     private byte[] portraitBytes;   // 上传头像流
@@ -115,6 +119,9 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         RelativeLayout phoneItem = findViewById(R.id.rl_my_telephone);
         mImageView = findViewById(R.id.img_my_portrait);
         mName = findViewById(R.id.tv_my_username);
+        mQRCodeImg = findViewById(R.id.img_qr_code);
+
+        findViewById(R.id.rl_my_qr_code).setOnClickListener(this);
 
         portraitItem.setOnClickListener(this);
         nameItem.setOnClickListener(this);
@@ -122,6 +129,7 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         String cacheName = sp.getString(SealConst.Nick_Name, "");
         String cachePortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         String cachePhone = sp.getString(SealConst.Bind_Phone, "");
+        String userId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
         // 设置手机号码
         if (!TextUtils.isEmpty(cachePhone)) {
             mPhone.setText(cachePhone);
@@ -132,6 +140,14 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(new UserInfo(
                     cacheId, cacheName, Uri.parse(cachePortrait)));
             ImageLoader.getInstance().displayImage(portraitUri, mImageView, App.getOptions());
+        }
+
+        // 二维码
+        try {
+            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(userId, 30);
+            mQRCodeImg.setImageBitmap(bitmapQRCode);
+        } catch (WriterException e) {
+            e.printStackTrace();
         }
 
         // 更新昵称
@@ -173,6 +189,9 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                 Intent intent2 = new Intent(this, UpdateNameActivity.class);
                 intent2.putExtra("isUpdateName", false);
                 startActivity(intent2);
+                break;
+            case R.id.rl_my_qr_code:
+                startActivity(new Intent(this, MyQRCodeActivity.class));
                 break;
         }
     }

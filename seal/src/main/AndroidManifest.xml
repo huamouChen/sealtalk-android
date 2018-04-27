@@ -56,6 +56,9 @@
         android:theme="@style/MyTheme"
         tools:replace="android:icon, android:theme">
 
+        <!--我的二维码-->
+        <activity android:name=".ui.activity.MyQRCodeActivity" />
+
 
         <!--自定义会话列表-->
         <activity

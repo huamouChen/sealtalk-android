@@ -49,6 +49,7 @@ import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import cn.chenhuamou.im.ui.activity.AccountSettingActivity;
 import cn.chenhuamou.im.ui.activity.MyAccountActivity;
 import cn.chenhuamou.im.ui.activity.wallet.MyWalletActivity;
+import cn.chenhuamou.im.utils.QRCodeUtils;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.CSCustomServiceInfo;
@@ -165,28 +166,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private Bitmap createQRCode(String contentString, int size) throws WriterException {
-        Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
-        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-        BitMatrix matrix = new MultiFormatWriter().encode(contentString,
-                BarcodeFormat.QR_CODE, size, size);
-        int width = matrix.getWidth();
-        int height = matrix.getHeight();
-        int[] pixels = new int[width * height];
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (matrix.get(x, y)) {
-                    pixels[y * width + x] = getContext().getResources().getColor(R.color.black);
-                }
-            }
-        }
-        Bitmap bitmap = Bitmap.createBitmap(width, height,
-                Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bitmap;
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -241,7 +220,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
         // 二维码
         try {
-            Bitmap bitmapQRCode = createQRCode(userId, 30);
+            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(userId, 30);
             mQRCodeImg.setImageBitmap(bitmapQRCode);
         } catch (WriterException e) {
             e.printStackTrace();
