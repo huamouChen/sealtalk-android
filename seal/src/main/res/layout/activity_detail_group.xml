@@ -21,28 +21,12 @@
                 android:id="@+id/gridview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
                 android:background="#ffffff"
                 android:gravity="start"
                 android:listSelector="@android:color/transparent"
-                android:numColumns="4"/>
-
-            <!--
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#fff">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.25dp"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginRight="14dp"
-                    android:layout_marginTop="14dp"
-                    android:background="#dfdfdd" />
-            </LinearLayout>
-            -->
+                android:numColumns="4"
+                android:paddingLeft="1dp"
+                android:paddingRight="1dp" />
 
             <!--全部群成员-->
             <RelativeLayout
@@ -85,22 +69,17 @@
 
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:layout_marginLeft="14dp"
-                android:layout_marginRight="14dp"
-                android:layout_marginTop="20dp"
-                android:background="#dfdfdd" />
 
             <!--查找聊天记录-->
             <LinearLayout
                 android:id="@+id/ac_ll_search_chatting_records"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/btn_list_item_bg"
                 android:clickable="true"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -114,17 +93,40 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-
+            <!--群二维码-->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#fff">
-            <View
+                android:id="@+id/ll_group_qr_code"
                 android:layout_width="match_parent"
-                android:layout_height="0.25dp"
-                android:layout_marginLeft="14dp"
-                android:layout_marginRight="14dp"
-                android:background="#dfdfdd" />
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_list_item_bg"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:text="群二维码"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <cn.chenhuamou.im.server.widget.SelectableRoundedImageView
+                    android:id="@+id/group_qr_code"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="14dp"
+                    android:scaleType="centerCrop"
+                    app:sriv_left_bottom_corner_radius="3dip"
+                    app:sriv_left_top_corner_radius="3dip"
+                    app:sriv_right_bottom_corner_radius="3dip"
+                    app:sriv_right_top_corner_radius="3dip" />
+
+
             </LinearLayout>
 
             <View
@@ -132,10 +134,7 @@
                 android:layout_height="0.25dp"
                 android:layout_marginLeft="14dp"
                 android:layout_marginRight="14dp"
-                android:layout_marginTop="20dp"
-                android:background="#dfdfdd" />
-
-
+                android:background="@color/separator" />
             <!--群头像-->
             <LinearLayout
                 android:id="@+id/ll_group_port"
@@ -171,20 +170,6 @@
 
             </LinearLayout>
 
-            <!--
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#fff">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.25dp"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginRight="14dp"
-                    android:background="#dfdfdd" />
-            </LinearLayout>
-            -->
 
             <!--群名称-->
             <LinearLayout
@@ -307,8 +292,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="14dp"
                     android:layout_marginEnd="14dp"
+                    android:layout_marginRight="14dp"
                     android:src="@drawable/a_5" />
 
 
@@ -320,6 +305,7 @@
                 android:layout_height="wrap_content"
                 android:background="#fff"
                 android:visibility="gone">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.25dp"
@@ -327,7 +313,6 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
-
 
 
             <View
@@ -344,8 +329,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="#ffffff"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -558,7 +542,7 @@
                 android:text="@string/quit_group"
                 android:textColor="#FFF"
                 android:textSize="16sp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <!--解散并退出-->
             <Button

@@ -97,6 +97,8 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
     private BottomMenuDialog dialog;
     private ImageView mQRCodeImg;
 
+    private String portrait, nickname, targetId;
+
 
     private byte[] portraitBytes;   // 上传头像流
 
@@ -126,25 +128,25 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
         portraitItem.setOnClickListener(this);
         nameItem.setOnClickListener(this);
         phoneItem.setOnClickListener(this);
-        String cacheName = sp.getString(SealConst.Nick_Name, "");
-        String cachePortrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
+        nickname = sp.getString(SealConst.Nick_Name, "");
+        portrait = sp.getString(SealConst.SEALTALK_LOGING_PORTRAIT, "");
         String cachePhone = sp.getString(SealConst.Bind_Phone, "");
-        String userId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
+        targetId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "");
         // 设置手机号码
         if (!TextUtils.isEmpty(cachePhone)) {
             mPhone.setText(cachePhone);
         }
-        if (!TextUtils.isEmpty(cachePortrait)) {
-            mName.setText(cacheName);
+        if (!TextUtils.isEmpty(portrait)) {
+            mName.setText(nickname);
             String cacheId = sp.getString(SealConst.SEALTALK_LOGIN_ID, "a");
             String portraitUri = SealUserInfoManager.getInstance().getPortraitUri(new UserInfo(
-                    cacheId, cacheName, Uri.parse(cachePortrait)));
+                    cacheId, nickname, Uri.parse(portrait)));
             ImageLoader.getInstance().displayImage(portraitUri, mImageView, App.getOptions());
         }
 
         // 二维码
         try {
-            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(userId, 30);
+            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(targetId, 30);
             mQRCodeImg.setImageBitmap(bitmapQRCode);
         } catch (WriterException e) {
             e.printStackTrace();
@@ -191,7 +193,12 @@ public class MyAccountActivity extends BaseActivity implements View.OnClickListe
                 startActivity(intent2);
                 break;
             case R.id.rl_my_qr_code:
-                startActivity(new Intent(this, MyQRCodeActivity.class));
+                Intent qrIntent = new Intent(this, MyQRCodeActivity.class);
+                qrIntent.putExtra(SealConst.IsFromGroup, false);
+                qrIntent.putExtra(SealConst.TargetId, targetId);
+                qrIntent.putExtra(SealConst.Nick_Name, nickname);
+                qrIntent.putExtra(SealConst.Portrait, portrait);
+                startActivity(qrIntent);
                 break;
         }
     }

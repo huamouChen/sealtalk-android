@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.WriterException;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -84,6 +86,7 @@ import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.server.widget.SelectableRoundedImageView;
 import cn.chenhuamou.im.ui.widget.DemoGridView;
 import cn.chenhuamou.im.ui.widget.switchbutton.SwitchButton;
+import cn.chenhuamou.im.utils.QRCodeUtils;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.emoticon.AndroidEmoji;
@@ -131,7 +134,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private DemoGridView mGridView;
     private List<GroupMember> mGroupMember = new ArrayList<>();
     private TextView mTextViewMemberSize, mGroupDisplayNameText;
-    private SelectableRoundedImageView mGroupHeader;
+    private String groupPortrait = "";
+    private SelectableRoundedImageView mGroupHeader, mGroupQRCodeImg;
     private SwitchButton messageTop, messageNotification;
     private Groups mGroup;
     private String fromConversationId;
@@ -157,12 +161,14 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_group);
-        initViews();
-        setTitle(R.string.group_info);
 
         //群组会话界面点进群组详情
         fromConversationId = getIntent().getStringExtra("TargetId");
         mConversationType = (Conversation.ConversationType) getIntent().getSerializableExtra("conversationType");
+
+        initViews();
+        setTitle(R.string.group_info);
+
 
         if (!TextUtils.isEmpty(fromConversationId)) {
             isFromConversation = true;
@@ -238,6 +244,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         } else {
             portraitUri = BaseAction.DOMAIN + mGroup.getHeaderImage();
         }
+        groupPortrait = portraitUri;
         ImageLoader.getInstance().displayImage(portraitUri, mGroupHeader, App.getOptions());
 
         mGroupName.setText(mGroup.getName());
@@ -501,6 +508,16 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            // 群二维码
+            case R.id.ll_group_qr_code:
+                Intent qrIntent = new Intent(this, MyQRCodeActivity.class);
+                qrIntent.putExtra(SealConst.IsFromGroup, true);
+                qrIntent.putExtra(SealConst.TargetId, fromConversationId);
+                qrIntent.putExtra(SealConst.Nick_Name, mGroup.getName());
+                qrIntent.putExtra(SealConst.Portrait, groupPortrait);
+                startActivity(qrIntent);
+                break;
             case R.id.group_quit:
                 DialogWithYesOrNoUtils.getInstance().showDialog(mContext, getString(R.string.confirm_quit_group), new DialogWithYesOrNoUtils.DialogCallBack() {
                     @Override
@@ -1170,26 +1187,26 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
 
     private void initViews() {
-        messageTop = (SwitchButton) findViewById(R.id.sw_group_top);
-        messageNotification = (SwitchButton) findViewById(R.id.sw_group_notfaction);
+        messageTop = findViewById(R.id.sw_group_top);
+        messageNotification = findViewById(R.id.sw_group_notfaction);
         messageTop.setOnCheckedChangeListener(this);
         messageNotification.setOnCheckedChangeListener(this);
-        LinearLayout groupClean = (LinearLayout) findViewById(R.id.group_clean);
-        mGridView = (DemoGridView) findViewById(R.id.gridview);
-        mTextViewMemberSize = (TextView) findViewById(R.id.group_member_size);
-        mGroupHeader = (SelectableRoundedImageView) findViewById(R.id.group_header);
-        LinearLayout mGroupDisplayName = (LinearLayout) findViewById(R.id.group_displayname);
-        mGroupDisplayNameText = (TextView) findViewById(R.id.group_displayname_text);
-        mGroupName = (TextView) findViewById(R.id.group_name);
-        mQuitBtn = (Button) findViewById(R.id.group_quit);
-        mDismissBtn = (Button) findViewById(R.id.group_dismiss);
-        RelativeLayout totalGroupMember = (RelativeLayout) findViewById(R.id.group_member_size_item);
-        RelativeLayout memberOnlineStatus = (RelativeLayout) findViewById(R.id.group_member_online_status);
-        LinearLayout mGroupPortL = (LinearLayout) findViewById(R.id.ll_group_port);
-        LinearLayout mGroupNameL = (LinearLayout) findViewById(R.id.ll_group_name);
-        mGroupAnnouncementDividerLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_group_announcement_divider);
-        mGroupNotice = (LinearLayout) findViewById(R.id.group_announcement);
-        mSearchMessagesLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_search_chatting_records);
+        LinearLayout groupClean = findViewById(R.id.group_clean);
+        mGridView = findViewById(R.id.gridview);
+        mTextViewMemberSize = findViewById(R.id.group_member_size);
+        mGroupHeader = findViewById(R.id.group_header);
+        LinearLayout mGroupDisplayName = findViewById(R.id.group_displayname);
+        mGroupDisplayNameText = findViewById(R.id.group_displayname_text);
+        mGroupName = findViewById(R.id.group_name);
+        mQuitBtn = findViewById(R.id.group_quit);
+        mDismissBtn = findViewById(R.id.group_dismiss);
+        RelativeLayout totalGroupMember = findViewById(R.id.group_member_size_item);
+        RelativeLayout memberOnlineStatus = findViewById(R.id.group_member_online_status);
+        LinearLayout mGroupPortL = findViewById(R.id.ll_group_port);
+        LinearLayout mGroupNameL = findViewById(R.id.ll_group_name);
+        mGroupAnnouncementDividerLinearLayout = findViewById(R.id.ac_ll_group_announcement_divider);
+        mGroupNotice = findViewById(R.id.group_announcement);
+        mSearchMessagesLinearLayout = findViewById(R.id.ac_ll_search_chatting_records);
         mGroupPortL.setOnClickListener(this);
         mGroupNameL.setOnClickListener(this);
         totalGroupMember.setOnClickListener(this);
@@ -1198,6 +1215,20 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         if (getSharedPreferences("config", Context.MODE_PRIVATE).getBoolean("isDebug", false)) {
             memberOnlineStatus.setVisibility(View.VISIBLE);
         }
+
+        // 群二维码
+        mGroupQRCodeImg = findViewById(R.id.group_qr_code);
+        // 二维码
+        try {
+            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(fromConversationId, 30);
+            mGroupQRCodeImg.setBackground(new BitmapDrawable(bitmapQRCode));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        // 点击群二维码
+        findViewById(R.id.ll_group_qr_code).setOnClickListener(this);
+
+
         mQuitBtn.setOnClickListener(this);
         mDismissBtn.setOnClickListener(this);
         groupClean.setOnClickListener(this);

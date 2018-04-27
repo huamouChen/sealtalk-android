@@ -30,6 +30,8 @@ public class SealConst {
 
     // 是否是由群组点开查看用户信息
     public static final String IsFromGroup = "isFromGroup";
+    public static final String TargetId = "TargetId";
+    public static final String Portrait = "Portrait";
 
     // 资金密码
     public static final String IsHavePayPassword = "IsHavePayPassword";

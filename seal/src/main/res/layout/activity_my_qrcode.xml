@@ -63,13 +63,12 @@
 
 
         <TextView
+            android:id="@+id/tv_qr_tip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="10dp"
-            android:text="扫一扫上面的二维码图案，加我微小信"
             android:textColor="@color/text_tips_color"
-
             android:textSize="11sp" />
 
 
