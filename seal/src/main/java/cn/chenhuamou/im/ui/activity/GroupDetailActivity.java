@@ -514,7 +514,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 Intent qrIntent = new Intent(this, MyQRCodeActivity.class);
                 qrIntent.putExtra(SealConst.IsFromGroup, true);
                 qrIntent.putExtra(SealConst.TargetId, fromConversationId);
-                qrIntent.putExtra(SealConst.Nick_Name, mGroup.getName());
+                qrIntent.putExtra(SealConst.Nick_Name, mGroup.getName().isEmpty() ? fromConversationId : mGroup.getName());
                 qrIntent.putExtra(SealConst.Portrait, groupPortrait);
                 startActivity(qrIntent);
                 break;

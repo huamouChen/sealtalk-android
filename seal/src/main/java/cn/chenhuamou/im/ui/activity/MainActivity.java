@@ -612,6 +612,7 @@ public class MainActivity extends FragmentActivity implements
      * 处理个人二维码
      * */
     private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
+
     private void qrCodeDealwithPrivate(String targetId) {
         Intent intent = new Intent(this, UserDetailActivity.class);
         intent.putExtra("type", CLICK_CONTACT_FRAGMENT_FRIEND);
@@ -624,7 +625,15 @@ public class MainActivity extends FragmentActivity implements
      * 处理群组二维码
      * */
     private void qrCodeDealwithGroup(String targetId) {
-
+        Groups groups = SealUserInfoManager.getInstance().getGroupsByID(targetId);
+        // 如果已经在群组里面了，就直接开启群组会话
+        if (groups != null) {
+            RongIM.getInstance().startGroupChat(mContext, targetId, groups.getName());
+        } else { // 没有在群组里面，跳到加入群组界面
+            Intent intent = new Intent(mContext, JoinGroupActivity.class);
+            intent.putExtra(SealConst.TargetId, targetId);
+            startActivity(intent);
+        }
     }
 
     /*

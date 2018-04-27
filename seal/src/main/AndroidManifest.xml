@@ -58,6 +58,8 @@
 
         <!--我的二维码-->
         <activity android:name=".ui.activity.MyQRCodeActivity" />
+        <!--加入群组-->
+        <activity android:name=".ui.activity.JoinGroupActivity" />
 
 
         <!--自定义会话列表-->

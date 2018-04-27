@@ -79,6 +79,7 @@ public class MorePopWindow extends PopupWindow {
             @Override
             public void onClick(View v) {
                 BroadcastManager.getInstance(context).sendBroadcast(SealConst.ScanQRCode);
+                dismiss();
             }
         });
 
