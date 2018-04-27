@@ -31,6 +31,7 @@ import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.pinyin.CharacterParser;
+import cn.chenhuamou.im.server.response.ApplyFriendResponse;
 import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
 import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
@@ -311,9 +312,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                         public void executeEditEvent(String editText) {
                             if (TextUtils.isEmpty(editText)) {
                                 if (mGroupName != null && !TextUtils.isEmpty(mGroupName)) {
-                                    addMessage = "我是" + mGroupName + "群的" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+                                    addMessage = "我是" + mGroupName + "群的" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Nick_Name, "");
                                 } else {
-                                    addMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+                                    addMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Nick_Name, "");
                                 }
                             } else {
                                 addMessage = editText;
@@ -377,8 +378,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         if (result != null) {
             switch (requestCode) {
                 case ADD_FRIEND:
-                    FriendInvitationResponse response = (FriendInvitationResponse) result;
-                    if (response.getCode() == 200) {
+                    ApplyFriendResponse response = (ApplyFriendResponse) result;
+                    if (response.getCode().getCodeId().equals("100")) {
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.request_success));
                         this.finish();
@@ -513,7 +514,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onFailure(int requestCode, int state, Object result) {
         if (requestCode == ADD_FRIEND)//添加好友时报网络异常,其余操作不需要
-            super.onFailure(requestCode, state, result);
+            LoadDialog.dismiss(mContext);
+        NToast.shortToast(mContext, "请求失败，请稍后再试");
     }
 
     @Override

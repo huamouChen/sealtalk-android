@@ -12,8 +12,9 @@
         android:background="@drawable/popwindow_bg"
         android:orientation="vertical">
 
+        <!--发起聊天-->
         <RelativeLayout
-            android:id="@+id/re_chatroom"
+            android:id="@+id/re_chat"
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:layout_marginLeft="14dp"
@@ -33,9 +34,9 @@
 
         </RelativeLayout>
 
-
+        <!--创建群聊-->
         <RelativeLayout
-            android:id="@+id/re_addfriends"
+            android:id="@+id/re_create_group"
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:layout_marginLeft="14dp"
@@ -55,9 +56,9 @@
 
         </RelativeLayout>
 
-
+        <!--添加好友-->
         <RelativeLayout
-            android:id="@+id/re_scanner"
+            android:id="@+id/re_add_friend"
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:layout_marginLeft="14dp"
@@ -71,6 +72,28 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:text="@string/add_contacts"
+                android:textColor="@color/text_color"
+                android:textSize="16sp" />
+
+
+        </RelativeLayout>
+
+        <!--扫一扫-->
+        <RelativeLayout
+            android:id="@+id/re_scan"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="18dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/pop_group"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:text="扫一扫"
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
 

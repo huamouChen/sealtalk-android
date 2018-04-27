@@ -450,9 +450,9 @@ public class SealAction extends BaseAction {
      * @param addFriendMessage 添加好友的信息
      * @throws HttpException
      */
-    public FriendInvitationResponse sendFriendInvitation(String userid, String addFriendMessage) throws HttpException {
+    public ApplyFriendResponse sendFriendInvitation(String userid, String addFriendMessage) throws HttpException {
         String url = getURL("api/Im/ApplyFriend");
-        String json = JsonMananger.beanToJson(new FriendInvitationRequest(userid, addFriendMessage));
+        String json = JsonMananger.beanToJson(new ApplyFriendRequest(userid, addFriendMessage));
         StringEntity entity = null;
         try {
             entity = new StringEntity(json, ENCODING);
@@ -461,9 +461,10 @@ public class SealAction extends BaseAction {
             e.printStackTrace();
         }
         String result = httpManager.post(mContext, url, entity, CONTENT_TYPE);
-        FriendInvitationResponse response = null;
+        ApplyFriendResponse response = null;
         if (!TextUtils.isEmpty(result)) {
-            response = jsonToBean(result, FriendInvitationResponse.class);
+            NLog.e("ApplyFriendResponse", result);
+            response = jsonToBean(result, ApplyFriendResponse.class);
         }
         return response;
     }

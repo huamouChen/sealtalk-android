@@ -30,6 +30,8 @@ public class SealConst {
 
     // 是否是由群组点开查看用户信息
     public static final String IsFromGroup = "isFromGroup";
+    // 个人
+    public static final String IsPrivate = "IsPrivate";
     public static final String TargetId = "TargetId";
     public static final String Portrait = "Portrait";
 
@@ -57,6 +59,10 @@ public class SealConst {
     public static final int LOADING_MORE = 1;
     //没有更多
     public static final int NO_MORE = 2;
+
+
+    // 扫一扫
+    public static final String ScanQRCode = "ScanQRCode";
 
 
 

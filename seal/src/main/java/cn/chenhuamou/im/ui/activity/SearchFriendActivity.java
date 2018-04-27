@@ -162,7 +162,7 @@ public class SearchFriendActivity extends BaseActivity implements View.OnClickLi
                                         }
                                         addFriendMessage = editText;
                                         if (TextUtils.isEmpty(editText)) {
-                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_NAME, "");
+                                            addFriendMessage = "我是" + getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.Nick_Name, "");
                                         }
                                         if (!TextUtils.isEmpty(mFriendId)) {
                                             LoadDialog.show(mContext);

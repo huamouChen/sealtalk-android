@@ -42,8 +42,8 @@ public class MyQRCodeActivity extends BaseActivity {
     }
 
     /*
-    * 获取传递过来的数据
-    * */
+     * 获取传递过来的数据
+     * */
     private void getIntentData() {
         portrait = getIntent().getStringExtra(SealConst.Portrait);
         nickName = getIntent().getStringExtra(SealConst.Nick_Name);
@@ -53,8 +53,8 @@ public class MyQRCodeActivity extends BaseActivity {
 
 
     /*
-    * 绑定控件
-    * */
+     * 绑定控件
+     * */
     private void initView() {
         if (isFromGroup) {
             setTitle("群组二维码");
@@ -69,8 +69,8 @@ public class MyQRCodeActivity extends BaseActivity {
     }
 
     /*
-    * 初始化数据
-    * */
+     * 初始化数据
+     * */
     private void initData() {
 
         if (isFromGroup) {
@@ -84,7 +84,8 @@ public class MyQRCodeActivity extends BaseActivity {
 
         // 二维码
         try {
-            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(targetId, 200);
+            String fromWhere = isFromGroup ? SealConst.IsFromGroup : SealConst.IsPrivate;
+            Bitmap bitmapQRCode = QRCodeUtils.createQRCode(targetId + "|" + fromWhere , 200);
             mQRCodeImg.setBackground(new BitmapDrawable(bitmapQRCode));
         } catch (WriterException e) {
             e.printStackTrace();

@@ -1,20 +1,25 @@
 package cn.chenhuamou.im.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -28,6 +33,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +43,7 @@ import java.util.List;
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.SealConst;
 import cn.chenhuamou.im.SealUserInfoManager;
+import cn.chenhuamou.im.db.Friend;
 import cn.chenhuamou.im.db.Groups;
 import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.HomeWatcherReceiver;
@@ -44,9 +53,11 @@ import cn.chenhuamou.im.server.network.GetPicThread;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.pinyin.CharacterParser;
 import cn.chenhuamou.im.server.response.IsAliveResponse;
 import cn.chenhuamou.im.server.utils.NLog;
 import cn.chenhuamou.im.server.utils.NToast;
+import cn.chenhuamou.im.server.utils.RongGenerate;
 import cn.chenhuamou.im.server.utils.json.JsonMananger;
 import cn.chenhuamou.im.server.widget.LoadDialog;
 import cn.chenhuamou.im.ui.adapter.ConversationListAdapterEx;
@@ -76,6 +87,7 @@ public class MainActivity extends FragmentActivity implements
         IUnReadMessageObserver, OnDataListener {
 
     private static final int RONG_ALIVE = 1000;
+    private static final int REQ_PERM_CAMERA = 100;
 
     public static final String UPDATE_GROUP_MEMBER = "update_group_member";
 
@@ -136,26 +148,34 @@ public class MainActivity extends FragmentActivity implements
             }
         });
 
+        // 扫一扫
+        BroadcastManager.getInstance(mContext).addAction(SealConst.ScanQRCode, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                scanQRCode();
+            }
+        });
+
     }
 
     private void initViews() {
         // 底部 4个 tabBar item
-        RelativeLayout chatRLayout = (RelativeLayout) findViewById(R.id.seal_chat);
-        RelativeLayout contactRLayout = (RelativeLayout) findViewById(R.id.seal_contact_list);
-        RelativeLayout foundRLayout = (RelativeLayout) findViewById(R.id.seal_find);
-        RelativeLayout mineRLayout = (RelativeLayout) findViewById(R.id.seal_me);
+        RelativeLayout chatRLayout = findViewById(R.id.seal_chat);
+        RelativeLayout contactRLayout = findViewById(R.id.seal_contact_list);
+        RelativeLayout foundRLayout = findViewById(R.id.seal_find);
+        RelativeLayout mineRLayout = findViewById(R.id.seal_me);
         // 图片和文字主要是为了点击的时候切换变色
-        mImageChats = (ImageView) findViewById(R.id.tab_img_chats);
-        mImageContact = (ImageView) findViewById(R.id.tab_img_contact);
-        mImageFind = (ImageView) findViewById(R.id.tab_img_find);
-        mImageMe = (ImageView) findViewById(R.id.tab_img_me);
-        mTextChats = (TextView) findViewById(R.id.tab_text_chats);
-        mTextContact = (TextView) findViewById(R.id.tab_text_contact);
-        mTextFind = (TextView) findViewById(R.id.tab_text_find);
-        mTextMe = (TextView) findViewById(R.id.tab_text_me);
-        mMineRed = (ImageView) findViewById(R.id.mine_red);
-        moreImage = (ImageView) findViewById(R.id.seal_more);
-        mSearchImageView = (ImageView) findViewById(R.id.ac_iv_search);
+        mImageChats = findViewById(R.id.tab_img_chats);
+        mImageContact = findViewById(R.id.tab_img_contact);
+        mImageFind = findViewById(R.id.tab_img_find);
+        mImageMe = findViewById(R.id.tab_img_me);
+        mTextChats = findViewById(R.id.tab_text_chats);
+        mTextContact = findViewById(R.id.tab_text_contact);
+        mTextFind = findViewById(R.id.tab_text_find);
+        mTextMe = findViewById(R.id.tab_text_me);
+        mMineRed = findViewById(R.id.mine_red);
+        moreImage = findViewById(R.id.seal_more);
+        mSearchImageView = findViewById(R.id.ac_iv_search);
 
         // 设置点击监听
         chatRLayout.setOnClickListener(this);
@@ -547,4 +567,83 @@ public class MainActivity extends FragmentActivity implements
         NLog.d("------------------------isAlive响应失败", "------------------------isAlive响应失败");
     }
 
+
+    /*
+     * 开始扫描二维码
+     * */
+    private void scanQRCode() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQ_PERM_CAMERA);
+            return;
+        }
+
+        // 二维码扫描
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+        startActivityForResult(intent, REQ_PERM_CAMERA);
+    }
+
+
+    /*
+     * 结果回调
+     * */
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //扫描结果回调
+        if (requestCode == REQ_PERM_CAMERA && resultCode == RESULT_OK) {
+            String scanResult = data.getStringExtra("result");
+            String[] resultStrings = scanResult.split("\\|");
+
+            if (resultStrings.length == 2 && (resultStrings[1].equals(SealConst.IsFromGroup) || resultStrings[1].equals(SealConst.IsPrivate))) {
+                // 个人二维码
+                if (resultStrings[1].equals(SealConst.IsPrivate)) {
+                    qrCodeDealwithPrivate(resultStrings[0]);
+                } else { // 群组二维码
+                    qrCodeDealwithGroup(resultStrings[0]);
+                }
+            } else {
+                NToast.shortToast(mContext, "暂时不支持该二维码");
+            }
+        }
+    }
+
+    /*
+     * 处理个人二维码
+     * */
+    private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
+    private void qrCodeDealwithPrivate(String targetId) {
+        Intent intent = new Intent(this, UserDetailActivity.class);
+        intent.putExtra("type", CLICK_CONTACT_FRAGMENT_FRIEND);
+        Friend friend = new Friend(targetId, targetId, Uri.parse(""));
+        intent.putExtra("friend", friend);
+        startActivity(intent);
+    }
+
+    /*
+     * 处理群组二维码
+     * */
+    private void qrCodeDealwithGroup(String targetId) {
+
+    }
+
+    /*
+     * 权限申请
+     * */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQ_PERM_CAMERA:
+                // 摄像头权限申请
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 获得授权
+                    scanQRCode();
+                } else {
+                    // 被禁止授权
+                    Toast.makeText(MainActivity.this, "请至权限中心打开本应用的相机访问权限", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
 }

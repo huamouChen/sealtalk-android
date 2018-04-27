@@ -5,6 +5,16 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:background="@null"
+        android:text="返 回"
+        android:textColor="#fff"
+        android:visibility="gone"/>
+
     <SurfaceView
         android:id="@+id/capture_preview"
         android:layout_width="match_parent"

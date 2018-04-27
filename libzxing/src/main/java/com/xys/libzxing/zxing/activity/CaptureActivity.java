@@ -30,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -66,6 +67,8 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
     private RelativeLayout scanContainer;
     private RelativeLayout scanCropView;
     private ImageView scanLine;
+
+    private Button back_btn;
 
     private Rect mCropRect = null;
     private boolean isHasSurface = false;
