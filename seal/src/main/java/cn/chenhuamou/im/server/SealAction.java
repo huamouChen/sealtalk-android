@@ -80,6 +80,7 @@ import cn.chenhuamou.im.server.response.GetRongGroupInfoResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupMembersResponse;
 import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
+import cn.chenhuamou.im.server.response.GetUserBanksResponse;
 import cn.chenhuamou.im.server.response.GetUserCashResponse;
 import cn.chenhuamou.im.server.response.GetUserChargeListResponse;
 import cn.chenhuamou.im.server.response.GetUserDetailBalanceResponse;
@@ -352,7 +353,7 @@ public class SealAction extends BaseAction {
      * 设置群组头像
      *
      * @param GroupImgStream 头像 流数组
-     * @param GroupId 群组ID
+     * @param GroupId        群组ID
      * @throws HttpException
      */
     public PublicResponse setGroupPortrait(byte[] GroupImgStream, String GroupId) throws HttpException {
@@ -573,11 +574,10 @@ public class SealAction extends BaseAction {
     }
 
 
-
     /**
      * 创建者设置群组头像
      *
-     * @param groupId     群组Id
+     * @param groupId        群组Id
      * @param GroupImgStream 群组头像
      * @throws HttpException
      */
@@ -1580,14 +1580,15 @@ public class SealAction extends BaseAction {
         return response;
     }
 
+
     /*
      * 提现
      * */
     public PublicResponse getWithDrawMoney(String money, String moneyPwd, String bankId) throws HttpException {
         String url = getURL("api/Index/WithDrawMoney");
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("money", money);
+        Map<String, String> map = new HashMap<>();
         map.put("moneyPwd", moneyPwd);
+        map.put("money", money);
         map.put("bankId", bankId);
         String result = httpManager.get(mContext, url, new RequestParams(map));
         PublicResponse response = null;
@@ -1649,17 +1650,18 @@ public class SealAction extends BaseAction {
 
     /**
      * 获取用户提现列表
-     *  userName 用户账号
-     *  startDate 开始日期  2018-04-25
-     *  endDate 结束日期    2018-04-25
-     *  pageSize 每页取多少条
-     *  pageIndex 第几页
+     * userName 用户账号
+     * startDate 开始日期  2018-04-25
+     * endDate 结束日期    2018-04-25
+     * pageSize 每页取多少条
+     * pageIndex 第几页
+     *
      * @throws HttpException
      */
     public GetUserCashResponse getUserCashLists(String userName, String startDate, String endDate, int pageSize, int pageIndex) throws HttpException {
         String url = getURL("api/User/Cash");
-       Map<String, String> map = new HashMap<>();
-       map.put("userName", userName);
+        Map<String, String> map = new HashMap<>();
+        map.put("userName", userName);
         map.put("startDate", startDate);
         map.put("endDate", endDate);
         map.put("pageSize", pageSize + "");
@@ -1675,11 +1677,12 @@ public class SealAction extends BaseAction {
 
     /**
      * 获取用户的充值记录
-     *  userName 用户账号
-     *  startDate 开始日期  2018-04-25
-     *  endDate 结束日期    2018-04-25
-     *  pageSize 每页取多少条
-     *  pageIndex 第几页
+     * userName 用户账号
+     * startDate 开始日期  2018-04-25
+     * endDate 结束日期    2018-04-25
+     * pageSize 每页取多少条
+     * pageIndex 第几页
+     *
      * @throws HttpException
      */
     public GetUserChargeListResponse getUserChargeLists(String userName, String startDate, String endDate, int pageSize, int pageIndex) throws HttpException {
@@ -1700,8 +1703,8 @@ public class SealAction extends BaseAction {
     }
 
     /*
-    * 获取充值方式列表
-    * */
+     * 获取充值方式列表
+     * */
     public List<GetBankstResponse> getChargeWay() throws HttpException {
         String url = getURL("api/Index/Banks");
         String result = httpManager.get(mContext, url);

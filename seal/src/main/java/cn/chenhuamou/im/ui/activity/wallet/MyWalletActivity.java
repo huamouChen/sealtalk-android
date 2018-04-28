@@ -1,5 +1,7 @@
 package cn.chenhuamou.im.ui.activity.wallet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 import com.jrmf360.rylib.wallet.widget.TitleBar;
 
 import cn.chenhuamou.im.R;
+import cn.chenhuamou.im.SealConst;
+import cn.chenhuamou.im.server.broadcast.BroadcastManager;
 import cn.chenhuamou.im.server.network.http.HttpException;
 import cn.chenhuamou.im.server.response.UserBalanceResponse;
 import cn.chenhuamou.im.server.utils.NToast;
@@ -38,6 +42,13 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_my_wallet);
         initView();
         initData();
+
+        BroadcastManager.getInstance(mContext).addAction(SealConst.RefreshMyWallet, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                initData();
+            }
+        });
     }
 
     /*
@@ -140,5 +151,13 @@ public class MyWalletActivity extends BaseActivity implements View.OnClickListen
                 startActivity(new Intent(this, BankSettingActivity.class));
                 break;
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        BroadcastManager.getInstance(mContext).destroy(SealConst.RefreshMyWallet);
+        super.onDestroy();
+
     }
 }

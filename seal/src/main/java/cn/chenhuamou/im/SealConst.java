@@ -64,6 +64,9 @@ public class SealConst {
     // 扫一扫
     public static final String ScanQRCode = "ScanQRCode";
 
+    // 刷新我的钱包界面
+    public static final String RefreshMyWallet = "RefreshMyWallet";
+
 
 
 
