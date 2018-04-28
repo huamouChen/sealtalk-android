@@ -159,7 +159,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="@string/jrmf_pwd_hint"
+                android:hint="请输入资金密码"
                 android:inputType="textPassword"
                 
                 android:maxLines="1"
@@ -196,7 +196,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="请再次输入资金密码"
+                android:hint="请确认资金密码"
                 android:inputType="textPassword"
 
                 android:maxLines="1"
