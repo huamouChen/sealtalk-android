@@ -99,13 +99,13 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private void initView() {
         setTitle(R.string.user_details);
-        mNickname = (TextView) findViewById(R.id.tv_nicknam);
-        maccount = (TextView) findViewById(R.id.tv_account);
-        mUserLineStatus = (TextView) findViewById(R.id.user_online_status);
-        mUserPortrait = (ImageView) findViewById(R.id.ac_iv_user_portrait);
-        mChatButtonGroupLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_chat_button_group);
-        mAddFriendButton = (Button) findViewById(R.id.ac_bt_add_friend);
-        mNoteNameLinearLayout = (LinearLayout) findViewById(R.id.ac_ll_note_name);
+        mNickname =  findViewById(R.id.tv_nicknam);
+        maccount =  findViewById(R.id.tv_account);
+        mUserLineStatus =  findViewById(R.id.user_online_status);
+        mUserPortrait =  findViewById(R.id.ac_iv_user_portrait);
+        mChatButtonGroupLinearLayout =  findViewById(R.id.ac_ll_chat_button_group);
+        mAddFriendButton =  findViewById(R.id.ac_bt_add_friend);
+        mNoteNameLinearLayout =  findViewById(R.id.ac_ll_note_name);
 
         mAddFriendButton.setOnClickListener(this);
     }
@@ -416,7 +416,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                             if (hasFriendInfoChanged(userEntity)) {
                                 String portraitUri = (userEntity.getHeadimg() != null && !userEntity.getHeadimg().isEmpty()) ? (BaseAction.DOMAIN + userEntity.getHeadimg()) : "";
                                 //当前app server返回的displayName为空,先不使用
-                                String nickName = (userEntity.getNickName() != null && !userEntity.getNickName().isEmpty()) ? userEntity.getNickName() : "";
+                                String nickName = (userEntity.getNickName() != null && !userEntity.getNickName().isEmpty()) ? userEntity.getNickName() : userEntity.getUserName();
                                 //如果没有设置头像,好友数据库的头像地址和用户信息提供者的头像处理不一致,这个不一致是seal app代码处理的问题,未来应该矫正回来
                                 String userInfoPortraitUri = mFriend.getPortraitUri().toString();
                                 //更新UI
