@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     android:background="@color/color_bg"
     android:orientation="vertical"
-    tools:context=".ui.activity.wallet.AddCardFirstActivity" >
+    tools:context=".ui.activity.wallet.AddCardFirstActivity">
 
-    <include layout="@layout/w_layout_titlebar"
-        android:id="@+id/titleBar"/>
+    <include
+        android:id="@+id/titleBar"
+        layout="@layout/w_layout_titlebar" />
 
     <!--银行编码-->
     <LinearLayout
@@ -19,28 +20,48 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="银行编码"
+            android:text="银行类型"
             android:textColor="@color/color_959595"
             android:textSize="14sp" />
 
-        <com.jrmf360.rylib.wallet.widget.ClearEditText
-            android:id="@+id/cet_bank_code"
-            android:layout_width="0dip"
+
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:hint="请输入银行编码"
-            android:paddingRight="@dimen/base_padding"
-            android:background="@null"
-            android:textColorHint="@color/color_b7b7b7"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:layout_weight="1">
+
+
+            <Spinner
+                android:id="@+id/spinner_bank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:entries="@array/bank_name"
+                />
+
+            <TextView
+                android:id="@+id/tv_bank_code"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="请点击选择银行"
+                android:paddingRight="@dimen/base_padding"
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_b7b7b7"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
     <!--银行卡号-->
@@ -52,7 +73,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
@@ -72,8 +93,8 @@
             android:hint="@string/jrmf_input_bank_card_num"
             android:inputType="number"
             android:paddingRight="@dimen/base_padding"
-            android:textColorHint="@color/color_b7b7b7"
             android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -86,7 +107,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
@@ -106,8 +127,8 @@
             android:hint="请确认银行卡号"
             android:inputType="number"
             android:paddingRight="@dimen/base_padding"
-            android:textColorHint="@color/color_b7b7b7"
             android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -120,7 +141,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
@@ -139,8 +160,8 @@
             android:gravity="center_vertical"
             android:hint="请输入银行开户名"
             android:paddingRight="@dimen/base_padding"
-            android:textColorHint="@color/color_b7b7b7"
             android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -153,7 +174,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
@@ -171,10 +192,10 @@
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="请输入资金密码"
-            android:paddingRight="@dimen/base_padding"
             android:inputType="textPassword"
-            android:textColorHint="@color/color_b7b7b7"
+            android:paddingRight="@dimen/base_padding"
             android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -187,7 +208,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/base_padding2" >
+        android:paddingLeft="@dimen/base_padding2">
 
         <TextView
             android:layout_width="100dp"
@@ -205,36 +226,35 @@
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="请输入开户省份，如广东省"
-            android:paddingRight="@dimen/base_padding"
             android:inputType="textPassword"
-            android:textColorHint="@color/color_b7b7b7"
+            android:paddingRight="@dimen/base_padding"
             android:textColor="@color/black"
+            android:textColorHint="@color/color_b7b7b7"
             android:textSize="16sp" />
     </LinearLayout>
-    
-   <TextView 
-       android:id="@+id/tv_support"
 
-       android:layout_below="@id/ll_cardNum"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="@string/look_banks"
-       android:textColor="@color/title_bar_color"
-       android:textSize="14sp"
-       android:layout_marginTop="@dimen/base_margin"
-       android:layout_marginRight="@dimen/base_margin"
-       android:layout_alignParentRight="true"
-       android:visibility="gone"
-       />
+    <TextView
+        android:id="@+id/tv_support"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ll_cardNum"
+        android:layout_marginRight="@dimen/base_margin"
+        android:layout_marginTop="@dimen/base_margin"
+        android:text="@string/look_banks"
+        android:textColor="@color/title_bar_color"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btn_next"
-        android:layout_below="@id/ll_pwd"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_marginTop="75dp"
+        android:layout_below="@id/ll_pwd"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="75dp"
         android:background="@drawable/selector_round_btn"
         android:text="@string/jrmf_next"
         android:textColor="@color/white"

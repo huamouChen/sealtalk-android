@@ -68,6 +68,7 @@ import cn.chenhuamou.im.server.response.DeleteGroupMemberResponse;
 import cn.chenhuamou.im.server.response.DismissGroupResponse;
 import cn.chenhuamou.im.server.response.FindUserInfoResponse;
 import cn.chenhuamou.im.server.response.FriendInvitationResponse;
+import cn.chenhuamou.im.server.response.GetBankstResponse;
 import cn.chenhuamou.im.server.response.GetBlackListResponse;
 import cn.chenhuamou.im.server.response.GetChatRoomResponse;
 import cn.chenhuamou.im.server.response.GetFriendInfoByIDResponse;
@@ -81,6 +82,7 @@ import cn.chenhuamou.im.server.response.GetRongGroupResponse;
 import cn.chenhuamou.im.server.response.GetRongTokenResponse;
 import cn.chenhuamou.im.server.response.GetUserCashResponse;
 import cn.chenhuamou.im.server.response.GetUserChargeListResponse;
+import cn.chenhuamou.im.server.response.GetUserDetailBalanceResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByIdResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoByPhoneResponse;
 import cn.chenhuamou.im.server.response.GetUserInfoResponse;
@@ -1547,6 +1549,20 @@ public class SealAction extends BaseAction {
     }
 
     /*
+     * 获取用户综合账户余额
+     * */
+    public GetUserDetailBalanceResponse getUserDetailBalance() throws HttpException {
+        String url = getURL("api/Funds/GetUserBalance");
+        String result = httpManager.get(mContext, url);
+        GetUserDetailBalanceResponse response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetUserDetailBalanceResponse", result);
+            response = jsonToBean(result, GetUserDetailBalanceResponse.class);
+        }
+        return response;
+    }
+
+    /*
      * 支付宝转账，通知支付宝人工
      * */
     public PublicResponse getRechargeAlipay(String amount, String addtime, String bankcode) throws HttpException {
@@ -1679,6 +1695,20 @@ public class SealAction extends BaseAction {
         if (!TextUtils.isEmpty(result)) {
             NLog.e("GetUserChargeListResponse", result);
             response = jsonToBean(result, GetUserChargeListResponse.class);
+        }
+        return response;
+    }
+
+    /*
+    * 获取充值方式列表
+    * */
+    public List<GetBankstResponse> getChargeWay() throws HttpException {
+        String url = getURL("api/Index/Banks");
+        String result = httpManager.get(mContext, url);
+        List<GetBankstResponse> response = null;
+        if (!TextUtils.isEmpty(result)) {
+            NLog.e("GetBankstResponse", result);
+            response = jsonToList(result, GetBankstResponse.class);
         }
         return response;
     }

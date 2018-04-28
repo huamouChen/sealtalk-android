@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+
+    <string-array name="bank_code">
+        <item>ICBC</item>
+        <item>ABC</item>
+        <item>CCB</item>
+        <item>ZH</item>
+        <item>JH</item>
+        <item>SH</item>
+        <item>ZX</item>
+        <item>MS</item>
+        <item>GD</item>
+        <item>PN</item>
+        <item>YZ</item>
+        <item>XY</item>
+        <item>GDFZ</item>
+        <item>HXYH</item>
+        <item>PF</item>
+        <item>zg</item>
+    </string-array>
+
+    <string-array name="bank_name">
+        <item>工商银行</item>
+        <item>农业银行</item>
+        <item>建设银行</item>
+        <item>招商银行</item>
+        <item>交通银行</item>
+        <item>深圳发展银行</item>
+        <item>中信银行</item>
+        <item>民生银行</item>
+        <item>光大银行</item>
+        <item>平安银行</item>
+        <item>邮政银行</item>
+        <item>兴业银行</item>
+        <item>广东发展银行</item>
+        <item>华夏银行</item>
+        <item>浦发银行</item>
+        <item>中国银行</item>
+    </string-array>
+
+
+</resources>

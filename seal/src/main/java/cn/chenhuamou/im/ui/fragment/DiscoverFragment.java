@@ -1,30 +1,45 @@
 package cn.chenhuamou.im.ui.fragment;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import cn.chenhuamou.im.App;
 import cn.chenhuamou.im.R;
+import cn.chenhuamou.im.SealUserInfoManager;
+import cn.chenhuamou.im.server.BaseAction;
 import cn.chenhuamou.im.server.SealAction;
 import cn.chenhuamou.im.server.network.async.AsyncTaskManager;
 import cn.chenhuamou.im.server.network.async.OnDataListener;
 import cn.chenhuamou.im.server.network.http.HttpException;
-import cn.chenhuamou.im.server.response.DefaultConversationResponse;
 import cn.chenhuamou.im.server.response.GetChatRoomResponse;
 import cn.chenhuamou.im.server.utils.NToast;
+import cn.chenhuamou.im.server.widget.LoadDialog;
+import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.UserInfo;
 
 
-public class DiscoverFragment extends Fragment implements View.OnClickListener, OnDataListener {
+public class DiscoverFragment extends Fragment implements OnDataListener {
 
     private static final int GETDEFCONVERSATION = 333;
+
+    private ListView chatroomListView;
+
     private AsyncTaskManager atm = AsyncTaskManager.getInstance(getActivity());
     private ArrayList<GetChatRoomResponse.ValueBean> chatroomList;
 
@@ -38,14 +53,14 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void initViews(View view) {
-        LinearLayout chatroomItem1 = (LinearLayout) view.findViewById(R.id.def_chatroom1);
-        LinearLayout chatroomItem2 = (LinearLayout) view.findViewById(R.id.def_chatroom2);
-        LinearLayout chatroomItem3 = (LinearLayout) view.findViewById(R.id.def_chatroom3);
-        LinearLayout chatroomItem4 = (LinearLayout) view.findViewById(R.id.def_chatroom4);
-        chatroomItem1.setOnClickListener(this);
-        chatroomItem2.setOnClickListener(this);
-        chatroomItem3.setOnClickListener(this);
-        chatroomItem4.setOnClickListener(this);
+        chatroomListView = view.findViewById(R.id.listView_chatroom);
+        // 点击 listView
+        chatroomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getGroupId(), chatroomList.get(0).getGroupName());
+            }
+        });
 
         //回调时的线程并不是UI线程，不能在回调中直接操作UI 聊天室状态监听 加入中  已经加入 离开 错误
         RongIMClient.getInstance().setChatRoomActionListener(new RongIMClient.ChatRoomActionListener() {
@@ -78,44 +93,74 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
                 });
             }
         });
-
-        initChatRoomData();
     }
 
-    @Override
-    public void onClick(View v) {
 
-        switch (v.getId()) {
-            case R.id.def_chatroom1:
-                if (chatroomList == null || chatroomList.get(0) == null) {
-                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
-                    return;
-                }
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(0).getGroupId(), chatroomList.get(0).getGroupName());
-                break;
-            case R.id.def_chatroom2:
-                if (chatroomList == null || chatroomList.get(1) == null) {
-                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
-                    return;
-                }
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(1).getGroupId(), chatroomList.get(1).getGroupName());
-                break;
-            case R.id.def_chatroom3:
-                if (chatroomList == null || chatroomList.get(2) == null) {
-                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
-                    return;
-                }
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(2).getGroupId(), chatroomList.get(2).getGroupName());
-                break;
-            case R.id.def_chatroom4:
-                if (chatroomList == null || chatroomList.get(3) == null) {
-                    NToast.shortToast(getActivity(), getString(R.string.join_chat_room_error_toast));
-                    return;
-                }
-                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatroomList.get(3).getGroupId(), chatroomList.get(3).getGroupName());
-                break;
+    /*
+     * list view adpter
+     * */
+    private class ChatroomAdapter extends BaseAdapter {
+
+        private ChatroomHolder holder = null;
+
+        private Context aContext;
+        private List<GetChatRoomResponse.ValueBean> mDatas;
+
+        public ChatroomAdapter(Context context, List<GetChatRoomResponse.ValueBean> data) {
+            this.aContext = context;
+            this.mDatas = data;
+        }
+
+        @Override
+        public int getCount() {
+            return mDatas != null ? mDatas.size() : 0;
+        }
+
+        @Override
+        public GetChatRoomResponse.ValueBean getItem(int position) {
+            return mDatas.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                holder = new ChatroomHolder();
+                convertView = LayoutInflater.from(aContext).inflate(R.layout.cell_chatroom, parent, false);
+                holder.tv_title = convertView.findViewById(R.id.tv_title);
+                holder.iv_heder = convertView.findViewById(R.id.iv_header);
+                convertView.setTag(holder);
+            } else {
+                holder = (ChatroomHolder) convertView.getTag();
+            }
+            // 赋值
+            GetChatRoomResponse.ValueBean itemBean = getItem(position);
+            holder.tv_title.setText(itemBean.getGroupName());
+            // 设置头像
+            String groupPortrait = "";
+            if (itemBean.getGroupImage() != null && !itemBean.getGroupImage().isEmpty()) {
+                groupPortrait = BaseAction.DOMAIN + itemBean.getGroupImage();
+            }
+            String portraitUri = SealUserInfoManager.getInstance().getPortraitUri
+                    (new UserInfo(itemBean.getGroupId(), itemBean.getGroupName(), Uri.parse(groupPortrait)));
+            ImageLoader.getInstance().displayImage(portraitUri, holder.iv_heder, App.getOptions());
+            return convertView;
+        }
+
+        private class ChatroomHolder {
+            private ImageView iv_heder;
+            private TextView tv_title;
+
+            public ChatroomHolder() {
+
+            }
         }
     }
+
 
     @Override
     public Object doInBackground(int requestCode, String parameter) throws HttpException {
@@ -125,8 +170,6 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
     @Override
     @SuppressWarnings("unchecked")
     public void onSuccess(int requestCode, Object result) {
-        initChatRoomData();
-
         GetChatRoomResponse response = (GetChatRoomResponse) result;
         if (response.getCode().getCodeId().equals("100")) {
             ArrayList<GetChatRoomResponse.ValueBean> resultEntityArrayList = new ArrayList();
@@ -134,57 +177,17 @@ public class DiscoverFragment extends Fragment implements View.OnClickListener, 
             if (response.getValue().size() > 0) {
                 resultEntityArrayList.clear();
                 chatroomList.clear();
-                for (GetChatRoomResponse.ValueBean d : response.getValue()) {
-//                    if (d.getType().equals("group")) {
-//                        resultEntityArrayList.add(d);
-//                    } else {
-//                        chatroomList.add(d);
-//                    }
-                    chatroomList.add(d);
-                }
+                chatroomList.addAll(response.getValue());
+                chatroomListView.setAdapter(new ChatroomAdapter(getContext(), chatroomList));
             }
+        } else {
+            NToast.shortToast(getContext(), "获取聊天室列表失败");
         }
     }
 
     @Override
     public void onFailure(int requestCode, int state, Object result) {
-        initChatRoomData();
-    }
-
-
-    /*
-     * 初始化聊天室的列表数据
-     * */
-    private void initChatRoomData() {
-        chatroomList = new ArrayList();
-        chatroomList.clear();
-
-        DefaultConversationResponse.ResultEntity chatroom1 = new DefaultConversationResponse.ResultEntity();
-        chatroom1.setId("CHM001Room1");
-        chatroom1.setName("CHM001Room1");
-        chatroom1.setType("chatroom");
-        chatroom1.setMaxMemberCount(0);
-//        chatroomList.add(chatroom1);
-
-        DefaultConversationResponse.ResultEntity chatroom2 = new DefaultConversationResponse.ResultEntity();
-        chatroom2.setId("CHM001Room2");
-        chatroom2.setName("CHM001Room2");
-        chatroom2.setType("chatroom");
-        chatroom2.setMaxMemberCount(0);
-//        chatroomList.add(chatroom2);
-
-        DefaultConversationResponse.ResultEntity chatroom3 = new DefaultConversationResponse.ResultEntity();
-        chatroom3.setId("CHM001Room3");
-        chatroom3.setName("CHM001Room3");
-        chatroom3.setType("chatroom");
-        chatroom3.setMaxMemberCount(0);
-//        chatroomList.add(chatroom3);
-
-        DefaultConversationResponse.ResultEntity chatroom4 = new DefaultConversationResponse.ResultEntity();
-        chatroom4.setId("CHM001Room4");
-        chatroom4.setName("CHM001Room4");
-        chatroom4.setType("chatroom");
-        chatroom4.setMaxMemberCount(0);
-//        chatroomList.add(chatroom4);
+        LoadDialog.dismiss(getContext());
+        NToast.shortToast(getContext(), "获取聊天室列表失败");
     }
 }

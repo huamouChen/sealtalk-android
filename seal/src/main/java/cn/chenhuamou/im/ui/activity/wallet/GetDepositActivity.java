@@ -11,6 +11,7 @@ import com.jrmf360.rylib.wallet.widget.TitleBar;
 
 import cn.chenhuamou.im.R;
 import cn.chenhuamou.im.server.network.http.HttpException;
+import cn.chenhuamou.im.server.response.GetUserDetailBalanceResponse;
 import cn.chenhuamou.im.server.response.PublicResponse;
 import cn.chenhuamou.im.server.utils.NToast;
 import cn.chenhuamou.im.server.widget.LoadDialog;
@@ -24,6 +25,7 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
 
 
     private static final int GET_DRAW_MONEY = 1000;   // 提现
+    private static final int GET_USER_DETAIL_BALANCE = 2000;   // 获取用户余额详情
 
     private TitleBar titleBar;
     private ClearEditText cwe_draw, cwe_moneypwd, cwe_banknum;
@@ -34,6 +36,9 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_getdeposit);
         initView();
+
+        // 获取用户余额详情
+        request(GET_USER_DETAIL_BALANCE);
     }
 
     /*
@@ -94,26 +99,50 @@ public class GetDepositActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public Object doInBackground(int requestCode, String id) throws HttpException {
-        return action.getWithDrawMoney(cwe_draw.getText().toString(),
-                cwe_moneypwd.getText().toString(),
-                cwe_banknum.getText().toString());
+
+
+        switch (requestCode) {
+            case GET_USER_DETAIL_BALANCE:
+                return action.getUserDetailBalance();
+            case GET_DRAW_MONEY:
+                return action.getWithDrawMoney(cwe_draw.getText().toString(),
+                        cwe_moneypwd.getText().toString(),
+                        cwe_banknum.getText().toString());
+
+        }
+        return null;
     }
 
     @Override
     public void onSuccess(int requestCode, Object result) {
         LoadDialog.dismiss(mContext);
-        PublicResponse publicResponse = (PublicResponse) result;
-        if (publicResponse.isResult()) {
-            NToast.shortToast(mContext, "提现已提交，请耐心等候");
-        } else {
-            NToast.shortToast(mContext, publicResponse.getError());
-        }
 
+        switch (requestCode) {
+            case GET_USER_DETAIL_BALANCE:
+                GetUserDetailBalanceResponse getUserDetailBalanceResponse = (GetUserDetailBalanceResponse) result;
+                break;
+            case GET_DRAW_MONEY:
+                PublicResponse publicResponse = (PublicResponse) result;
+                if (publicResponse.isResult()) {
+                    NToast.shortToast(mContext, "提现已提交，请耐心等候");
+                } else {
+                    NToast.shortToast(mContext, publicResponse.getError());
+                }
+                break;
+        }
     }
 
     @Override
     public void onFailure(int requestCode, int state, Object result) {
         LoadDialog.dismiss(mContext);
-        NToast.shortToast(mContext, "提现申请失败");
+        switch (requestCode) {
+            case GET_USER_DETAIL_BALANCE:
+                NToast.shortToast(mContext, "获取余额详情失败");
+                break;
+            case GET_DRAW_MONEY:
+                NToast.shortToast(mContext, "提现申请失败");
+                break;
+        }
+
     }
 }
