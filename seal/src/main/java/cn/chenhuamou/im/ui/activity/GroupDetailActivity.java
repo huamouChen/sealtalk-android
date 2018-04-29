@@ -213,7 +213,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     mGroupMember = groupMembers;
                     initGroupMemberData();
                 } else {
-                    //群组添加人员，主要是因为创建群组的时候，后台发送的消息不全切类型不对，懒得和他说，免得接口又有问题
                     SealUserInfoManager.getInstance().getGroups(fromConversationId);
                     SealUserInfoManager.getInstance().getGroupMember(fromConversationId);
                     BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_GROUP_MEMBER, fromConversationId);
@@ -292,7 +291,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
         // 当前用户登录账号
         String loginId = getSharedPreferences("config", MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
-        if (mGroup.getRole() != null && mGroup.getRole().equals(loginId))
+        if ((mGroup.getRole() != null && mGroup.getRole().equals(loginId)) || mGroup.getGroupOwner() != null && mGroup.getGroupOwner().equals(loginId))
             isCreated = true;
         if (!isCreated) {
             mGroupAnnouncementDividerLinearLayout.setVisibility(View.VISIBLE);
@@ -430,20 +429,21 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     }
                     break;
                 case GET_GROUP_INFO:
-                    GetGroupInfoResponse response3 = (GetGroupInfoResponse) result;
-                    if (response3.getCode() == 200) {
+                    GetRongGroupInfoResponse response3 = (GetRongGroupInfoResponse) result;
+                    if (response3.getCode().getCodeId().equals("100")) {
                         int i;
                         if (isCreated) {
                             i = 0;
                         } else {
                             i = 1;
                         }
-                        GetGroupInfoResponse.ResultEntity bean = response3.getResult();
+                        GetRongGroupInfoResponse.ValueBean bean = response3.getValue();
+                        String portraitString = (bean.getGroupImage() == null || bean.getGroupImage().isEmpty()) ? "" : BaseAction.DOMAIN + bean.getGroupImage();
                         SealUserInfoManager.getInstance().addGroup(
-                                new Groups(bean.getId(), bean.getName(), bean.getPortraitUri(), newGroupName, String.valueOf(i), null)
+                                new Groups(bean.getGroupId(), bean.getGroupName(), portraitString, newGroupName, String.valueOf(i), null)
                         );
                         mGroupName.setText(newGroupName);
-                        RongIM.getInstance().refreshGroupInfoCache(new Group(fromConversationId, newGroupName, Uri.parse(bean.getPortraitUri())));
+                        RongIM.getInstance().refreshGroupInfoCache(new Group(fromConversationId, newGroupName, Uri.parse(portraitString)));
                         LoadDialog.dismiss(mContext);
                         NToast.shortToast(mContext, getString(R.string.update_success));
                     }

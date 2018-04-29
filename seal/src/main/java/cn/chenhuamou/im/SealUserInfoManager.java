@@ -445,7 +445,7 @@ public class SealUserInfoManager implements OnDataListener {
                         if (groupInfoResponse != null && groupInfoResponse.getCode().getCodeId().equals("100")) {
                             GetRongGroupInfoResponse.ValueBean groupInfo = groupInfoResponse.getValue();
                             if (groupInfo != null) {
-                                String role = groupInfo.getGroupOwner().equals(RongIM.getInstance().getCurrentUserId()) ? "0" : "1";
+                                String role = groupInfo.getGroupOwner();
                                 String portrait = (groupInfo.getGroupImage() != null && !groupInfo.getGroupImage().isEmpty()) ? (BaseAction.DOMAIN + groupInfo.getGroupImage()) : "";
                                 syncAddGroup(new Groups(groupID,
                                         groupInfo.getGroupName(),
@@ -850,11 +850,12 @@ public class SealUserInfoManager implements OnDataListener {
                 }
                 // 头像拼接域名
                 portrait = BaseAction.DOMAIN + portrait;
-                mGroupsList.add(new Groups(groups.getGroupsId() + "",
+                Groups groupNew = new Groups(groups.getGroupsId() + "",
                         groups.getName(),
                         portrait,
-                        groups.getGroupOwner()
-                ));
+                        groups.getGroupOwner());
+                groupNew.setGroupOwner(groups.getGroupOwner());
+                mGroupsList.add(groupNew);
             }
             if (mGroupsList.size() > 0) {
                 if (mGroupsDao != null) {
@@ -1629,6 +1630,7 @@ public class SealUserInfoManager implements OnDataListener {
                 groupName = groups.getUserName();
                 groupPortraitUri = groups.getHeaderImage() != null && !TextUtils.isEmpty(groups.getHeaderImage()) ? (BaseAction.DOMAIN + groups.getHeaderImage()) : "";
             }
+            String groupOwner = groups.getRole().isEmpty() ? groups.getGroupOwner() : groups.getRole();
             String nickName = group.getNickName() != null && !TextUtils.isEmpty(group.getNickName()) ? group.getNickName() : group.getUserName();
             String groupmMembersHeaderImg = group.getHeaderImage() != null && !TextUtils.isEmpty(group.getHeaderImage()) ? (BaseAction.DOMAIN + group.getHeaderImage()) : "";
             GroupMember newMember = new GroupMember(groupID,
@@ -1642,13 +1644,13 @@ public class SealUserInfoManager implements OnDataListener {
                     CharacterParser.getInstance().getSpelling(groupName),
                     groupPortraitUri);
 
-            newList.add(newMember);
+//            newList.add(newMember);
 
-//            if (group.getRole() == 0) {
-//                created = newMember;
-//            } else {
-//                newList.add(newMember);
-//            }
+            if (groupOwner.equals(group.getUserName())) {
+                created = newMember;
+            } else {
+                newList.add(newMember);
+            }
         }
         if (created != null) {
             newList.add(created);

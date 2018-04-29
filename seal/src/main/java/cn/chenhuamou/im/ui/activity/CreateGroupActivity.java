@@ -190,6 +190,8 @@ public class CreateGroupActivity extends BaseActivity implements View.OnClickLis
 
                         Groups groups = new Groups(mGroupId, mGroupName, imageUrl);
                         groups.setDisplayName(mGroupName);
+                        String groupOwner = getSharedPreferences(SealConst.SharedPreferencesName, MODE_PRIVATE).getString(SealConst.SEALTALK_LOGIN_ID, "");
+                        groups.setGroupOwner(groupOwner);
                         SealUserInfoManager.getInstance().addGroup(groups);
                         BroadcastManager.getInstance(this).sendBroadcast(REFRESH_GROUP_UI, groups);
 
