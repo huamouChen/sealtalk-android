@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MiniChat</string>
+    <string name="app_name">博信</string>
     <string name="add_contacts">Add Contacts</string>
 
     <string name="token_not_available">Token Invalid</string>

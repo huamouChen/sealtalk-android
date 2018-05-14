@@ -383,7 +383,7 @@ public class SealAction extends BaseAction {
      * @throws HttpException
      */
     public ChangePasswordResponse changePassword(String oldPassword, String newPassword) throws HttpException {
-        String url = getURL("/api/User/Pwd");
+        String url = getURL("api/User/Pwd");
         String json = JsonMananger.beanToJson(new ChangePasswordRequest(oldPassword, newPassword));
         StringEntity entity = null;
         try {

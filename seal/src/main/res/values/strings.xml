@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">微小信</string>
+
+    <string name="BaseURL">http://imapi.xxx8.cn</string>
+    <string name="RongAppKey">pgyu6atqpefzu</string>
+
+    <string name="app_name">博信</string>
     <string name="action_settings">Settings</string>
 
 

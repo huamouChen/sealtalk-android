@@ -23,8 +23,10 @@
         <!-- imlib config begin -->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
-            android:value="cpj2xarlc74vn" />
-        <!--n19jmcy59f1q9-->
+            android:value= "${Rong_App_Key}"
+            />
+        <!--cpj2xarlc74vn     开发环境-->
+        <!--pgyu6atqpefzu     生产环境-->
 
 
         <service
